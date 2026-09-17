@@ -71,7 +71,7 @@ def load_profile() -> str:
 
 
 def load_question_meta() -> dict:
-    """题目元信息（每题的中文短标题等展示字段），数据文件：materials/question-bank/meta.json。"""
+    """题目元信息（中文短标题 + 生图提示词），由 scripts/gen_question_meta.py 生成。"""
     p = config.materials_dir() / "question-bank" / "meta.json"
     try:
         return json.loads(p.read_text(encoding="utf-8"))
@@ -81,35 +81,63 @@ def load_question_meta() -> dict:
 
 # ---------------------------------------------------------------- 示范答案
 
-def suggestion_messages(question: str, profile: str = "") -> list:
-    common = """面试官真正期待的：开口一秒抓住结论；30–45 秒说完；用一个具体证据（方法/数字/结果）支撑；干脆收尾；宁可精炼不啰嗦；不要背稿腔、不要客套铺垫。
-共同要求：
-- 自然口语化的美式商务英语；纯口语文本：不要 markdown、不要标题、不要动作说明；
-- 除方括号占位符外只允许英文，严禁出现中文字符；
-- 严禁复述或提及任务说明本身（如"我需要写""候选人资料"等），直接从答案第一句开始。"""
+def suggestion_messages(question: str, profile: str = "", persona_title: str = "") -> list:
+    stage = ""
+    if persona_title:
+        stage = (
+            f"【本轮面试官】{persona_title}——答案的深度与口吻要对齐该轮次：HR 初面=动机与经历故事；"
+            "技术面=方法、数字与判断；压力面=直接给立场、顶得住质疑。\n"
+        )
+    common = """你是一位坐过面试官席位（外企 / 一线大厂）的英语面试教练。产出的是「对标真实企业面试官期待、可当场说出口」的示范答案——检验标准：这段话若出现在真实面试录音里，要可信、专业、有分量；不能像求职攻略、课堂例句或背诵模板。
+面试官在听什么（答案必须答到点上）：
+- 结论先行：第一句给出立场 / 主句；不铺垫、不感谢、不复述问题；
+- 证据链：具体方法 / 工具 / 决策 / 数字（经得起追问两层）；讲取舍时给出理由；
+- 成熟度：敢承认边界、失败与替代方案；归因客观（我做的 vs 团队做的）；
+- 岗位对齐：至少一处让面试官看到「这对岗位 / 公司意味着什么」。
+反例（严禁出现这类 naive 特征）：
+- 空洞热情与讨好："passionate about your company"、"I would love to"、"great company"；
+- 学生腔："I want to learn a lot"、"I will work hard"、没有证据的 "quick learner / team player"；
+- 客套铺垫："Thank you for the question"、"That's a great question"；
+- 没有具体名词与数字的形容词堆砌（excellent / very / successfully）。
+按问题类型选结构：
+- 动机 / 公司类：具体事实（产品 / 团队 / 技术方向）→ 与我的交叉点 → 我能带来的增量；
+- 行为 / 故事类：情境一句带过 → 我的动作与判断 → 结果数字 → 一句反思；
+- 弱点 / 失败类：真实且可改进的点 → 正在做的具体动作 → 已有证据；
+- 技术 / 观点类：立场 → 一个最硬的证据 → 边界与 trade-off。
+示例（风格与深度对标；不要照抄内容）：
+问题：Why did you choose this field?
+❌ 天真版：I am very passionate about chemistry because it is interesting and I want to learn more in a great company.
+✅ 对标版：Two things. First, I like that it's testable — when a model I built makes a prediction, the lab tells me if it's right. Second, in industry that feedback comes much faster: real data, real users. I want my work to be used, not just published.
+语言与格式：
+- 自然的美式职场口语，短句为主；不用 furthermore / moreover 这类书面连接词；
+- 用词要常用、顺口、好发音：优先日常对话里的高频词（use / build / cut / speed up / at first / in the end 这类）；避开冷门词、生硬搭配和"炫技"同义词（orchestrate、spearhead、utilize 式表达），除非行业里就这么说；
+- 答案会被人大声照着朗读（照读模式）：凡是读起来打结、拗口的句子都不要写——写完默读一遍，不顺就换成简单说法；
+- 贴紧当前语境：紧扣这个问题与该轮次场景来组织和用词，问题里的关键信息（公司 / 团队 / 岗位 / 技术方向）要用得上；不跑题、不泛泛而谈；
+- 纯口语文本：不要 markdown、不要标题、不要动作说明；除方括号占位符外只允许英文，严禁出现中文字符；严禁复述或提及任务说明本身（如"我需要写""候选人资料"等），直接从答案第一句开始。"""
     generic_block = """【generic（通用版）】
 - 不依赖具体经历、任何候选人都能直接套用的框架答案，第一人称；
 - 50–85 个英文单词，绝不超过 95 词；
-- 需替换的个人信息用英文方括号占位，如 [your project]、[a key metric]、[company name]；
+- 需替换的个人信息用英文方括号占位——占位符要具体到能直接替换：如 [the company's drug-discovery platform]、[78% accuracy]、[a five-person team]、[your target role]；不要用 [your skill]、[specific strength] 这类无法替换的空洞占位；
 - 语气自然、像真人在说，不是模板腔。"""
     if profile:
-        sys = f"""你是一位资深外企/商务面试教练。针对同一个面试问题写两版「可直接说出口」的短示范答案。
+        sys = f"""你是一位坐过面试官席位的资深面试教练（外企 / 一线大厂）。针对同一个面试问题写两版「可直接说出口」的短示范答案，必须符合严肃的企业面试场景。
 
-{common}
+{stage}{common}
 
 【personal（我的经历定制版）】
 - 严格基于「候选人资料」中的真实经历与数字，第一人称，像本人临场作答；
+- 数字与事实只能取自资料，不得虚构新的经历或数字；资料里没有合适素材时，用最相关的真实素材组织；
 - 60–100 个英文单词（口语约 30–45 秒），绝不超过 110 词；
-- 结构：直接回应问题 → 一个最相关的具体证据（方法/数字/结果）→ 一句收尾或留出可追问的钩子。
+- 结构：直接回应问题 → 一个最相关的具体证据（方法 / 数字 / 结果）→ 一句收尾或留出可追问的钩子。
 
 {generic_block}
 
 只输出一个 JSON 对象：{{"personal": "...", "generic": "..."}}"""
         user = f"候选人资料：\n{profile}\n\n面试问题：{question}"
     else:
-        sys = f"""你是一位资深外企/商务面试教练。针对一个面试问题写一版「可直接说出口」的短示范答案（通用框架版——用户尚未提供个人资料，不要编造任何具体经历）。
+        sys = f"""你是一位坐过面试官席位的资深面试教练（外企 / 一线大厂）。针对一个面试问题写一版「可直接说出口」的短示范答案（通用框架版——用户尚未提供个人资料，不要编造任何具体经历），必须符合严肃的企业面试场景。
 
-{common}
+{stage}{common}
 
 {generic_block}
 
@@ -130,7 +158,7 @@ FEEDBACK_SCHEMA = """{
   "language_point": {"original": "<候选人原句片段（英文）>", "better": "<更自然或更正确的说法（英文）>", "explain": "<中文讲解 10-40 字>", "type": "grammar|vocab|structure"},
   "upgrade": {"original": "<候选人原句片段（英文）>", "better": "<不装但更高级的说法（英文）>", "explain": "<中文讲解>", "type": "vocab|structure"},
   "polished": "<把整段回答润色为自然的英文口语版：保留信息与观点，修正语法/用词/结构，可直接照着说；自由说模式必填，照读模式填 null>",
-  "followup": "<面试官会追问的下一句（英文）；没有就填 null>"
+  "followup": "<作为面试官（角色A）的下一句追问（英文，≤25 词；口语、可直接对候选人说出口，会被语音朗读）；没有就填 null>"
 }"""
 
 
@@ -149,12 +177,13 @@ def feedback_messages(persona: dict, question: str, transcript: str, history: li
 
 【角色A · 面试官】{persona.get('system', '')}
 
-【角色B · 隐形教练】为一名中文母语的候选人提供英文面试口语训练反馈（目标：技术面试流利自如）。
+【角色B · 隐形教练】为一名中文母语的化学博士提供英文面试口语训练反馈（目标：技术面试流利自如）。
 硬性要求：
 - 严格基于候选人原话，不得虚构错误；句子没问题时不要鸡蛋里挑骨头，改为"升级"建议。
 - 转写可能含语音识别噪声：若某词只出现一次、形态怪异（例如把标准术语转成了不存在的拼写），不要当作候选人的语言错误（可跳过该点）。
 - 字段语言：verdict/explain 用中文；original/better/followup/polished 用英文。
-- followup 要贴合岗位语境，追问上一答里最薄弱的一点（缺数字、缺细节、逻辑跳跃等），保持角色A 的口吻；若回答完整且具体，可为 null。
+- followup 是角色A（面试官）真实的下一个回合：像现场一样先给一个简短反应再追问（反应可省略），不超过 25 词，必须能直接说出口；追问上一答里最值得追的一点（缺数字、缺个人贡献、逻辑跳跃、夸大表述等），方向符合角色A 的轮次身份（HR 追动机与行为细节；技术官追方法与数字；压力官质疑漂亮话）；回答完整且具体时可为 null。
+- followup 引用的内容只能来自候选人原话：严禁虚构对方没有说过的事实、数字或细节（要数字就直接要，不要去猜一个数字）。
 - 只输出一个 JSON 对象，不要解释、不要 markdown 代码块。结构：
 {FEEDBACK_SCHEMA}{mode_block}"""
     msgs = [{"role": "system", "content": sys}]
