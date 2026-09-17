@@ -8,16 +8,25 @@ import shutil
 import time
 from pathlib import Path
 
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
 
-from . import config, llm, prompts, store, tts
+from . import config, llm, mobile, prompts, store, tts
 from . import session as sess
 
 WEB = config.web_dir()
 
-app = FastAPI(title="EngTraining", version="0.15.0")
+
+@asynccontextmanager
+async def _lifespan(_app):
+    mobile.autostart()  # 上次启用了手机访问则自动恢复（失败静默）
+    yield
+
+
+app = FastAPI(title="EngTraining", version="0.15.1", lifespan=_lifespan)
 
 
 @app.get("/api/health")
@@ -352,11 +361,31 @@ def webmanifest():
 
 @app.get("/ca.crt")
 def ca_cert():
-    """手机安装用：本机 HTTPS 的自签 CA 证书（需先运行 scripts/gen_https_cert.sh）。"""
-    p = Path(__file__).resolve().parents[2] / "certs" / "ca.crt"
+    """手机安装用：本机 HTTPS 的自签 CA 证书（手机访问启用后自动生成）。"""
+    p = mobile.ca_path()
     if not p.exists():
-        raise HTTPException(404, "no ca.crt (先运行 bash scripts/gen_https_cert.sh)")
+        raise HTTPException(404, "no ca.crt（先在「⚙️ 设置 → 手机访问」里启用）")
     return FileResponse(str(p), media_type="application/x-x509-ca-cert", filename="ca.crt")
+
+
+@app.get("/api/mobile")
+def mobile_status():
+    return mobile.status()
+
+
+@app.post("/api/mobile/enable")
+def mobile_enable(payload: dict = None):
+    """一键启用手机访问：自动生成证书（如需）+ 启动 HTTPS 通道。"""
+    try:
+        port = int((payload or {}).get("port") or 8443)
+        return mobile.start(port=port)
+    except Exception as e:  # noqa: BLE001
+        raise HTTPException(500, str(e))
+
+
+@app.post("/api/mobile/disable")
+def mobile_disable():
+    return mobile.stop()
 
 
 app.mount("/static", StaticFiles(directory=str(WEB)), name="static")

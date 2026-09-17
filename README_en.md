@@ -127,24 +127,28 @@ Open http://127.0.0.1:8765 (allow microphone access in your browser on first use
 
 ### 6. Use it on your phone (optional)
 
-The desktop version works out of the box. To practise on an **iPhone** (mic, streaks and review all work), you need one free mesh network plus a one-time certificate:
+**Easiest path (recommended)**: open "**⚙️ 设置 (Settings) → 📱 手机访问 (Mobile access) → Enable**" — the app generates certificates and starts the HTTPS channel automatically, then shows the phone URL plus step-by-step setup (works for the macOS / Windows portable builds too).
 
-1. **Install [Tailscale](https://tailscale.com/download) on both your Mac and iPhone** (free, private networking — your Mac is never exposed to the public internet);
-2. **Generate a one-time certificate** (iPhones only allow microphone access over HTTPS; this uses a local self-signed CA — no internet round-trip needed):
-   ```bash
-   bash scripts/gen_https_cert.sh
-   ```
-3. **Start**: double-click "打开训练系统.command" to run the server, then "打开手机访问.command" — the terminal prints your phone URL (`https://<machine>.<tailnet>.ts.net:8443`);
-4. **One-time iPhone setup**
-   - Install the CA: AirDrop `certs/ca.crt` to the phone (or visit `/ca.crt` on the printed URL) → Settings → General → VPN &amp; Device Management → install → then Settings → General → About → Certificate Trust Settings → enable full trust;
-   - Open the printed URL in Safari → Share → **Add to Home Screen** — it then launches full-screen as a standalone app;
-5. Note: the phone is a thin client — sessions and data stay on your Mac (keep it awake and online).
+To reach your computer from **any network** (not just the same Wi-Fi), install [Tailscale](https://tailscale.com/download) on both machines (free, private mesh; sign in with the same account) — when detected, mobile access binds to your tailnet only.
+
+**One-time phone setup**:
+
+- Install the CA: open the URL shown in Settings in Safari (accept the certificate warning) → then open `<that-url>/ca.crt` to download the profile → Settings → General → VPN & Device Management → install → then Settings → General → About → Certificate Trust Settings → enable full trust;
+- Open the same URL in Safari → Share → **Add to Home Screen** — it then launches full-screen like an app.
+
+> Note: the phone is a thin client — sessions and data stay on the computer running the app (keep it awake and online). CLI users can still use `bash scripts/gen_https_cert.sh` + `scripts/https_proxy.py` (equivalent to the in-app one-click flow).
 
 ### 7. Windows portable build (optional)
 
 No Python required: grab `EnglishInterviewGym-win64.zip` from [**Releases**](https://github.com/KumquatYZ/english-interview-gym/releases/latest) → unzip → double-click `EnglishInterviewGym.exe` → the browser opens automatically → click "⚙️ 设置 (Settings)" and fill in your API base URL + key (config and data stay inside the app folder — fully portable, delete the folder to uninstall).
 
 > Windows 10/11 (64-bit); an FFmpeg transcoding component is bundled. Mic permission is requested by the browser on first recording.
+
+### 8. macOS portable build (optional: Apple Silicon)
+
+Download `EnglishInterviewGym-macos.zip` from [**Releases**](https://github.com/KumquatYZ/english-interview-gym/releases/latest) → unzip → double-click 启动.command (if macOS blocks it the first time: right-click → Open) → the browser opens → configure via "⚙️ 设置". Config and data stay inside the folder — fully portable.
+
+> macOS 12+, Apple Silicon (M-series); mobile access can be enabled from Settings with one click.
 
 ## Model requirements &amp; recommendations
 

@@ -127,24 +127,28 @@ bash scripts/run_server.sh       # 或直接双击「打开训练系统.command�
 
 ### 6. 在手机上使用（可选）
 
-桌面开箱即用；想在 **iPhone** 上练（麦克风 / 打卡 / 复习都可用），只需一次免费组网 + 一次性证书：
+**最简方式（推荐）**：打开「**⚙️ 设置 → 📱 手机访问 → 启用**」——自动生成证书并开启 HTTPS 通道，界面会给出手机访问地址与完整的安装指引（Mac / Windows 免安装版同样适用）。
 
-1. **Mac 与 iPhone 各安装 [Tailscale](https://tailscale.com/download)**（免费、私有组网），登录同一账号——手机在任何网络下都能连回你的 Mac，且**不暴露到公网**；
-2. **生成一次性证书**（iPhone 的麦克风只允许在 HTTPS 下使用；这里用本机自签，不依赖外网）：
-   ```bash
-   bash scripts/gen_https_cert.sh
-   ```
-3. **启动**：双击「打开训练系统.command」跑服务，再双击「打开手机访问.command」——终端会打印手机访问地址（形如 `https://<机器名>.<tailnet>.ts.net:8443`）；
-4. **iPhone 首次设置**
-   - 安装证书：把 Mac 上的 `certs/ca.crt` **AirDrop** 到手机（或用 Safari 打开上面的地址后访问 `/ca.crt` 下载）→「设置 → 通用 → VPN与设备管理」安装描述文件 → 再到「设置 → 通用 → 关于本机 → 证书信任设置」对该证书开启完全信任；
-   - Safari 打开终端打印的地址 → 「分享 → **添加到主屏幕**」——此后从主屏图标进入即**全屏独立窗口**，与 App 体验一致；
-5. 说明：手机是"瘦客户端"——会话与数据仍保存在你的 Mac（Mac 保持开机联网即可）；训练数据不出本机。
+想让 iPhone **在任何网络下**都能连回（而不是仅同一 Wi-Fi），建议 Mac 与 iPhone 同时安装 [Tailscale](https://tailscale.com/download)（免费、私有组网，登录同一账号即可）——检测到 Tailscale 时，手机访问会自动使用它，且只在你的私有网络内可达。
+
+**手机首次设置（一次性）**：
+
+- 安装证书：用 Safari 打开「设置」里显示的地址（提示"证书无效" → 继续访问）→ 再打开 `该地址/ca.crt` 下载描述文件 → 「设置 → 通用 → VPN与设备管理」安装 → 「通用 → 关于本机 → 证书信任设置」开启完全信任；
+- Safari 打开同一地址 → 「分享 → **添加到主屏幕**」——之后从主屏图标进入即全屏独立窗口，与 App 体验一致。
+
+> 说明：手机是"瘦客户端"——会话与数据仍保存在运行本应用的电脑上（保持开机联网即可）。命令行用户也可用 `bash scripts/gen_https_cert.sh` + `scripts/https_proxy.py` 流程（与界面内一键启用等价）。
 
 ### 7. Windows 免安装版（可选）
 
 不装 Python 也能用：从 [**Releases**](https://github.com/KumquatYZ/english-interview-gym/releases/latest) 下载 `EnglishInterviewGym-win64.zip` → 解压 → 双击 `EnglishInterviewGym.exe` → 浏览器自动打开 → 点「⚙️ 设置」填入接口地址与 API Key 即可开始使用（配置与数据都保存在软件文件夹内，绿色便携，删除即卸载）。
 
 > Windows 10/11（64 位）；包内已附带音频转码组件（FFmpeg），麦克风权限由浏览器在首次录音时询问。
+
+### 8. macOS 免安装包（可选：Apple Silicon）
+
+从 [**Releases**](https://github.com/KumquatYZ/english-interview-gym/releases/latest) 下载 `EnglishInterviewGym-macos.zip` → 解压 → 双击「启动.command」（首次被 macOS 拦截时：右键 → 打开）→ 浏览器自动打开 → 点「⚙️ 设置」填好接口地址与 API Key 即可。数据与配置同样保存在文件夹内，绿色便携。
+
+> macOS 12+，Apple Silicon（M 系列）；手机访问同样可在「⚙️ 设置」里一键启用。
 
 ## 模型需求与推荐
 

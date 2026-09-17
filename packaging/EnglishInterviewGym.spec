@@ -1,12 +1,14 @@
 # -*- mode: python ; coding: utf-8 -*-
-# PyInstaller 打包配置（Windows 免安装版）：在仓库根目录执行
-#   pip install -r packaging/requirements-win.txt
+# PyInstaller 打包配置（Windows / macOS 免安装包）：在仓库根目录执行
+#   pip install -r packaging/requirements-build.txt
 #   pyinstaller packaging/EnglishInterviewGym.spec --distpath dist --workpath build_win
 import os
+import sys as _sys
 
 from PyInstaller.utils.hooks import collect_data_files, collect_submodules
 
 ROOT = os.path.abspath(os.path.join(SPECPATH, ".."))  # noqa: F821  (SPECPATH 由 PyInstaller 注入)
+ICON = os.path.join(SPECPATH, "icon.icns" if _sys.platform == "darwin" else "icon.ico")  # noqa: F821
 
 datas = [
     (os.path.join(ROOT, "app", "web"), "app/web"),
@@ -45,7 +47,7 @@ exe = EXE(  # noqa: F821
     strip=False,
     upx=False,
     console=True,
-    icon=os.path.join(SPECPATH, "icon.ico"),  # noqa: F821
+    icon=ICON,
 )
 coll = COLLECT(  # noqa: F821
     exe,

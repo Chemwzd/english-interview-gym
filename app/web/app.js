@@ -851,6 +851,7 @@ async function openSettings() {
     $("setKey").value = "";
     $("setKey").placeholder = s.api_key_set ? `已设置（${s.api_key_masked}）· 留空 = 不修改` : "粘贴你的 Key";
     $("settingsFile").textContent = "配置文件：" + (s.env_file || "");
+    refreshMobile();
   } catch (e) { toast("读取设置失败：" + e.message); }
 }
 async function saveSettings() {
@@ -886,6 +887,50 @@ $("setupBanner").addEventListener("click", openSettings);
 $("settingsSave").addEventListener("click", saveSettings);
 $("settingsClose").addEventListener("click", () => $("settingsOverlay").classList.add("hidden"));
 $("settingsOverlay").addEventListener("click", (e) => { if (e.target === $("settingsOverlay")) $("settingsOverlay").classList.add("hidden"); });
+
+/* —— 手机访问（HTTPS 通道，一键启用） —— */
+async function refreshMobile() {
+  try {
+    renderMobile(await api("/api/mobile"));
+  } catch (e) {
+    $("mobBody").innerHTML = `<p class="pdesc" style="margin:0">读取失败：${esc(e.message)}</p>`;
+  }
+}
+function renderMobile(m) {
+  const st = $("mobState");
+  st.textContent = m.enabled ? "已启用" : (m.tailscale ? "未启用（可经 Tailscale）" : "未启用");
+  st.classList.toggle("ok", !!m.enabled);
+  if (m.enabled) {
+    $("mobBody").innerHTML = `
+      <p class="pdesc" style="margin:2px 0 6px">手机浏览器打开（需先安装证书，一次即可）：</p>
+      ${(m.urls || []).map((u) => `<div class="mob-url"><code>${esc(u)}</code><button class="mini-btn" data-copy="${esc(u)}">复制</button></div>`).join("") || `<p class="pdesc">未检测到可用地址（检查网络/Tailscale）。</p>`}
+      <p class="pdesc" style="margin:8px 0 0">iPhone 首次安装证书：用 Safari 打开上面地址（提示"证书无效"→继续访问）→ 再打开 <code>该地址/ca.crt</code> 下载描述文件 → 「设置 → 通用 → VPN与设备管理」安装 → 「通用 → 关于本机 → 证书信任设置」开启完全信任 → 分享 → 添加到主屏幕。</p>
+      <div class="prow" style="margin-top:8px">
+        <a class="mini-btn" href="/ca.crt">下载证书（CA）</a>
+        <button class="mini-btn" id="mobDisable" style="margin-left:8px">停用</button>
+      </div>`;
+  } else {
+    $("mobBody").innerHTML = `
+      <p class="pdesc" style="margin:2px 0 8px">手机（Tailscale 或同一 Wi-Fi）使用需要 HTTPS 通道——点一下自动生成证书并开启${m.cert_ready ? "（证书已就绪）" : ""}。</p>
+      <button class="btn ghost small" id="mobEnable">启用手机访问</button>`;
+  }
+}
+$("mobBody").addEventListener("click", async (e) => {
+  const b = e.target.closest("button, a");
+  if (!b) return;
+  if (b.id === "mobEnable") {
+    b.disabled = true;
+    try {
+      const r = await api("/api/mobile/enable", { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" });
+      renderMobile(r);
+      toast(r.already ? "手机访问已在运行" : "✅ 手机访问已启用");
+    } catch (err) { toast("启用失败：" + err.message); b.disabled = false; }
+  } else if (b.id === "mobDisable") {
+    try { renderMobile(await api("/api/mobile/disable", { method: "POST" })); toast("已停用"); } catch (err) { toast("停用失败：" + err.message); }
+  } else if (b.dataset.copy) {
+    try { await navigator.clipboard.writeText(b.dataset.copy); toast("已复制"); } catch (err) {}
+  }
+});
 
 /* ---------------- 单词速查 ---------------- */
 let glossWord = "";

@@ -501,3 +501,10 @@ button,.btn,.chip,.mini-btn,.mic,.fav-tab,.fv-del,.w{-webkit-tap-highlight-color
 .smore{margin-top:11px}
 .smore summary{font-size:12.5px;color:var(--teal-dark);cursor:pointer;font-weight:600;outline:none}
 @media (max-width:640px){.srow input{font-size:16px}}
+.smob{margin-top:12px;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px}
+.mob-head{display:flex;align-items:center;gap:8px;font-size:13px}
+.mob-state{margin-left:auto;font-size:11.5px;color:var(--muted)}
+.mob-state.ok{color:var(--green);font-weight:700}
+.mob-url{display:flex;align-items:center;gap:6px;margin-top:5px}
+.mob-url code{background:var(--mint-3);border-radius:6px;padding:3px 8px;font-size:11.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0}
+.mini-btn[href]{text-decoration:none}
