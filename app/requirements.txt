@@ -10,3 +10,4 @@ cryptography>=42           # 手机访问：自签证书生成
 mlx-whisper>=0.4.0 ; sys_platform == "darwin" and platform_machine == "arm64"
 python-docx
 pypdf
+pdfminer.six             # PDF 解析第二引擎（部分中文/特殊字体 PDF 单引擎读不出）

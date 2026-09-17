@@ -26,7 +26,7 @@ async def _lifespan(_app):
     yield
 
 
-app = FastAPI(title="EngTraining", version="0.15.4", lifespan=_lifespan)
+app = FastAPI(title="EngTraining", version="0.15.5", lifespan=_lifespan)
 
 
 @app.get("/api/health")
@@ -311,6 +311,37 @@ def _docx_plain_text(raw: bytes) -> str:
         return "\n".join(lines)
 
 
+def _pdf_plain_text(raw: bytes) -> str:
+    """PDF → 纯文本：pypdf 与 pdfminer.six 双引擎，取文字更多的结果（部分中文/特殊字体 PDF 单引擎读不出）。"""
+    import io
+
+    pypdf_txt = ""
+    pypdf_err = None
+    try:
+        import pypdf
+
+        r = pypdf.PdfReader(io.BytesIO(raw))
+        pypdf_txt = "\n".join((pg.extract_text() or "") for pg in r.pages)
+    except Exception as e:  # noqa: BLE001
+        pypdf_err = e
+    pdfminer_txt = ""
+    try:
+        from pdfminer.high_level import extract_text as _pm_extract
+
+        pdfminer_txt = _pm_extract(io.BytesIO(raw)) or ""
+    except Exception:  # noqa: BLE001
+        pass
+
+    best = pypdf_txt
+    if len(pdfminer_txt.strip()) > len(pypdf_txt.strip()):
+        best = pdfminer_txt
+    if len(best.strip()) < 30:
+        if pypdf_err is not None and not pdfminer_txt.strip():
+            raise ValueError(f"无法读取 PDF（文件损坏或加密？）：{pypdf_err}") from pypdf_err
+        raise ValueError("PDF 中没有可提取的文字（可能是扫描件/图片版）。请改用 Word 版简历，或直接把文字粘贴进来")
+    return best
+
+
 def _extract_resume_text(filename: str, raw: bytes) -> str:
     """简历文件 → 纯文本（支持 docx / pdf / txt / md；含文本框/表格/页眉）。"""
     name = (filename or "").lower()
@@ -319,18 +350,7 @@ def _extract_resume_text(filename: str, raw: bytes) -> str:
     if name.endswith(".docx"):
         return _docx_plain_text(raw)
     if name.endswith(".pdf"):
-        import io
-
-        import pypdf
-
-        try:
-            r = pypdf.PdfReader(io.BytesIO(raw))
-            txt = "\n".join((pg.extract_text() or "") for pg in r.pages)
-        except Exception as e:  # noqa: BLE001
-            raise ValueError(f"无法读取 PDF（文件损坏或加密？）：{e}") from e
-        if len(txt.strip()) < 30:
-            raise ValueError("PDF 中没有可提取的文字（可能是扫描件/图片版）。请改用 Word 版简历，或直接把文字粘贴进来")
-        return txt
+        return _pdf_plain_text(raw)
     if name.endswith((".txt", ".md")):
         for enc in ("utf-8-sig", "gb18030", "utf-16"):
             try:

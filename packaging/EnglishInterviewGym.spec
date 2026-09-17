@@ -17,10 +17,12 @@ datas = [
     (os.path.join(ROOT, "materials"), "materials_default"),
 ]
 datas += collect_data_files("imageio_ffmpeg")  # 内置静态 ffmpeg（音频转码用）
+datas += collect_data_files("pdfminer")        # PDF 解析引擎资源（CMap，中文等）
 
 hiddenimports = (
     collect_submodules("uvicorn")
     + collect_submodules("server")
+    + collect_submodules("pdfminer")
     + ["fastapi", "multipart", "yaml", "requests", "docx", "pypdf"]
 )
 
