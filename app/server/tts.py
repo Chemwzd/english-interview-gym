@@ -5,6 +5,7 @@
   出参：data.audio（hex 音频；若 output_format=url 则为临时链接）
 """
 import hashlib
+import re
 import subprocess
 import sys
 import tempfile
@@ -17,6 +18,19 @@ from . import config
 
 class TTSError(RuntimeError):
     pass
+
+
+_EMOJI_RE = re.compile("[\U0001F000-\U0001FAFF\u2600-\u27BF\u2B00-\u2BFF\uFE0F\u200D\u20E3\u2122\u2139]+")
+
+
+def _clean_for_speech(text: str) -> str:
+    """去掉不朗读的装饰：markdown 记号、列表符号、emoji（避免 TTS 读出星号/符号音）。"""
+    t = text.replace("**", "").replace("__", "").replace("~~", "").replace("`", "")
+    t = re.sub(r"(?m)^\s*#{1,6}\s*", "", t)
+    t = re.sub(r"(?m)^\s*[-*•·]\s+", "", t)
+    t = _EMOJI_RE.sub(" ", t)
+    t = re.sub(r"\s+", " ", t).strip()
+    return t
 
 
 def _cache_path(text: str, tag: str) -> Path:
@@ -76,7 +90,7 @@ def synth_cloud(text: str, voice_id: str = None) -> bytes:
 
 
 def synth(text: str, persona: str = None) -> bytes:
-    text = (text or "").strip()
+    text = _clean_for_speech((text or "").strip())
     if not text:
         raise TTSError("empty text")
     driver = config.get("tts.driver", "macos_say")

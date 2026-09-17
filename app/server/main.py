@@ -26,7 +26,7 @@ async def _lifespan(_app):
     yield
 
 
-app = FastAPI(title="EngTraining", version="0.15.3", lifespan=_lifespan)
+app = FastAPI(title="EngTraining", version="0.15.4", lifespan=_lifespan)
 
 
 @app.get("/api/health")
@@ -278,28 +278,67 @@ def set_detail(set_key: str):
         raise HTTPException(404, str(e))
 
 
+_CFB_MAGIC = b"\xd0\xcf\x11\xe0\xa1\xb1\x1a\xe1"
+
+
+def _docx_plain_text(raw: bytes) -> str:
+    """汇总 docx 内全部文字（正文 + 表格 + 文本框 + 页眉页脚 + 脚注），不依赖 python-docx。"""
+    import io
+    import re
+    import zipfile
+
+    def _unescape(s: str) -> str:
+        return (s.replace("&lt;", "<").replace("&gt;", ">").replace("&quot;", '"')
+                .replace("&apos;", "'").replace("&amp;", "&"))
+
+    try:
+        zf = zipfile.ZipFile(io.BytesIO(raw))
+    except Exception as e:  # noqa: BLE001
+        raise ValueError("无法读取 .docx（文件损坏，或不是真正的 Word 文档）") from e
+    with zf:
+        parts = [n for n in zf.namelist()
+                 if re.fullmatch(r"word/(document|header\d*|footer\d*|footnotes|endnotes)\.xml", n)]
+        parts.sort(key=lambda n: (n != "word/document.xml", n))
+        lines = []
+        for n in parts:
+            xml = zf.read(n).decode("utf-8", errors="ignore")
+            for para in xml.split("</w:p>"):
+                para = re.sub(r"<w:(?:br|cr)\s*/>", "\n", para)
+                txt = "".join(_unescape(m.group(1))
+                              for m in re.finditer(r"<w:t(?:\s[^>]*)?>(.*?)</w:t>", para, re.S))
+                if txt.strip():
+                    lines.extend(x for x in txt.splitlines() if x.strip())
+        return "\n".join(lines)
+
+
 def _extract_resume_text(filename: str, raw: bytes) -> str:
-    """简历文件 → 纯文本（支持 docx / pdf / txt / md）。"""
+    """简历文件 → 纯文本（支持 docx / pdf / txt / md；含文本框/表格/页眉）。"""
     name = (filename or "").lower()
+    if name.endswith(".doc") or raw[:8] == _CFB_MAGIC:
+        raise ValueError("旧版 .doc 格式暂不支持：请在 Word / WPS 里「另存为 → .docx」后再导入")
     if name.endswith(".docx"):
-        import io
-
-        import docx  # python-docx
-
-        d = docx.Document(io.BytesIO(raw))
-        parts = [p.text for p in d.paragraphs]
-        for tb in d.tables:
-            for row in tb.rows:
-                parts.append(" | ".join(c.text for c in row.cells))
-        return "\n".join(x for x in parts if x.strip())
+        return _docx_plain_text(raw)
     if name.endswith(".pdf"):
         import io
 
         import pypdf
 
-        r = pypdf.PdfReader(io.BytesIO(raw))
-        return "\n".join((pg.extract_text() or "") for pg in r.pages)
-    return raw.decode("utf-8", errors="ignore")
+        try:
+            r = pypdf.PdfReader(io.BytesIO(raw))
+            txt = "\n".join((pg.extract_text() or "") for pg in r.pages)
+        except Exception as e:  # noqa: BLE001
+            raise ValueError(f"无法读取 PDF（文件损坏或加密？）：{e}") from e
+        if len(txt.strip()) < 30:
+            raise ValueError("PDF 中没有可提取的文字（可能是扫描件/图片版）。请改用 Word 版简历，或直接把文字粘贴进来")
+        return txt
+    if name.endswith((".txt", ".md")):
+        for enc in ("utf-8-sig", "gb18030", "utf-16"):
+            try:
+                return raw.decode(enc)
+            except (UnicodeDecodeError, UnicodeError):
+                continue
+        return raw.decode("utf-8", errors="ignore")
+    raise ValueError("不支持的文件类型（支持 docx / pdf / txt / md），也可以直接把文字粘贴进来")
 
 
 @app.get("/api/profile")
@@ -325,10 +364,12 @@ async def profile_upload(file: UploadFile = File(...)):
         raise HTTPException(400, "文件过大（上限 8MB）")
     try:
         text = _extract_resume_text(file.filename or "", raw).strip()
+    except ValueError as e:
+        raise HTTPException(400, str(e))
     except Exception as e:  # noqa: BLE001
         raise HTTPException(400, f"解析失败：{e}")
     if len(text) < 30:
-        raise HTTPException(400, "解析出的文本太短，请检查文件或改用粘贴方式")
+        raise HTTPException(400, f"解析出的文本太短（{len(text)} 字，至少 30 字）：请检查文件内容，或直接粘贴文字")
     (config.materials_dir() / "profile.md").write_text(text, encoding="utf-8")
     return {"ok": True, "chars": len(text)}
 
