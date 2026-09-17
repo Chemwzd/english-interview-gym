@@ -71,6 +71,8 @@ Every session feeds your streaks and stats; every question keeps a history, so y
 
 ## Quick start
 
+> 📖 **UI & usage guide** (16 pages, full screenshots — follow along): [DOCX](docs/USER-GUIDE.docx) · [PDF](docs/USER-GUIDE.pdf)
+
 **Requirements**: macOS (Apple Silicon recommended) + Python 3.12 + `ffmpeg` (`brew install ffmpeg`) + an API key (bring your own — any OpenAI-compatible service: official APIs or aggregator gateways).
 
 ### 1. Clone &amp; install

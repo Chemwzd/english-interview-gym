@@ -71,6 +71,8 @@
 
 ## 快速开始
 
+> 📖 **界面使用手册**（16 页，含全部界面截图，边看边练）：[DOCX 下载](docs/USER-GUIDE.docx) · [PDF 下载](docs/USER-GUIDE.pdf)
+
 **环境要求**：macOS（Apple Silicon 体验最佳）+ Python 3.12 + `ffmpeg`（`brew install ffmpeg`）+ 一个 API Key（自备：任何 OpenAI 兼容服务均可，官方 API 或聚合网关）。
 
 ### 1. 克隆并安装
