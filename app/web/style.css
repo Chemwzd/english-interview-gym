@@ -207,10 +207,74 @@ details.qinfo .row b{color:var(--muted);font-weight:600;margin-right:5px}
 .gloss .ex .zhx{color:var(--muted);font-size:12.5px;margin-top:3px}
 .gloss .note{color:var(--amber);font-size:12.5px;margin-top:8px}
 .gloss .actions{display:flex;gap:8px;margin-top:13px;flex-wrap:wrap}
-.fav-list{display:grid;gap:8px}
-.fav-list .item{background:var(--mint-3);border-radius:var(--radius-s);padding:10px 13px;font-size:13.5px}
-.fav-list .item .meta{color:var(--muted);font-size:11.5px;margin-top:4px;display:flex;gap:8px;align-items:center}
+/* ---------- 收藏夹：词库（字典式分页 + 删除） + 今日复习 ---------- */
+.fav-modal{max-width:520px}
+.fav-tabs{display:flex;gap:4px;margin:0 0 10px;border-bottom:1.5px solid var(--line)}
+.fav-tab{position:relative;background:none;border:none;padding:8px 12px;font-size:13.5px;color:var(--muted);font-weight:600;border-bottom:2px solid transparent;margin-bottom:-1.5px}
+.fav-tab:hover{color:var(--teal-dark)}
+.fav-tab.active{color:var(--teal-dark);border-bottom-color:var(--teal)}
+.rev-badge{display:inline-block;min-width:17px;padding:0 5px;margin-left:6px;border-radius:9px;background:var(--teal);color:#fff;font-size:10.5px;line-height:17px;text-align:center;vertical-align:1px}
+.rev-badge.ok{background:var(--green)}
+.rev-badge.hidden{display:none}
+.fav-pane{min-height:120px}
+.fav-toolbar{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.fv-count{color:var(--muted);font-size:12px}
+.fav-toolbar .mini-btn{margin-left:auto;padding:3px 10px;font-size:11.5px}
+.fav-list{display:grid;gap:7px}
 .fav-list .empty{color:var(--muted);text-align:center;padding:18px;font-size:13px}
+.fv-row{background:var(--mint-3);border-radius:var(--radius-s);padding:9px 12px}
+.fv-top{display:flex;align-items:center;gap:7px}
+.fv-word{font-weight:700;font-size:14.5px;color:var(--teal-dark);word-break:break-word;min-width:0}
+.fv-word.rev{font-weight:600;font-size:13px;line-height:1.45;color:var(--ink)}
+.fv-top .tag{flex:none;white-space:nowrap}
+.fv-ipa{color:#57696d;font-size:12px;white-space:nowrap}
+.fv-right{margin-left:auto;display:flex;align-items:center;gap:6px;flex:none}
+.fv-date{color:var(--muted);font-size:11.5px}
+.fv-right .mini-btn{padding:1px 8px;font-size:12px}
+.fv-del{border:none;background:transparent;color:var(--muted);font-size:13px;padding:2px 6px;border-radius:7px;line-height:1.3}
+.fv-del:hover{background:var(--red-bg);color:var(--red)}
+.fv-del.confirm{background:var(--red);color:#fff;font-size:11.5px;padding:2px 9px}
+.fv-note{margin-top:4px;font-size:12.5px;color:#3c5854;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;cursor:pointer}
+.fv-note.exp{-webkit-line-clamp:unset}
+.fv-note:hover{color:var(--teal-dark)}
+.fav-pager{display:flex;align-items:center;justify-content:center;gap:10px;padding:12px 0 2px;font-size:12.5px;color:var(--muted)}
+.fav-pager .mini-btn{padding:3px 12px}
+.fav-pager .mini-btn:disabled{opacity:.38;cursor:not-allowed}
+/* —— 今日复习 —— */
+.rev-wrap{text-align:center;padding:4px 2px 2px}
+.rev-wrap h3{font-size:16px;margin:6px 0;color:var(--ink)}
+.rev-ico{font-size:34px;line-height:1.2}
+.rev-done-ico{font-size:42px;line-height:1.2}
+.rev-goal{color:var(--muted);font-size:12.5px;margin:2px 0 6px;line-height:1.7}
+.rev-partial{font-size:12.5px;color:var(--teal-dark);margin:2px 0 10px}
+#revStartBtn{margin-top:8px;padding:11px 26px}
+.rev-prog{display:flex;align-items:center;gap:9px;margin:2px 0 10px}
+.rev-bar{flex:1;height:7px;border-radius:4px;background:var(--mint);overflow:hidden}
+.rev-bar i{display:block;height:100%;width:0;background:var(--teal);border-radius:4px;transition:width .35s}
+.rev-prog span{font-size:12px;color:var(--muted);white-space:nowrap}
+.rev-pass{font-size:12px;color:var(--amber);background:var(--amber-bg);border-radius:8px;padding:4px 10px;margin-bottom:8px;display:inline-block}
+.rev-card{background:var(--mint-3);border:1.5px solid var(--line);border-radius:14px;padding:20px 16px 16px;margin:4px 0 12px;min-height:148px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px}
+.rev-word{font-size:26px;font-weight:800;color:var(--teal-dark);letter-spacing:.3px;word-break:break-word;display:flex;align-items:center;gap:8px}
+.rev-ipa{color:var(--muted);font-size:13px}
+.rev-badge-mini{font-size:11px;color:var(--muted);background:#fff;border:1px solid var(--line);border-radius:8px;padding:1.5px 8px}
+.rev-badge-mini.new{color:var(--amber);background:var(--amber-bg);border-color:transparent}
+.rev-note{font-size:14px;color:#2c4a45;line-height:1.55;margin-top:6px}
+.rev-nonote{color:var(--muted);font-size:12.5px;display:flex;align-items:center;gap:8px;justify-content:center}
+.rev-hint{color:var(--muted);font-size:12px;margin-top:6px}
+.rev-btns{display:flex;gap:10px}
+.rev-btns .btn{flex:1;padding:11px 8px}
+.rev-week{margin-top:14px;display:flex;align-items:center;justify-content:center;gap:5px;font-size:11px;color:var(--muted)}
+.rev-week .rd{width:22px;height:22px;border-radius:7px;background:var(--mint);color:#fff;font-weight:700;font-size:11px;display:inline-flex;align-items:center;justify-content:center}
+.rev-week .rd.on{background:var(--teal)}
+.rev-weak{margin:10px 0 2px;font-size:12.5px;color:var(--amber);line-height:1.9}
+.rev-weak .chip{display:inline-block;background:var(--amber-bg);color:var(--amber);border-radius:8px;padding:1px 8px;margin:1px 3px;font-weight:600}
+.rev-weak-n{color:var(--amber)}
+/* 打卡面板 · 复习进度行 */
+.ck-review{display:flex;align-items:center;gap:6px;margin-top:10px;padding:8px 12px;background:var(--mint-3);border:1px solid var(--line);border-radius:var(--radius-s);font-size:13px;cursor:pointer;transition:.15s}
+.ck-review:hover{background:var(--mint-2);border-color:var(--teal)}
+.ck-review b{color:var(--teal-dark)}
+.ck-review .ck-rv-ok{margin-left:auto;color:var(--green);font-weight:700}
+.ck-review .ck-rv-go{margin-left:auto;color:var(--teal);font-weight:600;font-size:12.5px}
 
 .toast{position:fixed;left:50%;top:18px;transform:translateX(-50%);background:rgba(31,42,42,.92);color:#fff;border-radius:999px;padding:9px 20px;font-size:13.5px;z-index:99;box-shadow:0 8px 24px rgba(0,0,0,.25);transition:.2s}
 .loader-sm{display:inline-block;width:13px;height:13px;border:2px solid var(--mint);border-top-color:var(--teal);border-radius:50%;animation:spin .7s linear infinite;vertical-align:-2px;margin-right:6px}

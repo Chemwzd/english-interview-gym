@@ -122,6 +122,7 @@ def favorite_add(payload: dict):
                 "type": payload.get("type", "word"),
                 "text": (payload.get("text") or "")[:800],
                 "note": (payload.get("note") or "")[:400],
+                "ipa": (payload.get("ipa") or "")[:80],
                 "session": payload.get("session", ""),
             }
         )
@@ -130,9 +131,34 @@ def favorite_add(payload: dict):
         raise HTTPException(500, str(e))
 
 
+@app.post("/api/favorite/delete")
+def favorite_delete(payload: dict):
+    try:
+        store.delete_favorite((payload.get("text") or "")[:800], payload.get("kind") or "word")
+        return {"ok": True}
+    except Exception as e:  # noqa: BLE001
+        raise HTTPException(500, str(e))
+
+
 @app.get("/api/favorites")
 def favorites_list():
     return store.list_favorites()
+
+
+@app.get("/api/review")
+def review_get():
+    try:
+        return store.review_today()
+    except Exception as e:  # noqa: BLE001
+        raise HTTPException(500, str(e))
+
+
+@app.post("/api/review/answer")
+def review_answer(payload: dict):
+    try:
+        return store.append_review_answer(payload.get("word") or "", bool(payload.get("ok")))
+    except Exception as e:  # noqa: BLE001
+        raise HTTPException(500, str(e))
 
 
 @app.get("/api/stats")

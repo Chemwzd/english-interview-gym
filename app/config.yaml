@@ -42,6 +42,11 @@ tts:
 tools:
   ffmpeg: ffmpeg            # ffmpeg 可执行文件；不在 PATH 时改为绝对路径
 
+review:                     # 收藏夹「今日复习」（每天按比例随机温故）
+  ratio: 0.3                # 每日复习词数 = 收藏单词总量 × 该比例（0.05–1.0）
+  min_per_day: 5            # 每日最少复习词数
+  max_per_day: 30           # 每日最多复习词数
+
 session:
   max_answer_seconds: 120   # 单次作答上限（秒）
   followup_max: 1           # 每个主问题最多几个追问

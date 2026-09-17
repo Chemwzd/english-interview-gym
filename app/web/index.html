@@ -132,11 +132,23 @@
   </div>
 </div>
 
-<!-- ============ 收藏夹弹层 ============ -->
+<!-- ============ 收藏夹弹层（词库 + 今日复习） ============ -->
 <div id="favOverlay" class="overlay hidden">
-  <div class="modal">
+  <div class="modal fav-modal">
     <div class="modal-head"><b>⭐ 收藏夹</b><button class="icon-btn" id="favClose">×</button></div>
-    <div class="fav-list" id="favList"></div>
+    <div class="fav-tabs">
+      <button class="fav-tab active" id="favTabLib" data-tab="lib">📚 词库</button>
+      <button class="fav-tab" id="favTabRev" data-tab="review">🔁 今日复习<span class="rev-badge hidden" id="revBadge">0</span></button>
+    </div>
+    <div class="fav-pane" id="favPaneLib">
+      <div class="fav-toolbar">
+        <span class="fv-count" id="favCount"></span>
+        <button class="mini-btn" id="favSortBtn" title="切换排序方式">排序：最新</button>
+      </div>
+      <div class="fav-list" id="favList"></div>
+      <div class="fav-pager" id="favPager"></div>
+    </div>
+    <div class="fav-pane hidden" id="favPaneRev"></div>
   </div>
 </div>
 

@@ -36,6 +36,7 @@
   - [Instant feedback &amp; scoring](#instant-feedback--scoring)
   - [Session review &amp; errorbook](#session-review--errorbook)
   - [Streaks &amp; progress](#streaks--progress)
+  - [Favourites &amp; daily review](#favourites--daily-review)
   - [Question card wall](#question-card-wall)
   - [Resume import](#resume-import)
 - [Configuration](#configuration)
@@ -65,7 +66,8 @@ Every session feeds your streaks and stats; every question keeps a history, so y
 | 🔍 Click-to-lookup | IPA · contextual meaning · examples · pronunciation · favourites | Any word, anywhere |
 | ✍️ Instant feedback | Correction / Upgrade / Revision + 1–10 score | Automatic after each answer |
 | 📋 Review report | Five-dimension scoring + next-focus + errorbook | Top-right "Review" |
-| 🔥 Streaks & progress | Streak days · daily goal ring · 14-day calendar | Home check-in panel |
+| 🔥 Streaks & progress | Streak days · daily goal ring · review progress · 14-day calendar | Home check-in panel |
+| ⭐ Favourites & daily review | Paged word library (sort / delete) + ratio-based daily recall | Home → "⭐ Favourites" |
 | 🗂 Question card wall | 82 cards: status / best score / trend / per-question history | Home → "Choose a question set" |
 | 📄 Resume import | Unlocks personalized answers grounded in your real experience | "📄 My resume" |
 
@@ -181,7 +183,7 @@ To switch models, edit `app/config.yaml`: `llm.model` / `asr.model` / `tts.cloud
 
 **What it does**: tap **any English word** in the conversation, sample answers, feedback cards or review reports and get IPA, part of speech, a **context-aware** meaning, an example sentence and pronunciation; one click saves it to your vocabulary. The same word gets different glosses in different contexts.
 
-**How to use**: click a word → read the card → 🔊 hear it → ⭐ save it. Your saved words live in the "⭐ Favourites" list.
+**How to use**: click a word → read the card → 🔊 hear it → ⭐ save it. Saved words go to "⭐ Favourites" where they can be reviewed daily and managed.
 
 **How to configure**: none needed; lookups are cached in `data/gloss_cache.json`, so repeat lookups are instant.
 
@@ -214,6 +216,14 @@ Plus a 1–10 overall score. In read-aloud mode you also get a **reading accurac
 **How to use**: the check-in panel on the home page updates automatically; every finished session counts toward today.
 
 **How to configure**: change `app/config.yaml` → `session.daily_goal_minutes` (default 20).
+
+### Favourites &amp; daily review
+
+**What it does**: saved words live in a dictionary-style library — 8 entries a page with paging, a "Newest / A–Z" sort toggle and two-step delete. The "🔁 Daily review" tab draws a batch of words every day at a configurable ratio, prioritising words never reviewed, failed last time, or long unseen. Recall first, then reveal the meaning, then mark "😵 missed / 😎 got it"; missed words come back for a second pass in the same session and are scheduled first for tomorrow. Progress feeds the check-in panel's "Today's review x/y" line.
+
+**How to use**: home → "⭐ Favourites" → "📚 Library" to browse / sort / delete / look up words; "🔁 Daily review" → Start → recall → reveal → mark.
+
+**How to configure**: `app/config.yaml` → `review.ratio` (daily share of your saved words, default 0.3), `review.min_per_day` (default 5), `review.max_per_day` (default 30).
 
 ### Question card wall
 
@@ -251,7 +261,9 @@ Plus a 1–10 overall score. In read-aloud mode you also get a **reading accurac
 | `asr.endpoint` / `tts.endpoint` | empty | Cloud speech endpoints; when empty, local mode is used |
 | `tts.driver` | `cloud` | `cloud` / `macos_say` (offline fallback) |
 | `tts.voices` | see file | One voice per persona |
-| `session.daily_goal_minutes` | `20` | Daily goal (minutes) for the check-in ring |
+| `review.ratio` | `0.3` | Daily review share (= saved words × this ratio) |
+| `review.min_per_day` / `review.max_per_day` | `5` / `30` | Daily review floor / ceiling |
+| `session.daily_goal_minutes` | `20` | Daily goal (minutes), drives the check-in ring |
 | `session.max_answer_seconds` | `120` | Max length of one answer |
 | `server.port` | `8765` | Server port |
 | `tools.ffmpeg` | `ffmpeg` | Path to the ffmpeg binary |
@@ -264,6 +276,8 @@ Plus a 1–10 overall score. In read-aloud mode you also get a **reading accurac
 | `data/reports/` | Review reports |
 | `data/errorbook.jsonl` | Errorbook |
 | `data/favorites.jsonl` | Saved words &amp; sentences |
+| `data/reviews.jsonl` | Word review records (daily recall answers) |
+| `data/review_decks.json` | Daily review plan cache (fixed per day) |
 | `data/gloss_cache.json` | Click-to-lookup cache |
 | `data/audio/` | Recordings |
 

@@ -187,6 +187,7 @@ async function reloadHome() {
   $("favOpenBtn2").textContent = favN ? `⭐ 收藏夹（${favN}）` : "⭐ 收藏夹";
   renderCheckin(stats);
   maybeCelebrate(stats);
+  revBadgeFrom(stats.review);
   renderTutors();
   renderSets();
   renderRecent(sessions);
@@ -218,6 +219,11 @@ function renderCheckin(st) {
     ? (today.minutes >= goal ? "今天已打卡 · 目标达成 🎉" : `今天已打卡 · 还差 ${Math.max(0, goal - today.minutes).toFixed(0)} 分钟达标`)
     : "今天还没开口，练一局保持连胜";
   const minutesLabel = today.minutes >= 100 ? String(Math.round(today.minutes)) : (today.minutes || 0).toFixed(1).replace(/\.0$/, "");
+  const rv = st.review || null;
+  const rvLine = rv && rv.goal > 0 ? `<div class="ck-review" id="ckReview" title="点我去复习（按比例随机温故）">
+      <span>🔁 今日复习</span><b>${rv.answered}</b><span>/</span><b>${rv.goal}</b><span>词</span>
+      ${rv.done ? `<span class="ck-rv-ok">✓ 完成</span>` : `<span class="ck-rv-go">去复习 →</span>`}
+    </div>` : "";
   $("statsStrip").innerHTML = `
     <div class="ck-panel">
       <div class="ck-top">
@@ -238,7 +244,7 @@ function renderCheckin(st) {
           <span class="txt">${minutesLabel}<small>/ ${goal} 分钟</small></span>
         </div>
       </div>
-      <div class="ck-days">${cells}</div>
+      <div class="ck-days">${cells}</div>${rvLine}
       <div class="ck-cards">
         <div class="ck-card"><b data-count="${st.total_sessions}">0</b><span>场训练</span></div>
         <div class="ck-card"><b data-count="${st.total_answers}">0</b><span>题作答</span></div>
@@ -262,6 +268,8 @@ function renderCheckin(st) {
     const r = wrap.getBoundingClientRect();
     burstConfetti(16, r.left + r.width / 2, r.top + r.height / 2);
   });
+  const rvEl = $("ckReview");
+  if (rvEl) rvEl.addEventListener("click", () => openFavorites("review"));
 }
 function renderTutors() {
   $("tutorGrid").innerHTML = S.personas.map((p) => {
@@ -316,8 +324,8 @@ function syncStart() {
 }
 $("startBtn").addEventListener("click", () => startSession());
 $("refreshStatsBtn").addEventListener("click", reloadHome);
-$("favOpenBtn").addEventListener("click", openFavorites);
-$("favOpenBtn2").addEventListener("click", openFavorites);
+$("favOpenBtn").addEventListener("click", () => openFavorites());
+$("favOpenBtn2").addEventListener("click", () => openFavorites());
 
 /* ---------------- 我的简历（本地保存，导入后示范答案出现「定制版」） ---------------- */
 async function refreshProfileStat() {
@@ -821,8 +829,9 @@ async function openGloss(word, context) {
       if (b.dataset.g === "play") speak(word, S.personaKey || undefined, b);
       if (b.dataset.g === "fav") {
         try {
-          await api("/api/favorite", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: "word", text: word, note: g.zh || "", session: S.sid || "" }) });
+          await api("/api/favorite", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: "word", text: word, note: g.zh || "", ipa: g.ipa || "", session: S.sid || "" }) });
           toast("已收藏 ⭐");
+          reloadHome();
         } catch (e) { toast("收藏失败：" + e.message); }
       }
     }));
@@ -833,27 +842,222 @@ async function openGloss(word, context) {
 $("glossClose").addEventListener("click", () => $("glossOverlay").classList.add("hidden"));
 $("glossOverlay").addEventListener("click", (e) => { if (e.target === $("glossOverlay")) $("glossOverlay").classList.add("hidden"); });
 
-/* ---------------- 收藏夹 ---------------- */
-async function openFavorites() {
+/* ---------------- 收藏夹：词库（字典式分页 + 删除） + 今日复习 ---------------- */
+const FAV = { all: [], page: 1, per: 8, sort: localStorage.getItem("et_fav_sort") || "new", slice: [] };
+const REV = { data: null, stats: null, running: false, queue: [], lose: [], pass: 1, revealed: false };
+
+let favTab = "lib";
+async function openFavorites(tab) {
   $("favOverlay").classList.remove("hidden");
+  switchFavTab(typeof tab === "string" ? tab : favTab);
+}
+function switchFavTab(tab) {
+  favTab = tab;
+  $("favTabLib").classList.toggle("active", tab === "lib");
+  $("favTabRev").classList.toggle("active", tab === "review");
+  $("favPaneLib").classList.toggle("hidden", tab !== "lib");
+  $("favPaneRev").classList.toggle("hidden", tab !== "review");
+  if (tab === "lib") loadFavLib(); else loadReview();
+}
+
+/* —— 词库（字典式：分页 / 排序 / 删除 / 点击查词） —— */
+async function loadFavLib() {
   $("favList").innerHTML = `<div class="empty"><span class="loader-sm"></span>加载中…</div>`;
   try {
-    const favs = await api("/api/favorites");
-    if (!favs.length) { $("favList").innerHTML = `<div class="empty">还没有收藏。练习中点单词或收藏 Revision 句子吧 ⭐</div>`; return; }
-    $("favList").innerHTML = favs.map((f) => {
-      const d = f.ts ? new Date(f.ts * 1000) : null;
-      const t = d ? `${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}` : "";
-      return `<div class="item">
-        <div data-ctx="${esc(f.text || "")}">${wordsHTML(f.text || "")}</div>
-        <div class="meta"><span class="tag">${f.type === "word" ? "生词" : f.type === "revision" ? "修订句" : esc(f.type)}</span>${f.note ? `<span>${esc(f.note)}</span>` : ""}<span style="margin-left:auto">${t}</span>
-        ${/[A-Za-z]/.test(f.text || "") ? `<button class="mini-btn" data-say="${esc(f.text || "")}" style="padding:2px 9px">🔊</button>` : ""}</div>
-      </div>`;
-    }).join("");
-    $("favList").querySelectorAll("[data-say]").forEach((b) => b.addEventListener("click", () => speak(b.dataset.say, S.personaKey || undefined, b)));
+    FAV.all = await api("/api/favorites");
+    FAV.page = 1;
+    renderFavLib();
   } catch (e) { $("favList").innerHTML = `<div class="empty">加载失败：${esc(e.message)}</div>`; }
 }
+function favSorted() {
+  const arr = FAV.all.slice();
+  if (FAV.sort === "new") arr.sort((a, b) => (b.ts || 0) - (a.ts || 0));
+  else arr.sort((a, b) => String(a.text || "").toLowerCase().localeCompare(String(b.text || "").toLowerCase(), "en"));
+  return arr;
+}
+function renderFavLib() {
+  const arr = favSorted();
+  const pages = Math.max(1, Math.ceil(arr.length / FAV.per));
+  FAV.page = Math.min(Math.max(1, FAV.page), pages);
+  FAV.slice = arr.slice((FAV.page - 1) * FAV.per, FAV.page * FAV.per);
+  $("favCount").textContent = arr.length ? `共 ${arr.length} 条 · 第 ${FAV.page} / ${pages} 页` : "";
+  $("favSortBtn").textContent = FAV.sort === "new" ? "排序：最新" : "排序：A–Z";
+  if (!arr.length) {
+    $("favList").innerHTML = `<div class="empty">还没有收藏。练习中点单词或收藏 Revision 句子吧 ⭐</div>`;
+    $("favPager").innerHTML = "";
+    return;
+  }
+  $("favList").innerHTML = FAV.slice.map((f, i) => {
+    const d = f.ts ? new Date(f.ts * 1000) : null;
+    const t = d ? `${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}` : "";
+    const isWord = (f.type || "word") === "word";
+    return `<div class="fv-row">
+      <div class="fv-top">
+        <span class="fv-word ${isWord ? "" : "rev"}" data-ctx="${esc(f.text || "")}">${wordsHTML(f.text || "")}</span>
+        ${f.ipa ? `<span class="fv-ipa">/${esc(f.ipa)}/</span>` : ""}
+        ${isWord ? "" : `<span class="tag fu">修订句</span>`}
+        <span class="fv-right">
+          ${/[A-Za-z]/.test(f.text || "") ? `<button class="mini-btn" data-say="${esc(f.text || "")}" title="朗读">🔊</button>` : ""}
+          <span class="fv-date">${t}</span>
+          <button class="fv-del" data-del="${i}" title="删除">✕</button>
+        </span>
+      </div>
+      ${f.note ? `<div class="fv-note" data-note="${i}" title="点击展开/收起">${esc(f.note)}</div>` : ""}
+    </div>`;
+  }).join("");
+  $("favPager").innerHTML = pages > 1 ? `
+    <button class="mini-btn" id="favPrev" ${FAV.page <= 1 ? "disabled" : ""}>‹ 上一页</button>
+    <span>${FAV.page} / ${pages}</span>
+    <button class="mini-btn" id="favNext" ${FAV.page >= pages ? "disabled" : ""}>下一页 ›</button>` : "";
+  const prev = $("favPrev"); if (prev) prev.addEventListener("click", () => { FAV.page--; renderFavLib(); });
+  const next = $("favNext"); if (next) next.addEventListener("click", () => { FAV.page++; renderFavLib(); });
+  $("favList").querySelectorAll("[data-say]").forEach((b) => b.addEventListener("click", () => speak(b.dataset.say, S.personaKey || undefined, b)));
+  $("favList").querySelectorAll("[data-note]").forEach((n) => n.addEventListener("click", () => n.classList.toggle("exp")));
+  $("favList").querySelectorAll("[data-del]").forEach((b) => b.addEventListener("click", () => onFavDelete(b)));
+}
+async function onFavDelete(btn) {
+  const f = FAV.slice[parseInt(btn.dataset.del, 10)];
+  if (!f) return;
+  if (!btn.classList.contains("confirm")) {          // 两步确认：✕ → 确认删除？
+    btn.classList.add("confirm");
+    btn.textContent = "确认删除？";
+    btn.dataset.timer = setTimeout(() => { btn.classList.remove("confirm"); btn.textContent = "✕"; }, 2600);
+    return;
+  }
+  clearTimeout(btn.dataset.timer);
+  try {
+    await api("/api/favorite/delete", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text: f.text || "", kind: f.type || "word" }) });
+    FAV.all = FAV.all.filter((x) => !((x.text || "") === (f.text || "") && (x.type || "word") === (f.type || "word")));
+    REV.data = null;
+    toast(`已删除「${String(f.text || "").slice(0, 24)}」`);
+    renderFavLib();
+    reloadHome();
+  } catch (e) { toast("删除失败：" + e.message); }
+}
+$("favSortBtn").addEventListener("click", () => {
+  FAV.sort = FAV.sort === "new" ? "alpha" : "new";
+  localStorage.setItem("et_fav_sort", FAV.sort);
+  renderFavLib();
+});
+$("favTabLib").addEventListener("click", () => switchFavTab("lib"));
+$("favTabRev").addEventListener("click", () => switchFavTab("review"));
 $("favClose").addEventListener("click", () => $("favOverlay").classList.add("hidden"));
 $("favOverlay").addEventListener("click", (e) => { if (e.target === $("favOverlay")) $("favOverlay").classList.add("hidden"); });
+
+/* —— 今日复习（按比例随机温故） —— */
+function revBadgeFrom(st) {
+  REV.stats = st || null;
+  refreshRevBadge();
+}
+function refreshRevBadge() {
+  const b = $("revBadge");
+  const src = REV.data ? { remaining: REV.data.remaining, done: REV.data.done, goal: REV.data.goal } : REV.stats;
+  if (!src || !src.goal) { b.classList.add("hidden"); return; }
+  b.textContent = src.done ? "✓" : String(src.remaining);
+  b.classList.toggle("ok", !!src.done);
+  b.classList.remove("hidden");
+}
+async function loadReview() {
+  $("favPaneRev").innerHTML = `<div class="empty"><span class="loader-sm"></span>加载复习计划…</div>`;
+  try {
+    REV.data = await api("/api/review");
+    resetRevRun();
+    refreshRevBadge();
+    renderRevPane();
+  } catch (e) { $("favPaneRev").innerHTML = `<div class="empty">加载失败：${esc(e.message)}</div>`; }
+}
+function resetRevRun() { REV.running = false; REV.queue = []; REV.lose = []; REV.pass = 1; REV.revealed = false; }
+function revWeek(d) {
+  const rec = d.recent || [];
+  if (!rec.length) return "";
+  return `<div class="rev-week"><span>最近 7 天</span>${rec.map((x) => `<span class="rd ${x.count ? "on" : ""}" title="${x.date} · 复习 ${x.count} 词">${x.count || ""}</span>`).join("")}</div>`;
+}
+function renderRevPane() {
+  const d = REV.data || {};
+  const deck = d.deck || [];
+  if (!deck.length) {
+    $("favPaneRev").innerHTML = `<div class="rev-wrap"><div class="rev-ico">🌱</div><h3>还没有待复习的单词</h3><p class="rev-goal">在练习中点单词 →「⭐ 收藏生词」，第二天起就会按比例随机进入复习计划。</p></div>`;
+    return;
+  }
+  if (REV.running) { renderRevCard(); return; }
+  if (d.done) {
+    const weak = deck.filter((x) => x.last_ok === false);
+    $("favPaneRev").innerHTML = `<div class="rev-wrap">
+      <div class="rev-done-ico">🎉</div>
+      <h3>今日复习完成！</h3>
+      <p class="rev-goal">复习 <b>${d.answered}</b> 词 · 记住 <b>${d.correct}</b>${weak.length ? ` · 待加强 <b class="rev-weak-n">${weak.length}</b>` : " · 全对好棒"}</p>
+      ${weak.length ? `<div class="rev-weak">没记住的将优先出现在明天：${weak.map((x) => `<span class="chip">${esc(x.text)}</span>`).join("")}</div>` : ""}
+      ${revWeek(d)}
+      <p class="rev-hint" style="margin-top:14px">明天见 👋</p>
+    </div>`;
+    return;
+  }
+  $("favPaneRev").innerHTML = `<div class="rev-wrap">
+    <div class="rev-ico">🔁</div>
+    <h3>今日复习</h3>
+    <p class="rev-goal">目标 <b>${d.goal}</b> 词（共收藏 ${d.pool} 词 × ${Math.round((d.ratio || 0.3) * 100)}% 随机抽取）<br>优先安排从未复习、上次没记住、久未复习的单词。</p>
+    ${d.answered ? `<p class="rev-partial">已复习 ${d.answered} / ${d.goal}，还剩 <b>${d.remaining}</b> 词</p>` : ""}
+    <button class="btn primary" id="revStartBtn">${d.answered ? "继续复习" : "开始复习"}（${d.remaining} 词）</button>
+    ${revWeek(d)}
+  </div>`;
+  $("revStartBtn").addEventListener("click", startRev);
+}
+function startRev() {
+  REV.queue = (REV.data.deck || []).filter((x) => !x.done).slice();
+  REV.running = true; REV.lose = []; REV.pass = 1; REV.revealed = false;
+  renderRevCard();
+}
+function renderRevCard() {
+  const item = REV.queue[0];
+  if (!item) return finRev();
+  const d = REV.data;
+  const pct = d.goal ? Math.round((d.answered / d.goal) * 100) : 0;
+  $("favPaneRev").innerHTML = `<div class="rev-wrap">
+    <div class="rev-prog"><div class="rev-bar"><i style="width:${pct}%"></i></div><span>${d.answered} / ${d.goal}</span></div>
+    ${REV.pass === 2 ? `<div class="rev-pass">第 2 轮 · 再试一次（${REV.queue.length} 词）</div>` : ""}
+    <div class="rev-card">
+      <div class="rev-word">${esc(item.text)}<button class="mini-btn" id="revSay" title="朗读">🔊</button></div>
+      ${item.ipa ? `<div class="rev-ipa">/${esc(item.ipa)}/</div>` : ""}
+      <div class="rev-badge-mini ${item.reviewed_before ? "" : "new"}">${item.reviewed_before ? `已复习 ${item.times} 次${item.prev_ok === false ? " · 上次没记住" : ""}` : "新词 · 第一次复习"}</div>
+      ${REV.revealed && item.note ? `<div class="rev-note">${esc(item.note)}</div>` : ""}
+      ${REV.revealed && !item.note ? `<div class="rev-note rev-nonote">（收藏时未记录释义）</div>` : ""}
+      ${REV.revealed ? "" : `<button class="btn primary small" id="revShow">显示释义</button>`}
+    </div>
+    ${REV.revealed
+      ? `<div class="rev-btns"><button class="btn ghost" id="revNo">😵 没记住</button><button class="btn primary" id="revYes">😎 记住了</button></div>`
+      : `<div class="rev-hint">先在心里回忆一遍，再点「显示释义」</div>`}
+  </div>`;
+  $("revSay").addEventListener("click", () => speak(item.text, S.personaKey || undefined, $("revSay")));
+  const show = $("revShow"); if (show) show.addEventListener("click", () => { REV.revealed = true; renderRevCard(); });
+  const yes = $("revYes"); if (yes) yes.addEventListener("click", () => revAnswer(item, true));
+  const no = $("revNo"); if (no) no.addEventListener("click", () => revAnswer(item, false));
+}
+async function revAnswer(item, ok) {
+  try {
+    const resp = await api("/api/review/answer", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ word: item.text, ok }) });
+    REV.data = resp;
+    REV.queue.shift();
+    if (!ok) REV.lose.push(item);
+    REV.revealed = false;
+    if (!REV.queue.length) {
+      if (REV.pass === 1 && REV.lose.length) {
+        REV.pass = 2; REV.queue = REV.lose.slice(); REV.lose = [];
+        toast(`还有 ${REV.queue.length} 个词，再巩固一轮`);
+        renderRevCard();
+        return;
+      }
+      return finRev();
+    }
+    renderRevCard();
+  } catch (e) { toast("记录失败：" + e.message); }
+}
+function finRev() {
+  REV.running = false;
+  refreshRevBadge();
+  renderRevPane();
+  reloadHome();
+  if (REV.data && REV.data.done) { toast("✅ 今日复习完成！"); setTimeout(() => burstConfetti(90), 120); }
+}
 
 /* ---------------- 复盘 ---------------- */
 $("endBtn").addEventListener("click", endSession);
