@@ -76,7 +76,7 @@
 ### 1. 克隆并安装
 
 ```bash
-git clone https://github.com/Chemwzd/english-interview-gym.git
+git clone https://github.com/KumquatYZ/english-interview-gym.git
 cd english-interview-gym
 python3 -m venv .venv            # 装了 uv 也可以：uv venv .venv --python 3.12
 .venv/bin/pip install -r app/requirements.txt

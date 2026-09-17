@@ -76,7 +76,7 @@ Every session feeds your streaks and stats; every question keeps a history, so y
 ### 1. Clone &amp; install
 
 ```bash
-git clone https://github.com/Chemwzd/english-interview-gym.git
+git clone https://github.com/KumquatYZ/english-interview-gym.git
 cd english-interview-gym
 python3 -m venv .venv            # or with uv: uv venv .venv --python 3.12
 .venv/bin/pip install -r app/requirements.txt
