@@ -171,6 +171,7 @@
     <div class="srow"><label>对话模型</label><input id="setModel" type="text" placeholder="例如 deepseek/deepseek-flash" autocomplete="off"></div>
     <details class="smore">
       <summary>语音识别 / 语音合成（进阶设置）</summary>
+      <p class="pdesc" style="margin:6px 0 0;color:var(--amber)">⚠️ 留空说明：macOS 会退回本地识别/朗读；<b>Windows 没有本地兜底——识别/合成端点必须填写</b>，否则录音后无法转写。</p>
       <div class="srow"><label>识别接口地址</label><input id="setAsrEp" type="text" placeholder="语音识别 endpoint（留空 = 不修改）" autocomplete="off"></div>
       <div class="srow"><label>识别模型名</label><input id="setAsrModel" type="text" autocomplete="off"></div>
       <div class="srow"><label>合成接口地址</label><input id="setTtsEp" type="text" placeholder="语音合成 endpoint（留空 = 不修改）" autocomplete="off"></div>

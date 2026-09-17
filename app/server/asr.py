@@ -112,22 +112,30 @@ def transcribe_local(wav: Path) -> dict:
 
 
 def transcribe(audio_path) -> dict:
-    """driver=auto：云端逐个模型尝试 → 本地兜底。"""
+    """driver=auto：云端逐个模型尝试 → 本地兜底（仅 macOS 提供）。"""
+    import sys
+
     driver = config.get("asr.driver", "auto")
     wav = to_wav(Path(audio_path))
     errors = []
     if driver in ("auto", "cloud"):
         models = [m for m in [config.get("asr.model")] + list(config.get("asr.fallback_models") or []) if m]
         if not models:
-            errors.append("cloud: 未配置 asr.model")
+            errors.append("云识别未配置模型（asr.model）")
         for m in models:
             try:
                 return transcribe_cloud(wav, model=m)
             except Exception as e:  # noqa: BLE001
-                errors.append(f"cloud/{m}: {e}")
+                errors.append(f"云识别失败/{m}: {e}")
     if driver in ("auto", "local"):
-        try:
-            return transcribe_local(wav)
-        except Exception as e:  # noqa: BLE001
-            errors.append(f"local: {e}")
-    raise ASRError(" | ".join(errors))
+        if sys.platform != "darwin":
+            errors.append("本地识别不可用：mlx-whisper 仅支持 macOS")
+        else:
+            try:
+                return transcribe_local(wav)
+            except Exception as e:  # noqa: BLE001
+                errors.append(f"local: {e}")
+    msg = " | ".join(errors)
+    if driver in ("auto", "cloud") and not config.get("asr.endpoint", ""):
+        msg += "。请在「⚙️ 设置 → 语音识别 / 语音合成（进阶设置）」填入识别接口地址与模型"
+    raise ASRError(msg)

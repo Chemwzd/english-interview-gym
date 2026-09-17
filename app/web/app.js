@@ -851,6 +851,8 @@ async function openSettings() {
     $("setKey").value = "";
     $("setKey").placeholder = s.api_key_set ? `已设置（${s.api_key_masked}）· 留空 = 不修改` : "粘贴你的 Key";
     $("settingsFile").textContent = "配置文件：" + (s.env_file || "");
+    const adv = document.querySelector("#settingsOverlay details.smore");
+    if (adv) adv.open = !s.asr_endpoint;   // 识别端点未配置 → 自动展开引导
     refreshMobile();
   } catch (e) { toast("读取设置失败：" + e.message); }
 }
