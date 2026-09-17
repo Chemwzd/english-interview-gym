@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/logo.png" width="110" alt="English Interview Gym — logo">
+  <img src="docs/icon.png" width="110" alt="English Interview Gym — logo">
 </p>
 
 <h1 align="center">English Interview Gym</h1>
