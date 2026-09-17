@@ -42,6 +42,7 @@
 - [Customize &amp; extend](#customize--extend)
 - [Project structure](#project-structure)
 - [Privacy](#privacy)
+- [Content sources & disclaimer](#content-sources--disclaimer)
 - [FAQ](#faq)
 - [License](#license)
 
@@ -315,6 +316,13 @@ english-interview-gym/
 - **No telemetry**: no analytics, no accounts;
 - **Zero personal data in the public repo**: `app/.env`, `materials/profile.md` and `data/` are gitignored and never shipped.
 
+## Content sources & disclaimer
+
+- **Sources**: the question banks (`materials/question-bank/`) are compiled from **public internet sources** (community interview write-ups, public question round-ups, public job postings and requirements). Wording was generalized during compilation; the per-question analysis and hints are written by this project;
+- **No claims**: this project claims no rights over the original sources and does not guarantee any correspondence to the actual question banks of any specific company;
+- **Usage**: the question text is for **personal study** only — please don't use it commercially. The code is open-sourced under MIT;
+- **Takedown**: if you believe any content in this repository (questions, illustrations, etc.) infringes your rights, please contact us via [Issues](../../issues) — we will verify and **take the relevant content down promptly**.
+
 ## FAQ
 
 | Symptom | Fix |
@@ -327,4 +335,4 @@ english-interview-gym/
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT — see [LICENSE](LICENSE). Content sources and usage terms: see [Content sources & disclaimer](#content-sources--disclaimer).
