@@ -771,7 +771,7 @@ function renderFeedback(r) {
   } else if (fb.language_point && fb.language_point.better) {
     body += `<div class="fb-actions"><button class="mini-btn" data-f="say">🔊 朗读修订句</button></div>`;
   }
-  body += `<div class="metrics-line">用时 ${m.duration_s || 0}s · ${m.wpm || 0} wpm · 填充词 ${m.fillers || 0} · 长停顿 ${m.long_pauses || 0} · 转写引擎 ${esc(r.asr_driver || "")}</div>`;
+  body += `<div class="metrics-line">用时 ${m.duration_s || 0}s · ${m.wpm || 0} wpm · 填充词 ${m.fillers || 0} · 长停顿 ${m.long_pauses || 0} · 转写引擎 ${esc({ cloud: "云端", local: "本地", tokenhub: "云端" }[r.asr_driver] || r.asr_driver || "")}</div>`;
 
   const node = document.createElement("div");
   node.className = "fb-card";

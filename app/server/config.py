@@ -46,8 +46,8 @@ def env(name, default=None):
     return os.environ.get(name) or _ENV.get(name) or default
 
 
-def tokenhub_key():
-    return env("TOKENHUB_API_KEY", "")
+def api_key():
+    return env("API_KEY", "")
 
 
 def data_dir() -> Path:

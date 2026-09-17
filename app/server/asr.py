@@ -1,10 +1,9 @@
-"""语音识别：TokenHub Hy-ASR（主）/ 本地 mlx-whisper（兜底）。
+"""语音识别：云端（可配置端点）/ 本地 mlx-whisper 兜底。
 
-TokenHub 接口：POST /v1/wand/asrproxy/sync_transcribe
+云端接口协议（POST {asr.endpoint}）：
   入参：{model, data(音频base64) | input_url, source, voice_encode_format}
   出参：output.{text, duration_ms, sentences:[{begin_ms,end_ms,text}], source}
-注意：TokenHub 语音模型需先在控制台开启"后付费"（或领取免费体验包），
-      否则会返回 402/401007；此时 auto 模式会自动退到本地模型。
+端点留空时自动使用本地模型（auto / local）。
 """
 import base64
 import shutil
@@ -46,12 +45,17 @@ def _wav_duration_ms(p: Path) -> int:
         return 0
 
 
-def transcribe_tokenhub(wav: Path, model: str = None) -> dict:
-    key = config.tokenhub_key()
-    model = model or config.get("asr.model", "hy-asr-3.0-preview")
+def transcribe_cloud(wav: Path, model: str = None) -> dict:
+    endpoint = config.get("asr.endpoint", "")
+    if not endpoint:
+        raise ASRError("未配置云端 ASR 接口地址（asr.endpoint）")
+    model = model or config.get("asr.model") or ""
+    if not model:
+        raise ASRError("未配置云端识别模型名（asr.model）")
+    key = config.api_key()
     b64 = base64.b64encode(wav.read_bytes()).decode()
     r = requests.post(
-        config.get("asr.endpoint"),
+        endpoint,
         headers={"Authorization": "Bearer " + key, "Content-Type": "application/json"},
         json={
             "model": model,
@@ -62,11 +66,11 @@ def transcribe_tokenhub(wav: Path, model: str = None) -> dict:
         timeout=config.get("asr.timeout_s", 180),
     )
     if r.status_code != 200:
-        raise ASRError(f"TokenHub ASR HTTP {r.status_code}: {r.text[:300]}")
+        raise ASRError(f"ASR HTTP {r.status_code}: {r.text[:300]}")
     j = r.json()
     out = j.get("output") or {}
     return {
-        "driver": "tokenhub",
+        "driver": "cloud",
         "text": (out.get("text") or "").strip(),
         "duration_ms": out.get("duration_ms") or _wav_duration_ms(wav),
         "sentences": out.get("sentences") or [],
@@ -108,17 +112,19 @@ def transcribe_local(wav: Path) -> dict:
 
 
 def transcribe(audio_path) -> dict:
-    """driver=auto：云端多引擎逐个尝试（hy → wand）→ 本地兜底。"""
+    """driver=auto：云端逐个模型尝试 → 本地兜底。"""
     driver = config.get("asr.driver", "auto")
     wav = to_wav(Path(audio_path))
     errors = []
-    if driver in ("auto", "tokenhub"):
-        models = [config.get("asr.model", "hy-asr-3.0-preview")] + list(config.get("asr.fallback_models") or [])
+    if driver in ("auto", "cloud"):
+        models = [m for m in [config.get("asr.model")] + list(config.get("asr.fallback_models") or []) if m]
+        if not models:
+            errors.append("cloud: 未配置 asr.model")
         for m in models:
             try:
-                return transcribe_tokenhub(wav, model=m)
+                return transcribe_cloud(wav, model=m)
             except Exception as e:  # noqa: BLE001
-                errors.append(f"tokenhub/{m}: {e}")
+                errors.append(f"cloud/{m}: {e}")
     if driver in ("auto", "local"):
         try:
             return transcribe_local(wav)

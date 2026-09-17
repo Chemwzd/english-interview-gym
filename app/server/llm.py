@@ -1,4 +1,4 @@
-"""TokenHub 大模型客户端（OpenAI 兼容）。"""
+"""大模型客户端（OpenAI 兼容）。"""
 import json
 
 import requests
@@ -51,9 +51,11 @@ def extract_json(s: str):
 
 class LLM:
     def __init__(self):
-        # 接口地址：环境变量 TOKENHUB_BASE_URL 优先，其次 config.yaml（便于开源用户自带网关）
-        self.base = (config.env("TOKENHUB_BASE_URL") or config.get("llm.base_url", "")).rstrip("/")
-        self.key = config.tokenhub_key()
+        # 接口地址：环境变量 API_BASE_URL 优先，其次 config.yaml（便于开源用户自带服务）
+        self.base = (config.env("API_BASE_URL") or config.get("llm.base_url", "")).rstrip("/")
+        self.key = config.api_key()
+        if not self.base:
+            raise LLMError("未配置接口地址：请在 app/.env 设置 API_BASE_URL，或在 app/config.yaml 设置 llm.base_url")
         self.models = [config.get("llm.model")] + list(config.get("llm.fallback_models") or [])
         self.timeout = config.get("llm.timeout_s", 120)
 

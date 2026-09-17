@@ -15,13 +15,13 @@
 ## 常见问题
 | 症状 | 处理 |
 |---|---|
-| 提交后报 402 / 401007 | TokenHub 语音模型需在控制台开启"后付费"；或把 config.yaml 里 asr.driver 设为 local |
+| 提交后报 402 / 401007 | 服务商侧语音模型未开通（常见为需开通"后付费"）；或把 config.yaml 里 asr.driver 设为 local |
 | ASR 提示 mlx-whisper 未安装 | `uv pip install --python .venv/bin/python mlx-whisper`（首次使用会下载模型） |
 | 麦克风不可用 | 确认用 http://127.0.0.1 打开；检查 系统设置→隐私与安全性→麦克风 |
 | 端口被占 | 改 `app/config.yaml` 的 server.port，并同步 run_server.sh 的 --port |
 | 想换考官音色 | `say -v '?'` 查看音色列表，改 config.yaml 的 tts.say_voice |
-| 想切 TokenHub 语音 | config.yaml：tts.driver 改 tokenhub；（ASR 已默认优先 tokenhub） |
-| 反馈把疑似 ASR 转写噪声当成语言错误 | 以录音为准；提示词已内含防噪指令；开启 TokenHub 转写（Hy-ASR）后质量更高 |
+| 想用云端语音 | config.yaml：填好 asr.endpoint / tts.endpoint 与对应模型名，asr.driver / tts.driver 用 cloud |
+| 反馈把疑似 ASR 转写噪声当成语言错误 | 以录音为准；提示词已内含防噪指令；开启云端转写后质量更高 |
 | 手机端使用（后期） | 用 `tailscale serve` 提供 HTTPS 域名后浏览器访问；http 内网 IP 无法调用麦克风 |
 
 ## 数据与备份

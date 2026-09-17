@@ -4,7 +4,7 @@ requests>=2.31
 PyYAML>=6.0
 python-multipart>=0.0.9
 
-# 可选：本地 ASR 兜底（Apple Silicon，TokenHub 语音未开通时的备胎）
+# 可选：本地 ASR 兜底（Apple Silicon）
 # 安装：uv pip install mlx-whisper   （或 pip install mlx-whisper）
 mlx-whisper>=0.4.0 ; sys_platform == "darwin" and platform_machine == "arm64"
 python-docx

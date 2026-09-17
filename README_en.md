@@ -70,7 +70,7 @@ Every session feeds your streaks and stats; every question keeps a history, so y
 
 ## Quick start
 
-**Requirements**: macOS (Apple Silicon recommended) + Python 3.12 + `ffmpeg` (`brew install ffmpeg`) + an API key (Tencent Cloud TokenHub, or any OpenAI-compatible gateway).
+**Requirements**: macOS (Apple Silicon recommended) + Python 3.12 + `ffmpeg` (`brew install ffmpeg`) + an API key (bring your own — any OpenAI-compatible service: official APIs or aggregator gateways).
 
 ### 1. Clone &amp; install
 
@@ -84,8 +84,8 @@ python3 -m venv .venv            # or with uv: uv venv .venv --python 3.12
 ### 2. Add your API key
 
 ```bash
-cp app/.env.example app/.env     # then set TOKENHUB_API_KEY=your-key
-                                 # get one at https://console.cloud.tencent.com/tokenhub
+cp app/.env.example app/.env     # then set API_KEY=your-key and API_BASE_URL=your-service-url
+                                 # (the base URL can also live in app/config.yaml -> llm.base_url)
                                  # (one key covers the LLM + speech recognition + speech synthesis)
 ```
 
@@ -122,15 +122,15 @@ Open http://127.0.0.1:8765 (allow microphone access in your browser on first use
 
 ## Model requirements & recommendations
 
-A full session uses **three kinds of models** — not just a chat model. All three are called with the **single API key** you put in `app/.env` (Tencent Cloud TokenHub by default; the chat model can also point at any OpenAI-compatible gateway):
+A full session uses **three kinds of models** — not just a chat model. All three are called with the **single API key** you bring in `app/.env` (any OpenAI-compatible service: official APIs or aggregator gateways):
 
-| Role | Where it's used | Recommended (TokenHub model id) | Reference price (Tencent Cloud, CNY, pay-as-you-go) |
+| Role | Where it's used | Recommended models (examples) | Reference price (CNY, pay-as-you-go) |
 |---|---|---|---|
 | 💬 Chat model | Follow-ups, sample answers, corrections & scoring, review reports, word glosses | **DeepSeek-V4.1-Flash** (`deepseek/deepseek-flash`, default); alternative **GLM-5.3-Flash** (`glm-5.3-flash`) | DeepSeek: ¥1–2 in / ¥4–8 out; GLM: ¥0.8 / ¥2.8 (per million tokens, off-peak/peak) |
 | 🎙️ Speech recognition (ASR) | Transcribing your spoken answers | **Hy-ASR-3.0-Preview** (`hy-asr-3.0-preview`, default); alternative `wand-asr-v1` | Hy-ASR: ¥0.00022/s (~¥0.79/h); WAND: ¥0.0005/s |
 | 🔊 Speech synthesis (TTS) | The interviewer's voice | **MiniMax-Speech-2.8-Turbo** (`minimax-speech-2.8-turbo`, default, 4 English voices included); `-hd` for higher quality | Turbo: ¥2 / 10k characters; HD: ¥3.5 / 10k characters |
 
-**Cost estimate (20 min/day, everything in the cloud)**: chat ≈ ¥0.1/day + ASR ≈ ¥0.26/day + TTS ≈ ¥0.2–0.4/day ≈ **¥0.6–0.8/day, about ¥20/month** (official pay-as-you-go rates; your actual bill may vary. Evening practice falls in DeepSeek's off-peak window, where prices are halved).
+**Cost estimate (20 min/day, everything in the cloud)**: chat ≈ ¥0.1/day + ASR ≈ ¥0.26/day + TTS ≈ ¥0.2–0.4/day ≈ **¥0.6–0.8/day, about ¥20/month** (pay-as-you-go; your actual bill depends on your provider. Evening practice usually falls into off-peak windows, where prices are lower).
 
 **Both speech legs can run for free locally (macOS)**:
 
@@ -141,11 +141,11 @@ With both enabled, the only cost left is the chat model: **≈ ¥0.1/day**.
 
 **Notes**:
 
-- Speech models need "postpaid billing" enabled in the TokenHub console: if the first call returns `402 / 401007`, fix it once per the [FAQ](#faq);
-- Peak/off-peak pricing: DeepSeek is double-priced on weekdays 9:00–12:00 and 14:00–18:00 (Beijing time); all other hours and the whole weekend are off-peak;
+- If a speech call returns `402 / 401007`: your provider likely hasn't enabled the speech models (commonly a "postpaid billing" toggle) — follow its console prompt once;
+- Pricing is set by your provider (DeepSeek models commonly charge 2x during weekday 9:00–12:00 and 14:00–18:00 Beijing time; other hours are off-peak);
 - The default fallback chain includes `kimi-k3` (pricier; only used if the primary model fails) — adjust `llm.fallback_models` if you care about cost.
 
-To switch models, edit `app/config.yaml`: `llm.model` / `asr.model` / `tts.tokenhub_model` (all support fallback chains).
+To switch models, edit `app/config.yaml`: `llm.model` / `asr.model` / `tts.cloud_model` (all support fallback chains).
 
 ## Feature guide
 
@@ -234,17 +234,19 @@ Plus a 1–10 overall score. In read-aloud mode you also get a **reading accurac
 
 | Variable | Required | Purpose |
 |---|---|---|
-| `TOKENHUB_API_KEY` | ✅ | One key for LLM + speech recognition + speech synthesis (Tencent Cloud TokenHub or a compatible gateway) |
-| `TOKENHUB_BASE_URL` | – | Override the API base URL (point it at any OpenAI-compatible gateway) |
+| `API_KEY` | ✅ | One key for LLM + speech recognition + speech synthesis (bring your own) |
+| `API_BASE_URL` | – | Override the API base URL (your OpenAI-compatible service) |
 
 ### App settings (`app/config.yaml`)
 
 | Setting | Default | Notes |
 |---|---|---|
+| `llm.base_url` | empty | Your OpenAI-compatible base URL (or use `API_BASE_URL`) |
 | `llm.model` | `deepseek/deepseek-flash` | Main chat model |
 | `llm.fallback_models` | see file | Fallback chain if the main model fails |
-| `asr.driver` | `auto` | `auto` / `tokenhub` (cloud ASR) / `local` (mlx-whisper, macOS only) |
-| `tts.driver` | `tokenhub` | `tokenhub` / `macos_say` (offline fallback) |
+| `asr.driver` | `auto` | `auto` / `cloud` (cloud ASR) / `local` (mlx-whisper, macOS only) |
+| `asr.endpoint` / `tts.endpoint` | empty | Cloud speech endpoints; when empty, local mode is used |
+| `tts.driver` | `cloud` | `cloud` / `macos_say` (offline fallback) |
 | `tts.voices` | see file | One voice per persona |
 | `session.daily_goal_minutes` | `20` | Daily goal (minutes) for the check-in ring |
 | `session.max_answer_seconds` | `120` | Max length of one answer |
@@ -317,11 +319,11 @@ english-interview-gym/
 
 | Symptom | Fix |
 |---|---|
-| `402 / 401007` on submit | Enable "postpaid billing" in the console for the speech models; or set `asr.driver: local` |
+| `402 / 401007` on submit | Your provider hasn't enabled the speech models (usually a "postpaid billing" toggle); or set `asr.driver: local` |
 | Microphone unavailable | Open via `http://127.0.0.1` (not a LAN IP); allow microphone permission in the browser |
 | Port in use | Change `server.port` in `app/config.yaml` and the `--port` flag in `scripts/run_server.sh` |
-| Different voices / LLM | Voices: `tts.voices` · Model: `TOKENHUB_BASE_URL` + `llm.model` for any OpenAI-compatible model |
-| Don't want to use Tencent Cloud | Point the LLM at any OpenAI-compatible gateway (`TOKENHUB_BASE_URL` + `llm.model`); for speech use local mode: `asr.driver: local` + `tts.driver: macos_say` (macOS only) |
+| Different voices / LLM | Voices: `tts.voices` · Model: `API_BASE_URL` + `llm.model` for any OpenAI-compatible service |
+| Want it (mostly) free / fully local | Local speech: `asr.driver: local` + `tts.driver: macos_say` (macOS only, free); the chat model still needs an OpenAI-compatible service (cloud or a local inference server) |
 
 ## License
 

@@ -1,8 +1,8 @@
-"""文本转语音：macOS say（默认，零成本）/ TokenHub MiniMax（控制台开通后付费后可用）。
+"""文本转语音：云端 TTS（可配置端点）/ macOS say 兜底（零成本）。
 
-TokenHub 接口：POST /v1/wand/minimax-tts/sync_tts
+云端接口协议（POST {tts.endpoint}）：
   入参：{model, text, voice_setting:{voice_id,...}, audio_setting:{format:'mp3'}, output_format:'hex'}
-  出参：data.audio（hex 音频；若 output_format=url 则为 24h 有效链接）
+  出参：data.audio（hex 音频；若 output_format=url 则为临时链接）
 """
 import hashlib
 import subprocess
@@ -42,16 +42,19 @@ def synth_say(text: str) -> bytes:
     return mp3.read_bytes()
 
 
-def synth_tokenhub(text: str, voice_id: str = None) -> bytes:
-    key = config.tokenhub_key()
+def synth_cloud(text: str, voice_id: str = None) -> bytes:
+    endpoint = config.get("tts.endpoint", "")
+    if not endpoint:
+        raise TTSError("未配置云端 TTS 接口地址（tts.endpoint）")
+    key = config.api_key()
     r = requests.post(
-        "https://tokenhub.tencentmaas.com/v1/wand/minimax-tts/sync_tts",
+        endpoint,
         headers={"Authorization": "Bearer " + key, "Content-Type": "application/json"},
         json={
-            "model": config.get("tts.tokenhub_model", "minimax-speech-2.8-turbo"),
+            "model": config.get("tts.cloud_model", ""),
             "text": text,
             "voice_setting": {
-                "voice_id": voice_id or config.get("tts.tokenhub_voice_id", "English_Graceful_Lady"),
+                "voice_id": voice_id or config.get("tts.cloud_voice_id", ""),
                 "speed": 1.0,
             },
             "audio_setting": {"format": "mp3", "sample_rate": 32000, "bitrate": 128000, "channel": 1},
@@ -60,7 +63,7 @@ def synth_tokenhub(text: str, voice_id: str = None) -> bytes:
         timeout=120,
     )
     if r.status_code != 200:
-        raise TTSError(f"TokenHub TTS HTTP {r.status_code}: {r.text[:300]}")
+        raise TTSError(f"TTS HTTP {r.status_code}: {r.text[:300]}")
     j = r.json()
     d = j.get("data") or j
     audio = d.get("audio") or ""
@@ -79,13 +82,13 @@ def synth(text: str, persona: str = None) -> bytes:
     voice_id = None
     if persona:
         voice_id = (config.get("tts.voices") or {}).get(persona)
-    tag = f"{driver}|{voice_id or config.get('tts.tokenhub_voice_id', '') or config.get('tts.say_voice', '')}"
+    tag = f"{driver}|{voice_id or config.get('tts.cloud_voice_id', '') or config.get('tts.say_voice', '')}"
     cache = _cache_path(text, tag)
     if config.get("tts.cache", True) and cache.exists():
         return cache.read_bytes()
-    if driver == "tokenhub":
+    if driver == "cloud":
         try:
-            data = synth_tokenhub(text, voice_id=voice_id)
+            data = synth_cloud(text, voice_id=voice_id)
         except Exception:
             data = synth_say(text)  # 云端异常时保证可用
     else:

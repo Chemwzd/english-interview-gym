@@ -28,7 +28,7 @@ def health():
         "asr_driver": config.get("asr.driver"),
         "tts_driver": config.get("tts.driver"),
         "max_answer_seconds": config.get("session.max_answer_seconds", 120),
-        "tokenhub_key_set": bool(config.tokenhub_key()),
+        "api_key_set": bool(config.api_key()),
     }
 
 

@@ -4,9 +4,10 @@ server:
   port: 8765
 
 llm:
-  # TokenHub 大模型网关（OpenAI 兼容）
-  base_url: https://tokenhub.tencentmaas.com/v1
-  model: deepseek/deepseek-flash        # 2026-09 实测可用
+  # 【必填】你的 OpenAI 兼容接口地址（也可用环境变量 API_BASE_URL 覆盖）
+  # 例如：https://api.deepseek.com/v1 、https://open.bigmodel.cn/api/paas/v4
+  base_url: ""
+  model: deepseek/deepseek-flash        # 按服务商提供的模型 ID 填写
   fallback_models:
     - deepseek/deepseek-v4-flash-0731
     - kimi-k3
@@ -15,24 +16,24 @@ llm:
   timeout_s: 120
 
 asr:
-  driver: auto            # auto | tokenhub | local
-  endpoint: https://tokenhub.tencentmaas.com/v1/wand/asrproxy/sync_transcribe
-  model: hy-asr-3.0-preview   # 中英混合+多方言；英语 WER≈2.6%
-  fallback_models:
-    - wand-asr-v1             # 云端第二引擎（可选）
-  source: en                  # 识别的基准语种（缺省自动检测）
+  driver: auto            # auto | cloud | local（auto：云端可用则云端，否则本地）
+  endpoint: ""            # 【可选】云端 ASR 接口地址；留空自动使用本地模式
+  model: ""               # 云端识别模型名（按服务商文档填写）
+  fallback_models: []     # 云端备用模型（可选）
+  source: en              # 识别的基准语种（缺省自动检测）
   # 本地兜底（mlx-whisper）。想更准可把 local_model 换成 mlx-community/whisper-large-v3-turbo（下载约 1.6G）
   local_model: mlx-community/whisper-small-mlx
   local_fallback_model: mlx-community/whisper-tiny
   timeout_s: 180
 
 tts:
-  driver: tokenhub        # tokenhub | macos_say（云端失败自动退回 say）
+  driver: cloud           # cloud | macos_say（云端失败自动退回 say）
   say_voice: Samantha     # 兜底音色（say -v '?' 查看）
   say_rate: 170
-  tokenhub_model: minimax-speech-2.8-turbo
-  tokenhub_voice_id: English_Graceful_Lady   # 默认音色
-  voices:                 # 按考官人格分配音色
+  endpoint: ""            # 【可选】云端 TTS 接口地址；留空自动使用 say
+  cloud_model: ""         # 云端合成模型名（按服务商文档填写）
+  cloud_voice_id: ""      # 默认音色
+  voices:                 # 按考官人格分配音色（示例为常见英文音色名，按你的服务商调整）
     hr-friendly: English_Graceful_Lady
     tech-lead: English_Trustworth_Man
     stress: English_ManWithDeepVoice

@@ -70,7 +70,7 @@
 
 ## 快速开始
 
-**环境要求**：macOS（Apple Silicon 体验最佳）+ Python 3.12 + `ffmpeg`（`brew install ffmpeg`）+ 一个 API Key（腾讯云 TokenHub，或任何 OpenAI 兼容网关）。
+**环境要求**：macOS（Apple Silicon 体验最佳）+ Python 3.12 + `ffmpeg`（`brew install ffmpeg`）+ 一个 API Key（自备：任何 OpenAI 兼容服务均可，官方 API 或聚合网关）。
 
 ### 1. 克隆并安装
 
@@ -84,9 +84,9 @@ python3 -m venv .venv            # 装了 uv 也可以：uv venv .venv --python 
 ### 2. 填入 API Key
 
 ```bash
-cp app/.env.example app/.env     # 编辑填入 TOKENHUB_API_KEY=你的key
-                                 # 申请：https://console.cloud.tencent.com/tokenhub
-                                 # （对话模型 / 语音识别 / 语音合一共用一个 Key）
+cp app/.env.example app/.env     # 填入 API_KEY=你的key、API_BASE_URL=你的服务地址
+                                 # （服务地址也可写在 app/config.yaml 的 llm.base_url）
+                                 # 对话模型 / 语音识别 / 语音合一共用一个 Key
 ```
 
 或者运行交互式配置助手（会在线验证 Key 再写入）：
@@ -122,15 +122,15 @@ bash scripts/run_server.sh       # 或直接双击「打开训练系统.command�
 
 ## 模型需求与推荐
 
-本应用**一次完整练习会用到三类模型**——不只是聊天模型。三者通过你在 `app/.env` 里配置的**同一个 API Key** 调用（默认腾讯云 TokenHub；对话模型也可换成任何 OpenAI 兼容网关）：
+本应用**一次完整练习会用到三类模型**——不只是聊天模型。三者通过你在 `app/.env` 里配置的**同一个 API Key** 调用（自备：任何 OpenAI 兼容服务均可，官方 API 或聚合网关）：
 
-| 用途 | 用在哪里 | 推荐（TokenHub 模型代号） | 参考价（腾讯云官方，后付费） |
+| 用途 | 用在哪里 | 推荐模型（示例） | 参考价（人民币，按量后付费） |
 |---|---|---|---|
 | 💬 对话模型 | 提问追问、示范答案、纠错评分、复盘报告、点词释义 | **DeepSeek-V4.1-Flash**（`deepseek/deepseek-flash`，默认）；备选 **GLM-5.3-Flash**（`glm-5.3-flash`） | DeepSeek：¥1–2 输入 / ¥4–8 输出；GLM：¥0.8 / ¥2.8（每百万 tokens，闲时/高峰） |
 | 🎙️ 语音识别 ASR | 把你的口述回答转成文字 | **Hy-ASR-3.0-Preview**（`hy-asr-3.0-preview`，默认）；备选 `wand-asr-v1` | Hy-ASR：¥0.00022/秒（约 ¥0.79/小时）；WAND：¥0.0005/秒 |
 | 🔊 语音合成 TTS | 面试官提问的语音 | **MiniMax-Speech-2.8-Turbo**（`minimax-speech-2.8-turbo`，默认，内置 4 种英文音色）；`-hd` 音质更好 | Turbo：¥2/万字符；HD：¥3.5/万字符 |
 
-**成本估算（20 分钟/天，全部走云端）**：对话 ≈ ¥0.1/天 + 识别 ≈ ¥0.26/天 + 合成 ≈ ¥0.2–0.4/天 ≈ **合计 ¥0.6–0.8/天，约 ¥20/月**（官方按量后付费，实际以账单为准；晚间练习落在 DeepSeek 闲时时段，单价减半）。
+**成本估算（20 分钟/天，全部走云端）**：对话 ≈ ¥0.1/天 + 识别 ≈ ¥0.26/天 + 合成 ≈ ¥0.2–0.4/天 ≈ **合计 ¥0.6–0.8/天，约 ¥20/月**（按量后付费；实际以服务商账单为准；晚间练习多落在闲时计费时段，单价更低）。
 
 **两条语音链路可以零成本本地化（macOS）**：
 
@@ -141,11 +141,11 @@ bash scripts/run_server.sh       # 或直接双击「打开训练系统.command�
 
 **注意事项**：
 
-- 语音类模型需在 TokenHub 控制台开通"后付费"：首次调用若报 `402 / 401007`，按[常见问题](#常见问题)处理一次即可；
-- 峰谷计价：DeepSeek 系列在工作日 9:00–12:00、14:00–18:00 为高峰价（×2），其余时段与周末全天为闲时价；
+- 语音调用若报 `402 / 401007`：多为服务商侧未开通相关能力（常见为需开启"后付费"），按其控制台提示处理一次即可；
+- 计价规则以服务商为准（DeepSeek 系列常见为工作日 9:00–12:00、14:00–18:00 高峰时段 ×2 价，其余时段及周末闲时）；
 - 默认 fallback 链含 `kimi-k3`（单价较高，仅主模型失败时触发），在意成本可自行调整 `llm.fallback_models`。
 
-换模型：改 `app/config.yaml` 的 `llm.model` / `asr.model` / `tts.tokenhub_model` 即可（均支持 fallback 链）。
+换模型：改 `app/config.yaml` 的 `llm.model` / `asr.model` / `tts.cloud_model` 即可（均支持 fallback 链）。
 
 ## 功能详解
 
@@ -234,17 +234,19 @@ bash scripts/run_server.sh       # 或直接双击「打开训练系统.command�
 
 | 变量 | 必填 | 用途 |
 |---|---|---|
-| `TOKENHUB_API_KEY` | ✅ | 对话模型 + 语音识别 + 语音合成共用一个 Key（腾讯云 TokenHub 或兼容网关） |
-| `TOKENHUB_BASE_URL` | – | 覆盖接口地址（指向任意 OpenAI 兼容网关） |
+| `API_KEY` | ✅ | 对话模型 + 语音识别 + 语音合成共用一个 Key（自备） |
+| `API_BASE_URL` | – | 覆盖接口地址（指向你的 OpenAI 兼容服务） |
 
 ### 应用配置（`app/config.yaml`）
 
 | 配置项 | 默认值 | 说明 |
 |---|---|---|
+| `llm.base_url` | 留空 | 你的 OpenAI 兼容接口地址（也可用 `API_BASE_URL`） |
 | `llm.model` | `deepseek/deepseek-flash` | 主对话模型 |
 | `llm.fallback_models` | 见文件 | 主模型失败时的备选链 |
-| `asr.driver` | `auto` | `auto` / `tokenhub`（云端识别）/ `local`（mlx-whisper，仅 macOS） |
-| `tts.driver` | `tokenhub` | `tokenhub` / `macos_say`（离线兜底） |
+| `asr.driver` | `auto` | `auto` / `cloud`（云端识别）/ `local`（mlx-whisper，仅 macOS） |
+| `asr.endpoint` / `tts.endpoint` | 留空 | 云端语音接口地址；留空自动使用本地模式 |
+| `tts.driver` | `cloud` | `cloud` / `macos_say`（离线兜底） |
 | `tts.voices` | 见文件 | 每个人格一个音色 |
 | `session.daily_goal_minutes` | `20` | 每日目标（分钟），影响打卡圆环 |
 | `session.max_answer_seconds` | `120` | 单题回答时长上限 |
@@ -317,11 +319,11 @@ english-interview-gym/
 
 | 症状 | 处理 |
 |---|---|
-| 提交后报 `402 / 401007` | 在控制台给语音模型开通"后付费"；或把 `asr.driver` 设为 `local` |
+| 提交后报 `402 / 401007` | 服务商侧语音模型未开通（常见为需开"后付费"）；或把 `asr.driver` 设为 `local` |
 | 麦克风不可用 | 必须用 `http://127.0.0.1` 打开（不要用局域网 IP）；浏览器允许麦克风权限 |
 | 端口被占用 | 改 `app/config.yaml` 的 `server.port`，同步改 `scripts/run_server.sh` 里的 `--port` |
-| 想换音色 / 换大模型 | 音色改 `tts.voices`；模型：`TOKENHUB_BASE_URL` + `llm.model` 指向任意 OpenAI 兼容模型 |
-| 不想用腾讯云 | 对话模型可指向任意 OpenAI 兼容网关（`TOKENHUB_BASE_URL` + `llm.model`）；语音可走本地模式：`asr.driver: local` + `tts.driver: macos_say`（仅 macOS） |
+| 想换音色 / 换大模型 | 音色改 `tts.voices`；模型：`API_BASE_URL` + `llm.model` 指向任意 OpenAI 兼容服务 |
+| 想尽量免费 / 全本地跑 | 语音本地化：`asr.driver: local` + `tts.driver: macos_say`（仅 macOS，免费）；对话模型需一个 OpenAI 兼容服务（云端或本地推理服务均可） |
 
 ## 开源协议
 
