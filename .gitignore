@@ -27,3 +27,6 @@ __pycache__/
 .DS_Store
 *.aiff
 *.tmp
+
+# 手机访问自签证书（勿入库）
+certs/

@@ -125,7 +125,22 @@ Open http://127.0.0.1:8765 (allow microphone access in your browser on first use
 .venv/bin/python scripts/baseline_report.py   # practice weekly report
 ```
 
-## Model requirements & recommendations
+### 6. Use it on your phone (optional)
+
+The desktop version works out of the box. To practise on an **iPhone** (mic, streaks and review all work), you need one free mesh network plus a one-time certificate:
+
+1. **Install [Tailscale](https://tailscale.com/download) on both your Mac and iPhone** (free, private networking — your Mac is never exposed to the public internet);
+2. **Generate a one-time certificate** (iPhones only allow microphone access over HTTPS; this uses a local self-signed CA — no internet round-trip needed):
+   ```bash
+   bash scripts/gen_https_cert.sh
+   ```
+3. **Start**: double-click "打开训练系统.command" to run the server, then "打开手机访问.command" — the terminal prints your phone URL (`https://<machine>.<tailnet>.ts.net:8443`);
+4. **One-time iPhone setup**
+   - Install the CA: AirDrop `certs/ca.crt` to the phone (or visit `/ca.crt` on the printed URL) → Settings → General → VPN &amp; Device Management → install → then Settings → General → About → Certificate Trust Settings → enable full trust;
+   - Open the printed URL in Safari → Share → **Add to Home Screen** — it then launches full-screen as a standalone app;
+5. Note: the phone is a thin client — sessions and data stay on your Mac (keep it awake and online).
+
+## Model requirements &amp; recommendations
 
 A full session uses **three kinds of models** — not just a chat model. All three are called with the **single API key** you bring in `app/.env` (any OpenAI-compatible service: official APIs or aggregator gateways):
 

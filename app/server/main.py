@@ -279,6 +279,24 @@ def index():
     return Response(html, media_type="text/html", headers={"Cache-Control": "no-cache"})
 
 
+@app.get("/manifest.webmanifest")
+def webmanifest():
+    """PWA manifest（「添加到主屏幕」用；含 iPhone 图标与独立窗口配置）。"""
+    p = WEB / "manifest.webmanifest"
+    if not p.exists():
+        raise HTTPException(404, "manifest not found")
+    return Response(p.read_text(encoding="utf-8"), media_type="application/manifest+json", headers={"Cache-Control": "no-cache"})
+
+
+@app.get("/ca.crt")
+def ca_cert():
+    """手机安装用：本机 HTTPS 的自签 CA 证书（需先运行 scripts/gen_https_cert.sh）。"""
+    p = Path(__file__).resolve().parents[2] / "certs" / "ca.crt"
+    if not p.exists():
+        raise HTTPException(404, "no ca.crt (先运行 bash scripts/gen_https_cert.sh)")
+    return FileResponse(str(p), media_type="application/x-x509-ca-cert", filename="ca.crt")
+
+
 app.mount("/static", StaticFiles(directory=str(WEB)), name="static")
 
 # 题目配图静态资源（本地）

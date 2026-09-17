@@ -70,6 +70,7 @@ function speak(text, personaKey, btn) {
     return;
   }
   try { player.pause(); } catch (e) {}                   // 先掐断上一条（单通道保证）
+  player.muted = false;                                   // 解除解锁期可能残留的静音
   player.src = src;
   S.nowPlaying = src;
   if (btn) {
@@ -82,6 +83,37 @@ function scheduleSpeak(text, personaKey, delay) {
   clearTimeout(S.autoplayTimer);
   S.autoplayTimer = setTimeout(() => { S.autoplayTimer = null; speak(text, personaKey); }, delay);
 }
+
+/* ---------------- 移动端适配：iOS 音频 / 屏幕常亮 / 触屏文案 ---------------- */
+try { if (navigator.audioSession) navigator.audioSession.type = "playback"; } catch (e) {}  // 静音拨片下也能出声
+const MIC_HINT = (window.matchMedia && matchMedia("(pointer:coarse)").matches) ? "点击开始录音" : "点击或按空格开始";
+try { $("micHint").textContent = MIC_HINT; } catch (e) {}
+let _wakeLock = null;
+async function keepScreenAwake(on) {
+  try {
+    if (on) { if ("wakeLock" in navigator && !_wakeLock) _wakeLock = await navigator.wakeLock.request("screen"); }
+    else if (_wakeLock) { _wakeLock.release(); _wakeLock = null; }
+  } catch (e) { _wakeLock = null; }
+}
+/* iOS：首次点按解锁 HTMLAudioElement，此后题目语音可自动播放 */
+let _audioUnlocked = false;
+const SILENT_WAV = "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=";
+document.addEventListener("pointerdown", () => {
+  if (_audioUnlocked) return;
+  _audioUnlocked = true;
+  try {
+    player.muted = true;
+    player.src = SILENT_WAV;
+    const pr = player.play();
+    const fin = () => {
+      player.muted = false;
+      if (S.nowPlaying === "") {   // 若解锁动作本身仍占着音频通道，清掉它的 src
+        try { player.pause(); player.removeAttribute("src"); player.load(); } catch (e) {}
+      }
+    };
+    if (pr && pr.then) pr.then(fin).catch(fin); else fin();
+  } catch (e) { player.muted = false; }
+}, { once: true });
 /* ---------------- 打卡庆祝（数字滚动 / 彩带 / 连胜里程碑） ---------------- */
 function countUp(el, target, dur, decimals) {
   if (!el) return;
@@ -667,6 +699,7 @@ async function toggleMic() {
     };
     mr.start();
     S.rec = mr; S.recState = "recording"; S.recStart = Date.now();
+    keepScreenAwake(true);   // 录音期间屏幕常亮（移动端）
     $("micBtn").classList.add("rec"); $("micBtn").textContent = "■";
     $("micHint").textContent = "录音中…点击停止";
     setStatus("");
@@ -682,9 +715,10 @@ async function toggleMic() {
 function stopRec() {
   if (S.rec && S.rec.state !== "inactive") S.rec.stop();
   S.recState = "idle";
+  keepScreenAwake(false);
   clearInterval(S.timerId); S.timerId = null;
   $("micBtn").classList.remove("rec"); $("micBtn").textContent = "🎤";
-  $("micHint").textContent = "点击或按空格开始";
+  $("micHint").textContent = MIC_HINT;
 }
 async function submitAnswer(blob) {
   S.busy = true;

@@ -125,6 +125,21 @@ bash scripts/run_server.sh       # 或直接双击「打开训练系统.command�
 .venv/bin/python scripts/baseline_report.py   # 练习周报
 ```
 
+### 6. 在手机上使用（可选）
+
+桌面开箱即用；想在 **iPhone** 上练（麦克风 / 打卡 / 复习都可用），只需一次免费组网 + 一次性证书：
+
+1. **Mac 与 iPhone 各安装 [Tailscale](https://tailscale.com/download)**（免费、私有组网），登录同一账号——手机在任何网络下都能连回你的 Mac，且**不暴露到公网**；
+2. **生成一次性证书**（iPhone 的麦克风只允许在 HTTPS 下使用；这里用本机自签，不依赖外网）：
+   ```bash
+   bash scripts/gen_https_cert.sh
+   ```
+3. **启动**：双击「打开训练系统.command」跑服务，再双击「打开手机访问.command」——终端会打印手机访问地址（形如 `https://<机器名>.<tailnet>.ts.net:8443`）；
+4. **iPhone 首次设置**
+   - 安装证书：把 Mac 上的 `certs/ca.crt` **AirDrop** 到手机（或用 Safari 打开上面的地址后访问 `/ca.crt` 下载）→「设置 → 通用 → VPN与设备管理」安装描述文件 → 再到「设置 → 通用 → 关于本机 → 证书信任设置」对该证书开启完全信任；
+   - Safari 打开终端打印的地址 → 「分享 → **添加到主屏幕**」——此后从主屏图标进入即**全屏独立窗口**，与 App 体验一致；
+5. 说明：手机是"瘦客户端"——会话与数据仍保存在你的 Mac（Mac 保持开机联网即可）；训练数据不出本机。
+
 ## 模型需求与推荐
 
 本应用**一次完整练习会用到三类模型**——不只是聊天模型。三者通过你在 `app/.env` 里配置的**同一个 API Key** 调用（自备：任何 OpenAI 兼容服务均可，官方 API 或聚合网关）：

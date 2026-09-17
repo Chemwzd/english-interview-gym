@@ -397,3 +397,96 @@ details.qinfo .row b{color:var(--muted);font-weight:600;margin-right:5px}
 .prow{display:flex;gap:8px;margin-top:8px}
 .prow textarea{flex:1;border:1.5px solid var(--line);border-radius:10px;padding:9px 11px;font:inherit;font-size:13px;resize:vertical;outline:none}
 .prow textarea:focus{border-color:var(--teal)}
+
+/* ---------- v0.14 移动端基础（触控 / 动态视口） ---------- */
+button,.btn,.chip,.mini-btn,.mic,.fav-tab,.fv-del,.w{-webkit-tap-highlight-color:transparent}
+.btn,.chip,.mini-btn,.mic,.icon-btn,.fv-del,.fav-tab{touch-action:manipulation;user-select:none;-webkit-user-select:none}
+#view-chat{height:100vh;height:100dvh}
+.view{min-height:100vh;min-height:100dvh}
+
+/* ---------- v0.14 移动端适配（≤640px：iPhone / 窄屏） ---------- */
+@media (max-width:640px){
+  body{font-size:15.5px}
+  .home-wrap,.report-wrap{padding:calc(12px + env(safe-area-inset-top)) 14px calc(40px + env(safe-area-inset-bottom))}
+  .hero{padding-top:4px}
+  .hero .logo{width:52px;height:52px;border-radius:16px;font-size:26px;margin-bottom:8px}
+  .hero h1{font-size:20.5px}
+  .hero .sub{font-size:12.5px;margin-top:4px}
+
+  /* 导师卡：一行放三张（紧凑） */
+  .tutor-grid{grid-template-columns:repeat(3,1fr);gap:8px}
+  .tutor-card{padding:11px 6px 10px;border-radius:16px}
+  .tutor-card .avatar{width:44px;height:44px;font-size:23px;margin-bottom:6px}
+  .tutor-card b{font-size:13px}
+  .tutor-card small{font-size:10.5px;min-height:26px;padding:0 2px}
+  .tutor-card .listen{margin-top:6px;padding:3px 9px;font-size:11.5px}
+
+  /* 题集卡 */
+  .set-card{padding:11px 12px}
+  .home-links{flex-wrap:wrap;gap:8px}
+  .home-links .btn{flex:1 1 30%;padding:9px 10px;font-size:13.5px}
+
+  /* 打卡面板紧凑 */
+  .ck-panel{padding:14px 12px 12px}
+  .ck-top{gap:10px}
+  .ck-flame-wrap{width:50px;height:50px}
+  .ck-flame{font-size:27px}
+  .ck-streak b{font-size:26px}
+  .ck-ring{width:62px;height:62px}
+  .ck-ring svg{width:62px;height:62px}
+  .ck-ring .txt{font-size:12.5px}
+  .ck-days{gap:3px;margin-top:12px}
+  .ck-day .cc{width:26px;height:26px;font-size:12px}
+  .ck-day .bar{width:8px;height:22px}
+  .ck-cards{gap:6px;margin-top:12px}
+  .ck-card{padding:7px 2px;border-radius:12px}
+  .ck-card b{font-size:15px}
+  .ck-card span{font-size:9.5px}
+
+  /* 顶栏（刘海 / 安全区） */
+  .chat-top,.set-top{padding:calc(7px + env(safe-area-inset-top)) 12px 7px}
+  .tutor-mini .avatar{width:36px;height:36px;font-size:19px}
+
+  /* 对话流 */
+  .messages{padding:12px 10px 6px;gap:12px}
+  .bubble{padding:11px 13px;font-size:14.5px}
+  .msg.ai .col,.msg.user .col{max-width:95%}
+  .fb-card{margin-left:0;max-width:100%}
+  .delta{padding:8px 11px;font-size:13.5px}
+  .ai-actions{gap:6px}
+
+  /* Composer：拇指区大麦克风 + 底部安全区 */
+  .composer{padding:8px 10px calc(10px + env(safe-area-inset-bottom))}
+  .chips{gap:6px;margin-bottom:8px}
+  .chip{padding:6.5px 13px;font-size:12.5px}
+  .mic{width:78px;height:78px;font-size:33px}
+  .mic-row{gap:10px}
+  .timer{width:46px;font-size:13.5px}
+  .mic-hint{width:92px;font-size:11.5px;line-height:1.35}
+
+  /* 弹层 → 底部抽屉式（iOS 手感） */
+  .overlay{padding:10px 8px;align-items:flex-end}
+  #celebrateOverlay{align-items:center}
+  .gloss,.modal,.qd{max-width:100%;width:100%;max-height:86vh;border-radius:22px 22px 16px 16px;padding:16px 16px calc(14px + env(safe-area-inset-bottom))}
+  .celebrate{max-width:94%}
+  .fav-modal{max-width:100%}
+  .qd-actions .btn,.rev-btns .btn{padding:12px 8px}
+
+  /* 复盘页 */
+  .score-row .name{width:56px;font-size:12.5px}
+  .report-actions .btn{padding:11px 10px;font-size:14px}
+
+  /* 可读性微调 */
+  .tutor-card small{font-size:11px;line-height:1.35}
+  .chip{padding:7px 12px}
+  .set-card b{font-size:13.5px}
+  .set-card small{font-size:11.5px}
+  .recent .row{font-size:13.5px}
+  .gloss,.modal,.qd{padding-bottom:calc(18px + env(safe-area-inset-bottom))}
+
+  /* 输入防缩放 */
+  .prow textarea{font-size:16px}
+
+  /* Toast 避开状态栏 */
+  .toast{top:calc(14px + env(safe-area-inset-top))}
+}
