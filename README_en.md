@@ -28,6 +28,7 @@
 
 - [What is this](#what-is-this)
 - [Quick start](#quick-start)
+- [Model requirements & recommendations](#model-requirements--recommendations)
 - [Feature guide](#feature-guide)
   - [Mock interviews](#mock-interviews)
   - [Sample answers &amp; hints](#sample-answers--hints)
@@ -94,6 +95,8 @@ Or run the interactive setup helper (validates the key online before saving):
 python3 scripts/setup_env.py
 ```
 
+> Which models do you need (chat / speech recognition / speech synthesis), which are recommended, and what do they cost? → [Model requirements & recommendations](#model-requirements--recommendations)
+
 ### 3. Launch
 
 ```bash
@@ -116,6 +119,33 @@ Open http://127.0.0.1:8765 (allow microphone access in your browser on first use
 .venv/bin/python scripts/check_stack.py       # verify every pipeline: LLM / ASR / TTS
 .venv/bin/python scripts/baseline_report.py   # practice weekly report
 ```
+
+## Model requirements & recommendations
+
+A full session uses **three kinds of models** — not just a chat model. All three are called with the **single API key** you put in `app/.env` (Tencent Cloud TokenHub by default; the chat model can also point at any OpenAI-compatible gateway):
+
+| Role | Where it's used | Recommended (TokenHub model id) | Reference price (Tencent Cloud, CNY, pay-as-you-go) |
+|---|---|---|---|
+| 💬 Chat model | Follow-ups, sample answers, corrections & scoring, review reports, word glosses | **DeepSeek-V4.1-Flash** (`deepseek/deepseek-flash`, default); alternative **GLM-5.3-Flash** (`glm-5.3-flash`) | DeepSeek: ¥1–2 in / ¥4–8 out; GLM: ¥0.8 / ¥2.8 (per million tokens, off-peak/peak) |
+| 🎙️ Speech recognition (ASR) | Transcribing your spoken answers | **Hy-ASR-3.0-Preview** (`hy-asr-3.0-preview`, default); alternative `wand-asr-v1` | Hy-ASR: ¥0.00022/s (~¥0.79/h); WAND: ¥0.0005/s |
+| 🔊 Speech synthesis (TTS) | The interviewer's voice | **MiniMax-Speech-2.8-Turbo** (`minimax-speech-2.8-turbo`, default, 4 English voices included); `-hd` for higher quality | Turbo: ¥2 / 10k characters; HD: ¥3.5 / 10k characters |
+
+**Cost estimate (20 min/day, everything in the cloud)**: chat ≈ ¥0.1/day + ASR ≈ ¥0.26/day + TTS ≈ ¥0.2–0.4/day ≈ **¥0.6–0.8/day, about ¥20/month** (official pay-as-you-go rates; your actual bill may vary. Evening practice falls in DeepSeek's off-peak window, where prices are halved).
+
+**Both speech legs can run for free locally (macOS)**:
+
+- `asr.driver: local` — on-device recognition with mlx-whisper (Apple Silicon, free);
+- `tts.driver: macos_say` — macOS built-in `say` (free, robotic voice).
+
+With both enabled, the only cost left is the chat model: **≈ ¥0.1/day**.
+
+**Notes**:
+
+- Speech models need "postpaid billing" enabled in the TokenHub console: if the first call returns `402 / 401007`, fix it once per the [FAQ](#faq);
+- Peak/off-peak pricing: DeepSeek is double-priced on weekdays 9:00–12:00 and 14:00–18:00 (Beijing time); all other hours and the whole weekend are off-peak;
+- The default fallback chain includes `kimi-k3` (pricier; only used if the primary model fails) — adjust `llm.fallback_models` if you care about cost.
+
+To switch models, edit `app/config.yaml`: `llm.model` / `asr.model` / `tts.tokenhub_model` (all support fallback chains).
 
 ## Feature guide
 

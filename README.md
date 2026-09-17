@@ -28,6 +28,7 @@
 
 - [这是什么](#这是什么)
 - [快速开始](#快速开始)
+- [模型需求与推荐](#模型需求与推荐)
 - [功能详解](#功能详解)
   - [模拟面试](#模拟面试)
   - [示范答案与实时提示](#示范答案与实时提示)
@@ -94,6 +95,8 @@ cp app/.env.example app/.env     # 编辑填入 TOKENHUB_API_KEY=你的key
 python3 scripts/setup_env.py
 ```
 
+> 需要哪些模型（对话 / 语音识别 / 语音合成）、推荐用哪个、大概花多少钱？→ [模型需求与推荐](#模型需求与推荐)
+
 ### 3. 启动
 
 ```bash
@@ -116,6 +119,33 @@ bash scripts/run_server.sh       # 或直接双击「打开训练系统.command�
 .venv/bin/python scripts/check_stack.py       # 逐链路体检：对话 / 语音识别 / 语音合成
 .venv/bin/python scripts/baseline_report.py   # 练习周报
 ```
+
+## 模型需求与推荐
+
+本应用**一次完整练习会用到三类模型**——不只是聊天模型。三者通过你在 `app/.env` 里配置的**同一个 API Key** 调用（默认腾讯云 TokenHub；对话模型也可换成任何 OpenAI 兼容网关）：
+
+| 用途 | 用在哪里 | 推荐（TokenHub 模型代号） | 参考价（腾讯云官方，后付费） |
+|---|---|---|---|
+| 💬 对话模型 | 提问追问、示范答案、纠错评分、复盘报告、点词释义 | **DeepSeek-V4.1-Flash**（`deepseek/deepseek-flash`，默认）；备选 **GLM-5.3-Flash**（`glm-5.3-flash`） | DeepSeek：¥1–2 输入 / ¥4–8 输出；GLM：¥0.8 / ¥2.8（每百万 tokens，闲时/高峰） |
+| 🎙️ 语音识别 ASR | 把你的口述回答转成文字 | **Hy-ASR-3.0-Preview**（`hy-asr-3.0-preview`，默认）；备选 `wand-asr-v1` | Hy-ASR：¥0.00022/秒（约 ¥0.79/小时）；WAND：¥0.0005/秒 |
+| 🔊 语音合成 TTS | 面试官提问的语音 | **MiniMax-Speech-2.8-Turbo**（`minimax-speech-2.8-turbo`，默认，内置 4 种英文音色）；`-hd` 音质更好 | Turbo：¥2/万字符；HD：¥3.5/万字符 |
+
+**成本估算（20 分钟/天，全部走云端）**：对话 ≈ ¥0.1/天 + 识别 ≈ ¥0.26/天 + 合成 ≈ ¥0.2–0.4/天 ≈ **合计 ¥0.6–0.8/天，约 ¥20/月**（官方按量后付费，实际以账单为准；晚间练习落在 DeepSeek 闲时时段，单价减半）。
+
+**两条语音链路可以零成本本地化（macOS）**：
+
+- `asr.driver: local` —— mlx-whisper 本机识别（Apple Silicon，免费）；
+- `tts.driver: macos_say` —— macOS 内置 `say` 朗读（免费，音色偏机械）。
+
+两者同时启用后，训练成本只剩对话模型 **≈ ¥0.1/天**。
+
+**注意事项**：
+
+- 语音类模型需在 TokenHub 控制台开通"后付费"：首次调用若报 `402 / 401007`，按[常见问题](#常见问题)处理一次即可；
+- 峰谷计价：DeepSeek 系列在工作日 9:00–12:00、14:00–18:00 为高峰价（×2），其余时段与周末全天为闲时价；
+- 默认 fallback 链含 `kimi-k3`（单价较高，仅主模型失败时触发），在意成本可自行调整 `llm.fallback_models`。
+
+换模型：改 `app/config.yaml` 的 `llm.model` / `asr.model` / `tts.tokenhub_model` 即可（均支持 fallback 链）。
 
 ## 功能详解
 
