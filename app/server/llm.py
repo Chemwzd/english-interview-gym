@@ -136,3 +136,9 @@ def get_llm() -> LLM:
     if _llm is None:
         _llm = LLM()
     return _llm
+
+
+def reset():
+    """配置变更后调用：下次 get_llm() 重新读取地址与 Key。"""
+    global _llm
+    _llm = None

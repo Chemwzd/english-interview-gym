@@ -12,12 +12,12 @@ from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
 
-from . import config, prompts, store, tts
+from . import config, llm, prompts, store, tts
 from . import session as sess
 
-WEB = Path(__file__).resolve().parents[1] / "web"
+WEB = config.web_dir()
 
-app = FastAPI(title="EngTraining", version="0.1.0")
+app = FastAPI(title="EngTraining", version="0.15.0")
 
 
 @app.get("/api/health")
@@ -29,7 +29,69 @@ def health():
         "tts_driver": config.get("tts.driver"),
         "max_answer_seconds": config.get("session.max_answer_seconds", 120),
         "api_key_set": bool(config.api_key()),
+        "api_configured": bool(config.api_key() and (config.env("API_BASE_URL") or config.get("llm.base_url", ""))),
+        "frozen": config.is_frozen(),
     }
+
+
+def _mask_key(k: str) -> str:
+    if not k:
+        return ""
+    return (k[:6] + "…" + k[-4:]) if len(k) > 14 else "已设置"
+
+
+def _settings_payload() -> dict:
+    return {
+        "frozen": config.is_frozen(),
+        "env_file": str(config.env_path()),
+        "config_file": str(config.config_local_path()),
+        "api_key_set": bool(config.api_key()),
+        "api_key_masked": _mask_key(config.api_key()),
+        "api_base_url": config.env("API_BASE_URL") or config.get("llm.base_url", "") or "",
+        "llm_model": config.get("llm.model", "") or "",
+        "asr_endpoint": config.get("asr.endpoint", "") or "",
+        "asr_model": config.get("asr.model", "") or "",
+        "tts_endpoint": config.get("tts.endpoint", "") or "",
+        "tts_model": config.get("tts.cloud_model", "") or "",
+        "tts_voice": config.get("tts.cloud_voice_id", "") or "",
+    }
+
+
+@app.get("/api/settings")
+def settings_get():
+    return _settings_payload()
+
+
+@app.post("/api/settings")
+def settings_set(payload: dict):
+    """写入用户设置：API Key / 接口地址 → .env；模型与语音端点 → config.local.yaml。保存后立即生效。"""
+    try:
+        env_up = {}
+        if "api_key" in payload:
+            env_up["API_KEY"] = str(payload.get("api_key") or "").strip()
+        if "api_base_url" in payload:
+            env_up["API_BASE_URL"] = str(payload.get("api_base_url") or "").strip()
+        if env_up:
+            config.save_env(env_up)
+        cfg_up: dict = {}
+
+        def _put(section: str, key: str, val) -> None:
+            v = str(val or "").strip()
+            if v:
+                cfg_up.setdefault(section, {})[key] = v
+
+        _put("llm", "model", payload.get("llm_model"))
+        _put("asr", "endpoint", payload.get("asr_endpoint"))
+        _put("asr", "model", payload.get("asr_model"))
+        _put("tts", "endpoint", payload.get("tts_endpoint"))
+        _put("tts", "cloud_model", payload.get("tts_model"))
+        _put("tts", "cloud_voice_id", payload.get("tts_voice"))
+        if cfg_up:
+            config.save_config(cfg_up)
+        llm.reset()
+        return {"ok": True, "settings": _settings_payload()}
+    except Exception as e:  # noqa: BLE001
+        raise HTTPException(500, str(e))
 
 
 @app.get("/api/personas")

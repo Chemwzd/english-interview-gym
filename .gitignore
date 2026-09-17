@@ -30,3 +30,11 @@ __pycache__/
 
 # 手机访问自签证书（勿入库）
 certs/
+
+# 用户界面保存的设置（勿入库）
+config.local.yaml
+app/config.local.yaml
+
+# 打包产物
+dist/
+build_win/

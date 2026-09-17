@@ -25,6 +25,7 @@
     </header>
 
     <div id="statsStrip"></div>
+    <div id="setupBanner" class="setup-banner hidden" title="点我配置">⚙️ 首次使用：先填「接口地址 + API Key」→ 点这里 30 秒完成配置</div>
 
     <h2 class="sect">选择你的 AI 导师 <span class="sect-sub">点击试听音色</span></h2>
     <div class="tutor-grid" id="tutorGrid"></div>
@@ -37,6 +38,7 @@
     <div class="home-links">
       <button class="btn ghost" id="favOpenBtn">⭐ 收藏夹</button>
       <button class="btn ghost" id="profileBtn">📄 我的简历</button>
+      <button class="btn ghost" id="settingsBtn">⚙️ 设置</button>
       <button class="btn ghost" id="refreshStatsBtn">↻ 刷新统计</button>
     </div>
 
@@ -156,6 +158,29 @@
       <div class="fav-pager" id="favPager"></div>
     </div>
     <div class="fav-pane hidden" id="favPaneRev"></div>
+  </div>
+</div>
+
+<!-- ============ 设置弹层（接口地址 / API Key / 模型） ============ -->
+<div id="settingsOverlay" class="overlay hidden">
+  <div class="modal">
+    <div class="modal-head"><b>⚙️ 设置</b><button class="icon-btn" id="settingsClose">×</button></div>
+    <p class="pdesc">填好 <b>接口地址 + API Key + 对话模型</b> 即可使用（任何 OpenAI 兼容服务均可，自备 Key）。保存后立即生效；所有配置只保存在本机。</p>
+    <div class="srow"><label>API 接口地址（Base URL）</label><input id="setBase" type="text" placeholder="https://your-service.example.com/v1" autocomplete="off"></div>
+    <div class="srow"><label>API Key</label><input id="setKey" type="password" placeholder="粘贴你的 Key（留空 = 不修改）" autocomplete="off"></div>
+    <div class="srow"><label>对话模型</label><input id="setModel" type="text" placeholder="例如 deepseek/deepseek-flash" autocomplete="off"></div>
+    <details class="smore">
+      <summary>语音识别 / 语音合成（进阶设置）</summary>
+      <div class="srow"><label>识别接口地址</label><input id="setAsrEp" type="text" placeholder="语音识别 endpoint（留空 = 不修改）" autocomplete="off"></div>
+      <div class="srow"><label>识别模型名</label><input id="setAsrModel" type="text" autocomplete="off"></div>
+      <div class="srow"><label>合成接口地址</label><input id="setTtsEp" type="text" placeholder="语音合成 endpoint（留空 = 不修改）" autocomplete="off"></div>
+      <div class="srow"><label>合成模型名</label><input id="setTtsModel" type="text" autocomplete="off"></div>
+      <div class="srow"><label>合成音色</label><input id="setTtsVoice" type="text" autocomplete="off"></div>
+    </details>
+    <div class="prow" style="margin-top:13px">
+      <button class="btn primary small" id="settingsSave">保存并生效</button>
+      <span id="settingsFile" style="font-size:11px;color:var(--muted);margin-left:auto;max-width:52%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
+    </div>
   </div>
 </div>
 

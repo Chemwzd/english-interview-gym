@@ -91,7 +91,7 @@ def get_suggestion(sid: str, refresh: bool = False) -> dict:
         raise ValueError("no active question")
 
     def _ok(t: str, max_words: int) -> bool:
-        """粗筛：排除思考草稿/任务复述/超长答案；方括号占位符（通用版）按允许处理。"""
+        """粗筛：排除思考草稿/任务复述/超长答案/naive 腔；方括号占位符（通用版）按允许处理。"""
         t = (t or "").strip()
         if len(t) < 40:
             return False
@@ -103,6 +103,11 @@ def get_suggestion(sid: str, refresh: bool = False) -> dict:
                "i need to write", "let me think", "the user wants", "need produce", "we should produce")
         if any(b in low for b in bad):
             return False
+        naive = ("very passionate about", "passionate about your company", "i will work hard",
+                 "i want to learn a lot", "great company", "quick learner",
+                 "thank you for the question", "that's a great question", "hard worker")
+        if any(b in low for b in naive):
+            return False  # naive 腔：空洞热情 / 学生腔 / 客套铺垫
         return len(re.findall(r"[A-Za-z']+", core)) <= max_words
 
     key = f"{st['idx']}:{'f' if is_fu else 'q'}"
@@ -111,8 +116,9 @@ def get_suggestion(sid: str, refresh: bool = False) -> dict:
         sug[key] = {"personal": "", "generic": sug[key]}
     if refresh or key not in sug:
         profile = prompts.load_profile()
+        ptitle = st.get("persona_title") or ""
         result = None
-        msgs = prompts.suggestion_messages(qtext, profile)
+        msgs = prompts.suggestion_messages(qtext, profile, ptitle)
         for _ in range(3):
             try:
                 obj = get_llm().chat_json(msgs, temperature=0.6, max_tokens=1600)
@@ -125,9 +131,9 @@ def get_suggestion(sid: str, refresh: bool = False) -> dict:
                 if ok_p and _ok(generic, 130):
                     result = {"personal": personal, "generic": generic}
                     break
-            msgs = prompts.suggestion_messages(qtext, profile) + [
+            msgs = prompts.suggestion_messages(qtext, profile, ptitle) + [
                 {"role": "assistant", "content": json.dumps(obj or {}, ensure_ascii=False)[:1200]},
-                {"role": "user", "content": "不合格。要求：JSON 对象（含 \"generic\"；有个人资料时另含 \"personal\"）；纯英文、精炼（generic ≤95 词、personal ≤110 词）、口语化、不复述任务说明、不含中文。请重写。"},
+                {"role": "user", "content": "不合格。要求：JSON 对象（含 \"generic\"；有个人资料时另含 \"personal\"）；纯英文、精炼（generic ≤95 词、personal ≤110 词）、口语化、不复述任务说明、不含中文；严禁空洞热情与学生腔（如 passionate about your company / learn a lot / work hard / great company）。请重写。"},
             ]
         if result is None:
             raise ValueError("示范答案生成异常，请点「换一版」重试")

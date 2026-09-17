@@ -1,0 +1,47 @@
+name: Build Windows package
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r packaging/requirements-win.txt
+
+      - name: Build with PyInstaller
+        run: pyinstaller packaging/EnglishInterviewGym.spec --distpath dist --workpath build_win --noconfirm
+
+      - name: Assemble package
+        shell: pwsh
+        run: |
+          Copy-Item packaging/README-Windows.txt dist/EnglishInterviewGym/
+          Copy-Item packaging/FFMPEG-NOTICE.txt dist/EnglishInterviewGym/
+          Compress-Archive -Path dist/EnglishInterviewGym -DestinationPath EnglishInterviewGym-win64.zip
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: EnglishInterviewGym-win64
+          path: EnglishInterviewGym-win64.zip
+          retention-days: 30
+
+      - name: Attach to release (tags only)
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: EnglishInterviewGym-win64.zip

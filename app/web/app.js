@@ -206,6 +206,7 @@ async function boot() {
   try {
     const h = await api("/api/health");
     S.maxSec = h.max_answer_seconds || 120;
+    $("setupBanner").classList.toggle("hidden", !!h.api_configured);
   } catch (e) {}
   await reloadHome();
 }
@@ -834,6 +835,57 @@ function renderFeedback(r) {
   $("messages").appendChild(node);
   scrollBottom();
 }
+
+/* ---------------- 设置（接口地址 / API Key / 模型） ---------------- */
+async function openSettings() {
+  $("settingsOverlay").classList.remove("hidden");
+  try {
+    const s = await api("/api/settings");
+    $("setBase").value = s.api_base_url || "";
+    $("setModel").value = s.llm_model || "";
+    $("setAsrEp").value = s.asr_endpoint || "";
+    $("setAsrModel").value = s.asr_model || "";
+    $("setTtsEp").value = s.tts_endpoint || "";
+    $("setTtsModel").value = s.tts_model || "";
+    $("setTtsVoice").value = s.tts_voice || "";
+    $("setKey").value = "";
+    $("setKey").placeholder = s.api_key_set ? `已设置（${s.api_key_masked}）· 留空 = 不修改` : "粘贴你的 Key";
+    $("settingsFile").textContent = "配置文件：" + (s.env_file || "");
+  } catch (e) { toast("读取设置失败：" + e.message); }
+}
+async function saveSettings() {
+  const body = {
+    api_base_url: $("setBase").value.trim(),
+    llm_model: $("setModel").value.trim(),
+    asr_endpoint: $("setAsrEp").value.trim(),
+    asr_model: $("setAsrModel").value.trim(),
+    tts_endpoint: $("setTtsEp").value.trim(),
+    tts_model: $("setTtsModel").value.trim(),
+    tts_voice: $("setTtsVoice").value.trim(),
+  };
+  const k = $("setKey").value.trim();
+  if (k) body.api_key = k;
+  $("settingsSave").disabled = true;
+  try {
+    await api("/api/settings", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    toast("✅ 已保存，立即生效");
+    $("setKey").value = "";
+    refreshSetupBanner();
+    reloadHome();
+  } catch (e) { toast("保存失败：" + e.message); }
+  finally { $("settingsSave").disabled = false; }
+}
+async function refreshSetupBanner() {
+  try {
+    const h = await api("/api/health");
+    $("setupBanner").classList.toggle("hidden", !!h.api_configured);
+  } catch (e) {}
+}
+$("settingsBtn").addEventListener("click", openSettings);
+$("setupBanner").addEventListener("click", openSettings);
+$("settingsSave").addEventListener("click", saveSettings);
+$("settingsClose").addEventListener("click", () => $("settingsOverlay").classList.add("hidden"));
+$("settingsOverlay").addEventListener("click", (e) => { if (e.target === $("settingsOverlay")) $("settingsOverlay").classList.add("hidden"); });
 
 /* ---------------- 单词速查 ---------------- */
 let glossWord = "";

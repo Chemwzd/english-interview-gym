@@ -1,0 +1,13 @@
+Third-party component notice
+============================
+
+FFmpeg (bundled binary)
+-----------------------
+This package includes an FFmpeg binary (via the imageio-ffmpeg package) used
+for audio transcoding (browser recordings -> 16 kHz mono WAV for speech
+recognition). FFmpeg is a trademark of Fabrice Bellard, originator of the
+FFmpeg project. FFmpeg is free software licensed under the LGPL or GPL
+depending on the build configuration; see https://ffmpeg.org/legal.html for
+details. The binary is redistributed unmodified as provided by the
+imageio-ffmpeg project (https://github.com/imageio/imageio-ffmpeg); its
+corresponding license and build information are available from that project.
