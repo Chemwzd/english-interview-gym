@@ -71,7 +71,7 @@ def load_profile() -> str:
 
 
 def load_question_meta() -> dict:
-    """题目元信息（中文短标题 + 生图提示词），由 scripts/gen_question_meta.py 生成。"""
+    """题目元信息（每题的中文短标题等展示字段），数据文件：materials/question-bank/meta.json。"""
     p = config.materials_dir() / "question-bank" / "meta.json"
     try:
         return json.loads(p.read_text(encoding="utf-8"))

@@ -97,7 +97,7 @@ Recording: click the mic or **press Space**.
 |---|---|---|
 | `TOKENHUB_API_KEY` | ✅ | One key for LLM + ASR + TTS (Tencent Cloud TokenHub or any compatible gateway) |
 | `TOKENHUB_BASE_URL` | – | Override API base URL (point at any OpenAI-compatible gateway) |
-| `TENCENTCLOUD_SECRET_ID` / `SECRET_KEY` / `REGION` / `VOD_SUB_APP_ID` | – | Only for the optional VOD image-generation scripts |
+
 
 **`app/config.yaml`**: `llm.model` & `llm.fallback_models` (default `deepseek/deepseek-flash`) · `asr.driver` (`auto`/`tokenhub`/`local`) · `tts.driver` & per-persona `tts.voices` · `session.daily_goal_minutes` · `tools.ffmpeg`.
 
@@ -121,7 +121,7 @@ Recording: click the mic or **press Space**.
 
 - **Interviewer personas** — `materials/personas/*.md` (define the character in the `### system` block).
 - **Your story bank** — copy `materials/stories/template.md` to build 5–8 polished personal stories.
-- **Question illustrations** — bundled banks already include them; regenerate/extend via `scripts/gen_question_meta.py` + `scripts/gen_question_images.py` (optional, Tencent VOD AIGC; script path configurable via `VOD_IMAGE_SCRIPT`).
+
 
 ## 🔒 Privacy
 
@@ -132,7 +132,7 @@ Recording: click the mic or **press Space**.
 ```
 app/        FastAPI server (server/) + single-page frontend (web/)
 materials/  personas · question-bank (+images) · stories template · wordlist · profile.example
-scripts/    run_server · check_stack · baseline_report · question meta & image generation
+scripts/    run_server · check_stack · baseline_report
 data/       runtime data (local only): sessions · reports · audio · errorbook
 docs/       RUNBOOK · PRACTICE-PLAN · image assets
 ```
@@ -226,7 +226,7 @@ bash scripts/run_server.sh       # 打开 http://127.0.0.1:8765
 |---|---|---|
 | `TOKENHUB_API_KEY` | ✅ | LLM + 语音识别 + 语音合成共用一个 Key（腾讯云 TokenHub 或任何兼容网关） |
 | `TOKENHUB_BASE_URL` | – | 覆盖接口地址（指向任意 OpenAI 兼容网关） |
-| `TENCENTCLOUD_SECRET_ID` / `SECRET_KEY` / `REGION` / `VOD_SUB_APP_ID` | – | 仅"VOD 生图"可选脚本需要 |
+
 
 **`app/config.yaml` 要点**：`llm.model` 与 `llm.fallback_models`（默认 `deepseek/deepseek-flash`）· `asr.driver`（`auto`/`tokenhub`/`local`）· `tts.driver` 与每人格的 `tts.voices` 音色 · `session.daily_goal_minutes` · `tools.ffmpeg`。
 
@@ -250,7 +250,7 @@ bash scripts/run_server.sh       # 打开 http://127.0.0.1:8765
 
 - **面试官人格**——`materials/personas/*.md`（在 `### system` 块里定义角色）。
 - **故事库**——复制 `materials/stories/template.md`，攒 5–8 个打磨过的个人故事。
-- **题目配图**——内置题库已附带；继续生成用 `scripts/gen_question_meta.py` + `scripts/gen_question_images.py`（可选，腾讯云 VOD AIGC；脚本路径可用 `VOD_IMAGE_SCRIPT` 指定）。
+
 
 ## 🔒 隐私说明
 
@@ -261,7 +261,7 @@ bash scripts/run_server.sh       # 打开 http://127.0.0.1:8765
 ```
 app/        FastAPI 服务（server/）+ 单页前端（web/）
 materials/  personas 人格 · question-bank 题库（含配图）· stories 模板 · wordlist · profile.example
-scripts/    启动 / 体检 / 周报 / 题目元信息与配图生成
+scripts/    启动 / 体检 / 周报
 data/       运行数据（仅本地）：sessions · reports · audio · errorbook
 docs/       RUNBOOK 运行手册 · PRACTICE-PLAN 练习计划 · 图片资源
 ```

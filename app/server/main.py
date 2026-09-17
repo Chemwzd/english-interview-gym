@@ -255,7 +255,7 @@ def index():
 
 app.mount("/static", StaticFiles(directory=str(WEB)), name="static")
 
-# 题目形象图（由 VOD AIGC 生成，本地缓存）
+# 题目配图静态资源（本地）
 _MEDIA_DIR = config.materials_dir() / "question-bank" / "images"
 _MEDIA_DIR.mkdir(parents=True, exist_ok=True)
 app.mount("/media", StaticFiles(directory=str(_MEDIA_DIR)), name="media")
