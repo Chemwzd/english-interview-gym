@@ -1,16 +1,19 @@
 <p align="center">
-  <img src="docs/logo.png" width="104" alt="English Interview Gym — logo">
+  <img src="docs/logo.png" width="110" alt="English Interview Gym — logo">
 </p>
 
 <h1 align="center">English Interview Gym<br>英语面试健身房</h1>
 
 <p align="center">
-  <b>A self-hosted AI English interview trainer. Turn-based voice mock interviews, instant corrections, click-to-lookup vocabulary, and progress you can actually see.</b><br>
-  <b>本地部署的 AI 英语面试训练系统：语音模拟面试 · 即时纠错 · 点词速查 · 看得见的进步。</b>
+  <b>每天 20 分钟，和 AI 面试官开口对练，把"日常英语"练成"面试流利"。</b><br>
+  <b>语音模拟面试 · 实时提示 · 点词速查 · 即时纠错 · 复盘打卡 —— 本地运行，数据不出你的电脑。</b>
+</p>
+
+<p align="left">
+  <a href="README_en.md"><b>English</b></a> | <a href="README.md"><b>中文</b></a>
 </p>
 
 <p align="center">
-  <a href="#english"><b>🇬🇧 English</b></a> · <a href="#chinese"><b>🇨🇳 简体中文</b></a><br><br>
   <img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License MIT">
   <img src="https://img.shields.io/badge/Python-3.12-3776AB.svg" alt="Python 3.12">
   <img src="https://img.shields.io/badge/BYOK-bring%20your%20own%20API%20key-orange.svg" alt="BYOK">
@@ -18,221 +21,220 @@
 </p>
 
 <p align="center">
-  <img src="docs/hero.png" width="860" alt="Speaking into a microphone while the AI interviewer replies, gives corrections and tracks progress">
+  <img src="docs/overview.png" width="1100" alt="功能总览：模拟面试 · 实时提示 · 点词速查 · 复盘报告 · 打卡进度">
 </p>
 
----
+## 目录
 
-<a id="english"></a>
+- [这是什么](#这是什么)
+- [快速开始](#快速开始)
+- [功能详解](#功能详解)
+  - [模拟面试](#模拟面试)
+  - [示范答案与实时提示](#示范答案与实时提示)
+  - [点词速查](#点词速查)
+  - [即时反馈与评分](#即时反馈与评分)
+  - [复盘报告与错题本](#复盘报告与错题本)
+  - [打卡与进度](#打卡与进度)
+  - [题目卡片墙](#题目卡片墙)
+  - [简历导入](#简历导入)
+- [配置手册](#配置手册)
+- [自定义与扩展](#自定义与扩展)
+- [目录结构](#目录结构)
+- [隐私说明](#隐私说明)
+- [常见问题](#常见问题)
+- [开源协议](#开源协议)
 
-# 🇬🇧 English
+## 这是什么
 
-> **Jump to:** [How it works](#en-how) · [Features](#en-features) · [Quick start](#en-quickstart) · [Daily use](#en-daily) · [Configuration](#en-config) · [Customize](#en-customize) · [FAQ](#en-faq)
+一个跑在你电脑上的英语面试训练器。核心循环只有一件事——**开口说**：
 
-## <a id="en-how"></a>How it works
+> AI 面试官语音提问 → 你开口回答（自动转写）→ 即时纠错、评分、教你更好的说法 → 追问或下一题
 
-One 20-minute session = **one question at a time**, spoken out loud:
+每次练习自动计入打卡与趋势统计；每道题都能回看历史、重练、看到进步曲线。它针对三类常见困境：
 
-```
-AI interviewer asks (voice)  →  you answer (voice, transcribed)
-      ↑                                      ↓
-next question / follow-up  ←  instant feedback + polished revision  →  scored & logged
-```
+- **没人陪练**——3 种 AI 面试官人格 × 82 道高频题（HR 初面 / 技术面 / 压力面），随时开始，永不嫌你烦；
+- **不知道怎么说**——每题附带 30–45 秒示范答案（「🧩 通用版」开箱即用；导入简历解锁「🎯 定制版」），全站单词点击即查，卡壳时还有「照读示范」模式兜底；
+- **练完没反馈**——每轮纠错 / 升级 / 改写三张卡片 + 1–10 分；整场结束生成五维复盘报告与错题本。
 
-Every answer gets corrections and a 1–10 score; every question keeps a practice history, so your improvement becomes a visible trend line instead of a feeling.
-
-## <a id="en-features"></a>✨ Features
-
-<p align="center"><img src="docs/features.png" width="860" alt="Feature overview: microphone (mock interview), feedback bubble (instant corrections), magnifying glass over a word card (click-word lookup), rising chart with flame (history & streaks)"></p>
-
-| | Feature | What it does |
+| 功能 | 能干嘛 | 入口 |
 |---|---|---|
-| 🎙️ | **Voice mock interviews** | 3 AI interviewer personas (friendly HR / technical lead / stress interviewer). The interviewer speaks, you answer out loud, with natural follow-up questions. |
-| 📖 | **Sample answers, two versions** | Every question generates a lean 30–45 s business answer: a **generic framework version** out of the box; import your resume to unlock a **personalized version** grounded in your real experience. |
-| 🔍 | **Click-word lookup** | Tap any English word in the conversation — IPA, context-aware meaning, example sentence, pronunciation; one click to save it to your vocabulary collection. |
-| ✍️ | **Instant feedback** | **Correction / Upgrade / Revision** cards plus a 1–10 score for every answer; reading mode adds word-level accuracy against the script. |
-| 🗂 | **Question card wall** | Each question set opens as a wall of illustrated cards (title, status, best score). Open a card for **per-question history** — date, mode, duration, WPM, score — with a score **trend line**. Start from any question. |
-| 📅 | **Streaks & stats** | Consecutive days, daily goal ring (minutes spoken), 7-day calendar, milestone celebrations. |
-| 📚 | **Review & errorbook** | End a session for a scored review (content / structure / grammar / vocabulary / fluency) + drills; recurring mistakes auto-collect into an errorbook. |
+| 🎙️ 模拟面试 | 3 种人格 × 3 套题库，语音问答、自然追问 | 首页「选择你的 AI 导师」 |
+| 💡 示范答案 | 每题 30–45 秒示范：通用版 / 定制版 | 对话页「📖 示范答案」 |
+| 🔍 点词速查 | 音标 · 语境释义 · 例句 · 发音 · 收藏 | 全站任意单词 |
+| ✍️ 即时反馈 | Correction / Upgrade / Revision + 1–10 分 | 每轮回答后自动出现 |
+| 📋 复盘报告 | 五维评分 + 下次重点 + 错题本 | 右上角「复盘」 |
+| 🔥 打卡与进度 | 连续天数 · 每日目标圆环 · 14 天日历 | 首页打卡面板 |
+| 🗂 题目卡片墙 | 82 题卡片：状态 / 最高分 / 趋势 / 单题历史 | 首页「选择题集」 |
+| 📄 简历导入 | 解锁基于你真实经历的定制版答案 | 「📄 我的简历」 |
 
-## <a id="en-quickstart"></a>🚀 Quick start
+## 快速开始
 
-**Prerequisites**: Python 3.12, [`uv`](https://docs.astral.sh/uv/) (or pip), `ffmpeg` on PATH. macOS is first-class (optional local fallbacks use macOS `say` / `mlx-whisper`); other systems work via the cloud pipeline.
+**环境要求**：macOS（Apple Silicon 体验最佳）+ Python 3.12 + `ffmpeg`（`brew install ffmpeg`）+ 一个 API Key（腾讯云 TokenHub，或任何 OpenAI 兼容网关）。
+
+### 1. 克隆并安装
 
 ```bash
 git clone https://github.com/Chemwzd/english-interview-gym.git
 cd english-interview-gym
-uv venv .venv --python 3.12
-uv pip install --python .venv/bin/python -r app/requirements.txt
-
-cp app/.env.example app/.env     # then set TOKENHUB_API_KEY=your-key in app/.env
-                                 # get one at https://console.cloud.tencent.com/tokenhub
-                                 # (LLM + ASR + TTS share one key; enable "postpaid" for voice models)
-
-bash scripts/run_server.sh       # open http://127.0.0.1:8765
+python3 -m venv .venv            # 装了 uv 也可以：uv venv .venv --python 3.12
+.venv/bin/pip install -r app/requirements.txt
 ```
 
-Health check for all pipelines: `.venv/bin/python scripts/check_stack.py`
-
-> 💡 Use any OpenAI-compatible gateway: set `TOKENHUB_BASE_URL` in `app/.env` and change `llm.model` in `app/config.yaml`. Fully offline speech: `asr.driver: local` (needs `mlx-whisper`, macOS) + `tts.driver: macos_say`.
-
-## <a id="en-daily"></a>🎧 Daily use in 30 seconds
-
-| You want to… | Do this |
-|---|---|
-| Practice one question | Question set → tap a card → **「🎙 Start from this question」** → speak → review feedback |
-| Keep the recommended path | Question set → **「Continue」** (auto-jumps to your first unpracticed question) |
-| Hear a model answer | Any question → **📖 Sample answer** (🎯 personalized tab appears after you import your resume) |
-| Look up a word | Tap any word anywhere → card with meaning + pronunciation → **⭐ Save** |
-| Check your improvement | Question card → per-question history & trend · Home → streak panel & stats |
-| Review a session | **「Review」** top-right → scored report + drills |
-
-Recording: click the mic or **press Space**.
-
-## <a id="en-config"></a>⚙️ Configuration
-
-**Environment variables (`app/.env`)** — only one key is required:
-
-| Variable | Required | Purpose |
-|---|---|---|
-| `TOKENHUB_API_KEY` | ✅ | One key for LLM + ASR + TTS (Tencent Cloud TokenHub or any compatible gateway) |
-| `TOKENHUB_BASE_URL` | – | Override API base URL (point at any OpenAI-compatible gateway) |
-
-
-**`app/config.yaml`**: `llm.model` & `llm.fallback_models` (default `deepseek/deepseek-flash`) · `asr.driver` (`auto`/`tokenhub`/`local`) · `tts.driver` & per-persona `tts.voices` · `session.daily_goal_minutes` · `tools.ffmpeg`.
-
-## <a id="en-customize"></a>🎯 Make it yours
-
-- **Question banks** — plain YAML under `materials/question-bank/`:
-
-  ```yaml
-  key: my-bank
-  title: My question set
-  questions:
-    - id: q1
-      round: HR screen
-      category: Intro
-      text: "Tell me about yourself."
-      intent: Why they ask this.
-      hint: How to structure your answer.
-      followups:
-        - "What's the one thing you want me to remember?"
-  ```
-
-- **Interviewer personas** — `materials/personas/*.md` (define the character in the `### system` block).
-- **Your story bank** — copy `materials/stories/template.md` to build 5–8 polished personal stories.
-
-
-## 🔒 Privacy
-
-`app/.env`, `materials/profile.md` (your imported resume) and `data/` (recordings, transcripts, reports) are **gitignored**. Your resume is only sent to the AI endpoint **you** configured. This public repo contains **no personal data**.
-
-## 🗂 Project structure
-
-```
-app/        FastAPI server (server/) + single-page frontend (web/)
-materials/  personas · question-bank (+images) · stories template · wordlist · profile.example
-scripts/    run_server · check_stack · baseline_report
-data/       runtime data (local only): sessions · reports · audio · errorbook
-docs/       RUNBOOK · PRACTICE-PLAN · image assets
-```
-
-## <a id="en-faq"></a>❓ FAQ
-
-| Symptom | Fix |
-|---|---|
-| `402 / 401007` on submit | Enable "postpaid billing" in the TokenHub console for voice models; or set `asr.driver: local` |
-| Microphone unavailable | Open via `http://127.0.0.1` (not a LAN IP); allow mic permission |
-| Port in use | Change `server.port` in `app/config.yaml` + `--port` in `scripts/run_server.sh` |
-| Different voices / LLM | `tts.voices` in config · `TOKENHUB_BASE_URL` + `llm.model` for any OpenAI-compatible model |
-
-## 📄 License
-
-MIT — see [LICENSE](LICENSE).
-
----
-
-<a id="chinese"></a>
-
-# 🇨🇳 简体中文
-
-> **快速跳转：** [工作原理](#zh-how) · [功能](#zh-features) · [快速开始](#zh-quickstart) · [日常操作](#zh-daily) · [配置](#zh-config) · [定制](#zh-customize) · [FAQ](#zh-faq)
-
-## <a id="zh-how"></a>工作原理
-
-一次 20 分钟训练 = **一次一题**，全程开口：
-
-```
-AI 面试官语音提问  →  你开口回答（语音识别转写）
-      ↑                        ↓
-下一题 / 追问  ←  即时反馈 + 润色修订  →  评分入库
-```
-
-每次作答都有纠错与 1–10 综合分；每道题都留存练习历史——进步不再靠感觉，而是一条看得见的趋势曲线。
-
-## <a id="zh-features"></a>✨ 功能
-
-<p align="center"><img src="docs/features.png" width="860" alt="功能总览：麦克风（模拟面试）、反馈气泡（即时纠错）、单词放大镜（点词速查）、趋势火焰（历史与打卡）"></p>
-
-| | 功能 | 说明 |
-|---|---|---|
-| 🎙️ | **语音模拟面试** | 3 种 AI 面试官人格（友善 HR / 技术官 / 压力面）：面试官语音提问，你开口作答，带自然追问。 |
-| 📖 | **示范答案 · 双版本** | 每题生成 30–45 秒商务短答：开箱即用的 **🧩 通用框架版**；导入简历后解锁基于你真实经历的 **🎯 个人定制版**。 |
-| 🔍 | **点词速查** | 对话中任意英文单词可点击：音标、语境释义、例句、发音；一键收藏生词。 |
-| ✍️ | **即时反馈** | 每次作答给出 **Correction / Upgrade / Revision** 卡片 + 1–10 综合分；照读模式附逐词准确率。 |
-| 🗂 | **题目卡片墙** | 题集以卡片墙展开（配图 + 中文短标题 + 状态 + 最高分）；点开看**单题历史**（日期/模式/时长/语速/分数）与**分数趋势线**——从任意一题开练。 |
-| 📅 | **打卡与统计** | 连续天数、每日目标环（开口分钟数）、7 天日历、连胜里程碑庆祝。 |
-| 📚 | **复盘 & 错题本** | 结束一场生成评分报告（内容/结构/语法/词汇/流利度）+ 练习清单；反复出现的问题自动进错题本。 |
-
-## <a id="zh-quickstart"></a>🚀 快速开始
-
-**环境要求**：Python 3.12、[`uv`](https://docs.astral.sh/uv/)（或 pip）、PATH 里有 `ffmpeg`。macOS 体验最佳（本地兜底用 `say` / `mlx-whisper`）；其他系统用云端链路即可。
+### 2. 填入 API Key
 
 ```bash
-git clone https://github.com/Chemwzd/english-interview-gym.git
-cd english-interview-gym
-uv venv .venv --python 3.12
-uv pip install --python .venv/bin/python -r app/requirements.txt
-
 cp app/.env.example app/.env     # 编辑填入 TOKENHUB_API_KEY=你的key
                                  # 申请：https://console.cloud.tencent.com/tokenhub
-                                 # （LLM/语音识别/语音合一共用一个 Key；语音模型需开通"后付费"）
-
-bash scripts/run_server.sh       # 打开 http://127.0.0.1:8765
+                                 # （对话模型 / 语音识别 / 语音合一共用一个 Key）
 ```
 
-三条链路体检：`.venv/bin/python scripts/check_stack.py`
+或者运行交互式配置助手（会在线验证 Key 再写入）：
 
-> 💡 换任何 OpenAI 兼容网关：`app/.env` 设 `TOKENHUB_BASE_URL` + 改 `app/config.yaml` 的 `llm.model`。完全离线语音：`asr.driver: local`（需 `mlx-whisper`，限 macOS）+ `tts.driver: macos_say`。
+```bash
+python3 scripts/setup_env.py
+```
 
-## <a id="zh-daily"></a>🎧 日常操作（30 秒看懂）
+### 3. 启动
 
-| 你想做什么 | 怎么做 |
-|---|---|
-| 练一道题 | 题集 → 点任意题卡 → **「🎙 从这题开练」** → 说话 → 看反馈 |
-| 按推荐顺序练 | 题集 → **「继续练习」**（自动跳到第一道未练的题） |
-| 看示范答案 | 任意题 → **📖 示范答案**（导入简历后多出「🎯 定制版」标签） |
-| 查单词 | 点对话里任意单词 → 释义卡 + 发音 → **⭐ 收藏** |
-| 看进步 | 题卡 → 单题历史与趋势 · 首页 → 打卡面板与统计 |
-| 复盘整场 | 右上角 **「复盘」** → 评分报告 + 下次练习清单 |
+```bash
+bash scripts/run_server.sh       # 或直接双击「打开训练系统.command」
+```
 
-录音：点麦克风按钮或**按空格键**。
+打开 http://127.0.0.1:8765（首次使用请允许浏览器访问麦克风）。
 
-## <a id="zh-config"></a>⚙️ 配置
+### 4. 第一次练习（约 10 分钟）
 
-**环境变量（`app/.env`）**——只有一个是必填：
+1. 首页「选择你的 AI 导师」→ 点导师**试听音色**，选定人格；
+2. 「选择题集」→ 先进 `baseline-8`（8 题热身）；
+3. 点任意题卡 → 「🎙 从这题开练」→ 点麦克风（或按空格）开口；
+4. 说完再点一次麦克风 → 看转写、反馈卡与评分 → 继续下一题；
+5. 练完点右上角「复盘」生成整场报告。
+
+### 5. 体检与周报（可选）
+
+```bash
+.venv/bin/python scripts/check_stack.py       # 逐链路体检：对话 / 语音识别 / 语音合成
+.venv/bin/python scripts/baseline_report.py   # 练习周报
+```
+
+## 功能详解
+
+### 模拟面试
+
+**能干嘛**：和面试官"你一句我一句"地真实对话——面试官语音提问，你开口回答，自动转写成文字，然后是追问或下一题。
+
+- 3 种人格（`materials/personas/`）：`hr-friendly` 友善 HR、`tech-lead` 技术面试官、`stress` 压力面；
+- 3 套题库：`baseline-8`（8 题热身）、`interview-core`（14 题核心）、`mnc-60`（60 题大厂高频）。
+
+**怎么用**：首页选人格 → 选题集 → 点题卡「🎙 从这题开练」→ 点麦克风（或按空格）→ 答完再点一次 → 看反馈 → 下一题。对话页顶部可选「自己说 / 照读示范」两种模式；中途「跳过这题」；随时「复盘」结束整场。
+
+**怎么配置**：
+- 单题回答时长上限：`app/config.yaml` → `session.max_answer_seconds`（默认 120 秒）；
+- 换音色：`app/config.yaml` → `tts.voices`（每个人格一个音色）；
+- 加自己的题 / 题库：见[自定义与扩展](#自定义与扩展)。
+
+### 示范答案与实时提示
+
+**能干嘛**：任何一题都可以先看"这题可以怎么说"——一份 30–45 秒（约 60–100 词）的商务范例答案：
+
+- 「🧩 通用版」：开箱即用，含 `[方括号]` 占位符，替换成自己的信息即可；
+- 「🎯 定制版」：导入简历后解锁，用你真实经历和数字组织答案（见[简历导入](#简历导入)）。
+
+**怎么用**：对话页点「📖 示范答案」→ 在「🧩 通用版 / 🎯 定制版」标签间切换 → 想跟读时点「🎧 照读这段」进入照读模式。
+
+**怎么配置**：无需配置；定制版取决于是否导入简历。
+
+### 点词速查
+
+**能干嘛**：对话、示范答案、反馈卡片、复盘报告里的**任意英文单词**点一下，弹出音标、词性、**结合当前语境**的释义、例句与发音；一键「⭐ 收藏生词」。同一个词在不同语境会给出不同解释。
+
+**怎么用**：单击单词 → 看释义卡 → 🔊 听发音 → ⭐ 收藏。收藏列表在「⭐ 收藏夹」中回顾。
+
+**怎么配置**：无需配置；查询结果缓存在 `data/gloss_cache.json`，重复查询秒回。
+
+### 即时反馈与评分
+
+**能干嘛**：每次回答后自动给出三张卡片——
+
+- **Correction** 纠错：语法 / 用词 / 时态；
+- **Upgrade** 升级：口语表达 → 面试官期待的地道表达；
+- **Revision** 改写：润色后的完整回答，可直接跟读。
+
+外加 1–10 综合分。用「照读示范」模式回答时，还会给出**照读准确率**（漏读 / 添词逐词对照）。
+
+**怎么用**：答完自动出现，不必操作；卡片里的单词同样可以点词速查、⭐ 收藏。
+
+**怎么配置**：无需配置。
+
+### 复盘报告与错题本
+
+**能干嘛**：结束一场后生成「本场复盘」：内容 / 结构 / 语法 / 词汇 / 流利度五个维度评分 + 下次重点建议 + 练习清单；反复出现的错误自动汇入错题本，方便专项复练。
+
+**怎么用**：右上角「复盘」→ 10–20 秒生成报告（同时存入 `data/reports/`）。
+
+**怎么配置**：无需配置。
+
+### 打卡与进度
+
+**能干嘛**：把"开口量"像健身一样记录：连续打卡天数、每日目标圆环（默认 20 分钟）、最近 14 天分钟数日历、统计卡片；连续 3 / 7 / 14 / 30 / 50 / 100 天有庆祝动画。
+
+**怎么用**：首页打卡面板自动更新；练完即计入今天。
+
+**怎么配置**：每日目标改 `app/config.yaml` → `session.daily_goal_minutes`（默认 20）。
+
+### 题目卡片墙
+
+**能干嘛**：每个题集以卡片墙展开：配图 + 中文短标题 + 练习状态 + 最高分。点开卡片看**单题历史**——每次作答的日期、模式（自由说 / 照读）、时长、语速（WPM）、得分，以及一条分数趋势线；也可以直接从这题重练。
+
+**怎么用**：首页「选择题集」→ 卡片墙；底部「▶ 继续练习」自动跳到第一道未练的题（练完一轮变为「▶ 再练一遍」）。
+
+**怎么配置**：题目配图放在 `materials/question-bank/images/<题集>/<题号>.png`，题卡墙自动显示（内置题集已附带配图）。
+
+### 简历导入
+
+**能干嘛**：上传简历（`.docx` / `.pdf` / 直接粘贴文本），示范答案解锁「🎯 定制版」——用你的真实经历、项目与数字组织答案。简历只保存在本机。
+
+**怎么用**：右上角「📄 我的简历」→ 选择文件或粘贴文字 → 保存；随时可删除（删除后退回仅有通用版）。
+
+**怎么配置**：也可以手动编辑 `materials/profile.md`（格式参考 `materials/profile.example.md`）。
+
+## 配置手册
+
+### 环境变量（`app/.env`）
 
 | 变量 | 必填 | 用途 |
 |---|---|---|
-| `TOKENHUB_API_KEY` | ✅ | LLM + 语音识别 + 语音合成共用一个 Key（腾讯云 TokenHub 或任何兼容网关） |
+| `TOKENHUB_API_KEY` | ✅ | 对话模型 + 语音识别 + 语音合成共用一个 Key（腾讯云 TokenHub 或兼容网关） |
 | `TOKENHUB_BASE_URL` | – | 覆盖接口地址（指向任意 OpenAI 兼容网关） |
 
+### 应用配置（`app/config.yaml`）
 
-**`app/config.yaml` 要点**：`llm.model` 与 `llm.fallback_models`（默认 `deepseek/deepseek-flash`）· `asr.driver`（`auto`/`tokenhub`/`local`）· `tts.driver` 与每人格的 `tts.voices` 音色 · `session.daily_goal_minutes` · `tools.ffmpeg`。
+| 配置项 | 默认值 | 说明 |
+|---|---|---|
+| `llm.model` | `deepseek/deepseek-flash` | 主对话模型 |
+| `llm.fallback_models` | 见文件 | 主模型失败时的备选链 |
+| `asr.driver` | `auto` | `auto` / `tokenhub`（云端识别）/ `local`（mlx-whisper，仅 macOS） |
+| `tts.driver` | `tokenhub` | `tokenhub` / `macos_say`（离线兜底） |
+| `tts.voices` | 见文件 | 每个人格一个音色 |
+| `session.daily_goal_minutes` | `20` | 每日目标（分钟），影响打卡圆环 |
+| `session.max_answer_seconds` | `120` | 单题回答时长上限 |
+| `server.port` | `8765` | 服务端口 |
+| `tools.ffmpeg` | `ffmpeg` | ffmpeg 可执行文件路径 |
 
-## <a id="zh-customize"></a>🎯 定制你自己的版本
+### 运行数据（`data/`，全部仅本地）
 
-- **题库**——普通 YAML，改 / 加 `materials/question-bank/` 下的文件：
+| 路径 | 内容 |
+|---|---|
+| `data/sessions/*.jsonl` | 每场训练的逐轮记录（含评分） |
+| `data/reports/` | 复盘报告 |
+| `data/errorbook.jsonl` | 错题本 |
+| `data/favorites.jsonl` | 收藏的生词与句子 |
+| `data/gloss_cache.json` | 点词速查缓存 |
+| `data/audio/` | 录音文件 |
+
+## 自定义与扩展
+
+- **题目 / 题库**——普通 YAML，直接改或新增 `materials/question-bank/` 下的文件：
 
   ```yaml
   key: my-bank
@@ -248,33 +250,49 @@ bash scripts/run_server.sh       # 打开 http://127.0.0.1:8765
         - "What's the one thing you want me to remember?"
   ```
 
-- **面试官人格**——`materials/personas/*.md`（在 `### system` 块里定义角色）。
-- **故事库**——复制 `materials/stories/template.md`，攒 5–8 个打磨过的个人故事。
+- **题目配图**——PNG 放进 `materials/question-bank/images/<题库key>/<题号>.png`，题卡墙自动显示；
+- **面试官人格**——`materials/personas/*.md`，在 `### system` 块里定义角色与提问风格；
+- **故事库**——复制 `materials/stories/template.md`，攒 5–8 个打磨过的个人故事，面试答案更扎实。
 
+## 目录结构
 
-## 🔒 隐私说明
-
-`app/.env`（密钥）、`materials/profile.md`（导入的简历）、`data/`（录音/转写/报告）**全部被 .gitignore 忽略**。简历只发送到**你自己配置的** AI 接口。本公开仓库不含任何个人信息。
-
-## 🗂 目录结构
-
+```text
+english-interview-gym/
+├── 打开训练系统.command          # macOS 双击一键启动
+├── app/
+│   ├── config.yaml              # 应用配置（模型 / 语音 / 打卡目标）
+│   ├── .env.example             # 环境变量模板（复制为 .env 后填 Key）
+│   ├── requirements.txt
+│   ├── server/                  # FastAPI 后端：会话 · 模型调用 · 语音识别 · 语音合成 · 报告
+│   └── web/                     # 单页前端（无框架构建，开箱即用）
+├── materials/
+│   ├── personas/                # 3 种面试官人格
+│   ├── question-bank/           # 3 套题库（YAML）+ 配图 + 元信息
+│   ├── stories/                 # 个人故事库（模板 + 说明）
+│   ├── wordlist/                # 生词表
+│   └── profile.example.md       # 简历模板（复制为 profile.md 手写）
+├── scripts/                     # setup_env · run_server · check_stack · baseline_report
+├── data/                        # 运行数据（仅本地，gitignore）
+└── docs/                        # RUNBOOK 运行手册 · PRACTICE-PLAN 练习计划 · 图片资源
 ```
-app/        FastAPI 服务（server/）+ 单页前端（web/）
-materials/  personas 人格 · question-bank 题库（含配图）· stories 模板 · wordlist · profile.example
-scripts/    启动 / 体检 / 周报
-data/       运行数据（仅本地）：sessions · reports · audio · errorbook
-docs/       RUNBOOK 运行手册 · PRACTICE-PLAN 练习计划 · 图片资源
-```
 
-## <a id="zh-faq"></a>❓ 常见问题
+## 隐私说明
+
+- **100% 本地运行**：服务只监听 `127.0.0.1`，训练数据（录音 / 转写 / 报告 / 生词）全部保存在本机 `data/`，不会上传到任何第三方；
+- **最小化外发**：回答的音频与文本只发送到**你自己配置的** API 接口（用于转写与反馈），密钥只存在本机 `app/.env`；
+- **无遥测**：没有统计上报、没有账号体系；
+- **公开仓库零个人信息**：`app/.env`、`materials/profile.md`、`data/` 均被 .gitignore 忽略，不随仓库分发。
+
+## 常见问题
 
 | 症状 | 处理 |
 |---|---|
-| 提交后报 `402 / 401007` | 控制台给语音模型开通"后付费"；或把 `asr.driver` 设为 `local` |
-| 麦克风不可用 | 必须用 `http://127.0.0.1` 打开；浏览器允许麦克风 |
-| 端口被占用 | 改 `app/config.yaml` 的 `server.port` + `scripts/run_server.sh` 的 `--port` |
-| 想换音色 / 大模型 | `tts.voices`；`TOKENHUB_BASE_URL` + `llm.model` 换任意 OpenAI 兼容模型 |
+| 提交后报 `402 / 401007` | 在控制台给语音模型开通"后付费"；或把 `asr.driver` 设为 `local` |
+| 麦克风不可用 | 必须用 `http://127.0.0.1` 打开（不要用局域网 IP）；浏览器允许麦克风权限 |
+| 端口被占用 | 改 `app/config.yaml` 的 `server.port`，同步改 `scripts/run_server.sh` 里的 `--port` |
+| 想换音色 / 换大模型 | 音色改 `tts.voices`；模型：`TOKENHUB_BASE_URL` + `llm.model` 指向任意 OpenAI 兼容模型 |
+| 不想用腾讯云 | 对话模型可指向任意 OpenAI 兼容网关（`TOKENHUB_BASE_URL` + `llm.model`）；语音可走本地模式：`asr.driver: local` + `tts.driver: macos_say`（仅 macOS） |
 
-## 📄 License
+## 开源协议
 
-MIT —— 见 [LICENSE](LICENSE)。
+本项目基于 [MIT License](LICENSE) 发布，欢迎 Issue 与 PR。
