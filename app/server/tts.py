@@ -6,6 +6,7 @@
 """
 import hashlib
 import subprocess
+import sys
 import tempfile
 from pathlib import Path
 
@@ -89,8 +90,11 @@ def synth(text: str, persona: str = None) -> bytes:
     if driver == "cloud":
         try:
             data = synth_cloud(text, voice_id=voice_id)
-        except Exception:
-            data = synth_say(text)  # 云端异常时保证可用
+        except Exception as e:  # noqa: BLE001
+            if sys.platform == "darwin":
+                data = synth_say(text)  # macOS：云端异常时用 say 兜底
+            else:
+                raise TTSError(f"云端语音合成失败：{e}") from e
     else:
         data = synth_say(text)
     if config.get("tts.cache", True):
