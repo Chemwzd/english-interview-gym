@@ -73,9 +73,9 @@
 
 ## 快速开始
 
-> 📖 **界面使用手册**（16 页，含全部界面截图，边看边练）：[DOCX 下载](docs/USER-GUIDE.docx) · [PDF 下载](docs/USER-GUIDE.pdf)
+> 📖 **界面使用手册**（17 页，含全部界面截图，边看边练）：[DOCX 下载](docs/USER-GUIDE.docx) · [PDF 下载](docs/USER-GUIDE.pdf)
 
-**环境要求**：macOS（Apple Silicon 体验最佳）+ Python 3.12 + `ffmpeg`（`brew install ffmpeg`）+ 一个 API Key（自备：任何 OpenAI 兼容服务均可，官方 API 或聚合网关）。
+**环境要求**：macOS（Apple Silicon 体验最佳）+ Python 3.12 + `ffmpeg`（`brew install ffmpeg`）+ 一个 API Key（自备：任何 OpenAI 兼容服务均可，官方 API 或聚合网关）。**Windows 用户无需 Python——直接用免安装版（见第 7 节）。**
 
 ### 1. 克隆并安装
 
@@ -139,6 +139,12 @@ bash scripts/run_server.sh       # 或直接双击「打开训练系统.command�
    - 安装证书：把 Mac 上的 `certs/ca.crt` **AirDrop** 到手机（或用 Safari 打开上面的地址后访问 `/ca.crt` 下载）→「设置 → 通用 → VPN与设备管理」安装描述文件 → 再到「设置 → 通用 → 关于本机 → 证书信任设置」对该证书开启完全信任；
    - Safari 打开终端打印的地址 → 「分享 → **添加到主屏幕**」——此后从主屏图标进入即**全屏独立窗口**，与 App 体验一致；
 5. 说明：手机是"瘦客户端"——会话与数据仍保存在你的 Mac（Mac 保持开机联网即可）；训练数据不出本机。
+
+### 7. Windows 免安装版（可选）
+
+不装 Python 也能用：从 [**Releases**](https://github.com/KumquatYZ/english-interview-gym/releases/latest) 下载 `EnglishInterviewGym-win64.zip` → 解压 → 双击 `EnglishInterviewGym.exe` → 浏览器自动打开 → 点「⚙️ 设置」填入接口地址与 API Key 即可开始使用（配置与数据都保存在软件文件夹内，绿色便携，删除即卸载）。
+
+> Windows 10/11（64 位）；包内已附带音频转码组件（FFmpeg），麦克风权限由浏览器在首次录音时询问。
 
 ## 模型需求与推荐
 

@@ -73,9 +73,9 @@ Every session feeds your streaks and stats; every question keeps a history, so y
 
 ## Quick start
 
-> 📖 **UI & usage guide** (16 pages, full screenshots — follow along): [DOCX](docs/USER-GUIDE.docx) · [PDF](docs/USER-GUIDE.pdf)
+> 📖 **UI &amp; usage guide** (17 pages, full screenshots — follow along): [DOCX](docs/USER-GUIDE.docx) · [PDF](docs/USER-GUIDE.pdf)
 
-**Requirements**: macOS (Apple Silicon recommended) + Python 3.12 + `ffmpeg` (`brew install ffmpeg`) + an API key (bring your own — any OpenAI-compatible service: official APIs or aggregator gateways).
+**Requirements**: macOS (Apple Silicon recommended) + Python 3.12 + `ffmpeg` (`brew install ffmpeg`) + an API key (bring your own — any OpenAI-compatible service: official APIs or aggregator gateways). **On Windows, no Python is needed — use the portable build (section 7).**
 
 ### 1. Clone &amp; install
 
@@ -139,6 +139,12 @@ The desktop version works out of the box. To practise on an **iPhone** (mic, str
    - Install the CA: AirDrop `certs/ca.crt` to the phone (or visit `/ca.crt` on the printed URL) → Settings → General → VPN &amp; Device Management → install → then Settings → General → About → Certificate Trust Settings → enable full trust;
    - Open the printed URL in Safari → Share → **Add to Home Screen** — it then launches full-screen as a standalone app;
 5. Note: the phone is a thin client — sessions and data stay on your Mac (keep it awake and online).
+
+### 7. Windows portable build (optional)
+
+No Python required: grab `EnglishInterviewGym-win64.zip` from [**Releases**](https://github.com/KumquatYZ/english-interview-gym/releases/latest) → unzip → double-click `EnglishInterviewGym.exe` → the browser opens automatically → click "⚙️ 设置 (Settings)" and fill in your API base URL + key (config and data stay inside the app folder — fully portable, delete the folder to uninstall).
+
+> Windows 10/11 (64-bit); an FFmpeg transcoding component is bundled. Mic permission is requested by the browser on first recording.
 
 ## Model requirements &amp; recommendations
 
