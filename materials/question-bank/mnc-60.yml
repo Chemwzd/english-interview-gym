@@ -1,0 +1,508 @@
+key: mnc-60
+title: 外企面试 60 题（商务英语 · 全流程编排）
+note: >
+  按外企面试流程定制（HR 初面 → 直属主管 → 技术面 → 跨部门/终面）：行为面用 STAR 五类桶（领导力/团队/冲突/失败/压力），
+  商务英语覆盖状态同步、向上沟通、跨团队协作，技术面覆盖研究项目深挖的常见角度。
+  命题依据：外企药企 / 工业软件 / 材料半导体等方向的公开面经与常见岗位要求。
+  使用建议：先「技术面试官 + 自由说」跑 2–3 次，再做一次全英文 HR 初面；每题可先点开「答题思路」，读一遍示范答案后自己说。
+questions:
+  # ============ A. 开场与自我介绍 ============
+  - id: a01
+    round: HR 初面
+    category: 开场与自我介绍
+    text: "Tell me about yourself."
+    intent: 破冰并定基调；面试官用 90 秒判断要不要往下聊。
+    hint: 三段式：① 一句话定位（研究方向 × 核心技术）② 两个最相关项目各一句（问题 + 方法 + 结果）③ 为什么在这里（方向匹配 + 具体岗位）。100–150 词，别背简历。
+    followups:
+      - "What's the one thing you want me to remember about you?"
+      - "Why should we remember you among this year's PhD candidates?"
+  - id: a02
+    round: HR 初面
+    category: 开场与自我介绍
+    text: "Walk me through your resume, and highlight what's most relevant to this role."
+    intent: 考察你能否为岗位做优先级判断，而不是流水账。
+    hint: 挑 2–3 个与 JD 对应的点讲深（GNN/生成式模型/LLM agent/数据管线），其余一句带过；每点落到「做了什么 + 结果数字」。
+    followups:
+      - "Which of these projects are you most proud of, and why?"
+  - id: a03
+    round: HR 初面
+    category: 开场与自我介绍
+    text: "Why are you moving from academia to industry, and why now?"
+    intent: 动机真实性；排查「逃避学术」型候选人。
+    hint: 讲具体吸引力：真实数据与闭环验证、算力与工程资源、把方法做成产品/管线；「why now」绑定你的毕业/转职时间线与行业窗口期。避免说「学术穷/学术累」。
+    followups:
+      - "What would you miss about academia?"
+      - "What if your first year is more engineering than science?"
+  - id: a04
+    round: HR 初面
+    category: 开场与自我介绍
+    text: "What kind of role are you looking for?"
+    intent: 判断岗位匹配度与期望管理。
+    hint: 一句话定位：目标岗位方向（偏建模 + 落地），说明你不排斥工程化（模型部署、数据管线）。别说「什么都可以」。
+    followups:
+      - "What do you NOT want to do?"
+
+  # ============ B. 动机与匹配 ============
+  - id: b01
+    round: HR / 主管
+    category: 动机与匹配
+    text: "Why our company?"
+    intent: 经典送命题；考你有没有做功课、匹配是否真实。
+    hint: 三层结构：① 公司层面事实（管线/平台/开源工具/近期新闻，要有具体名字）② 与你的交叉点（如 AIDD 的 GNN+生成模型、材料 AI 的数据+模拟）③ 你能带来的增量。把 [公司名] 换成面试目标并提前查官网/领英。
+    followups:
+      - "What do you know about our work?"
+      - "Who else are you interviewing with?"
+  - id: b02
+    round: 主管 / 技术面
+    category: 动机与匹配
+    text: "Why this role specifically — why AI for drug discovery (or materials)?"
+    intent: 方向承诺度；会不会干半年就跑。
+    hint: 讲你的方法在真实场景的价值（预测结合/生成分子要「接地」到实验与药效），并说你愿意长期深耕这个交叉领域；引用一个你读过/做过的案例。
+    followups:
+      - "What would make you leave in two years?"
+  - id: b03
+    round: 主管面
+    category: 动机与匹配
+    text: "Why should we hire you? What makes you different from other PhD candidates?"
+    intent: 差异化与自我推销能力（外企非常看重）。
+    hint: 差异化 = 建模能力 × 领域直觉 × agent 工程：你能自己提出建模方案、写训练/推理管线、还会自动化整条评估流程；各配一个证据（项目 + 数字）。
+    followups:
+      - "That sounds strong. What's your weakness then?"
+  - id: b04
+    round: HR / 主管
+    category: 动机与匹配
+    text: "What do you know about our recent work — pipeline, platform, or products?"
+    intent: 调研深度测试；外企面试几乎必问。
+    hint: 面试前 30 分钟必做：官网 News、近半年管线/发布、开源工具、代表论文；准备 1 个具体事实 + 1 个你想深入的问题。
+    followups:
+      - "Which of our products would you most want to work on, and why?"
+  - id: b05
+    round: HR 初面
+    category: 动机与匹配
+    text: "Would you be open to relocation or business travel? Any constraints?"
+    intent: 现实条件确认（外企常有全球协作和差旅）。
+    hint: 说明对工作地点/出差/短期外派的开放度与边界（如实）；强调英语工作环境没问题（有国际会议或跨国协作经验）。
+    followups:
+      - "Are you comfortable working with teams in European or US time zones?"
+  - id: b06
+    round: HR / 主管
+    category: 动机与匹配
+    text: "What are you most proud of in your PhD so far?"
+    intent: 价值观测试：你在意的是发表还是闭环落地？
+    hint: 选一个「从 0 到 1」的项目：自己搭方法 + 打通评估闭环，讲清关键难点如何突破、结果如何被验证。数字 + 闭环两个关键词。
+    followups:
+      - "How much of it was your own idea?"
+  - id: b07
+    round: HR / 主管
+    category: 动机与匹配
+    text: "Why did you cross into AI, rather than staying pure lab work or pure theory?"
+    intent: 职业叙事是否自洽。
+    hint: 讲一个从传统方向转向计算 + ML 的转折点：「实验/人工慢、数据贵 → 用模型放大杠杆」；举自己项目里效率或成功率提升的具体例子。
+    followups:
+      - "What part of hands-on work do you miss?"
+  - id: b08
+    round: 主管 / 终面
+    category: 动机与匹配
+    text: "What would you like to accomplish in your first year with us?"
+    intent: 期望管理 + 成熟度。
+    hint: 前 90 天：吃透数据与业务问题；6 个月：交付 1 个可被团队使用的模型/工具；12 个月：把「建模 → 实验验证」的闭环流程跑通一轮。绑定对方团队的实际场景。
+    followups:
+      - "How would you measure whether your first year went well?"
+
+  # ============ C. 行为面（STAR） ============
+  - id: c01
+    round: 主管 / 终面
+    category: 行为面·STAR
+    text: "Tell me about a time you led a project from idea to a deliverable."
+    intent: 领导力与ownership。
+    hint: 用一个自己主导的项目：从想法到交付，你负责哪部分、怎么协调协作方、最终产出什么可验证结果。STAR 比重：背景 15% / 任务 15% / 行动 55% / 结果 15%。
+    followups:
+      - "What would you do differently if you ran it again?"
+  - id: c02
+    round: 主管面
+    category: 行为面·STAR
+    text: "Tell me about a time you worked in a cross-functional or interdisciplinary team."
+    intent: 跨学科协作（工业界核心能力）。
+    hint: 选一个多背景协作的项目：讲清你如何对齐不同背景成员（算法/计算/实验/写作）的节奏与术语，以及分歧怎么收敛。
+    followups:
+      - "How did you resolve disagreements between workstreams?"
+  - id: c03
+    round: 主管面
+    category: 行为面·STAR
+    text: "Describe a time you had a disagreement with a colleague or advisor. How did you handle it?"
+    intent: 冲突处理；看你会不会用数据说话、给对方台阶。
+    hint: 用技术分歧故事（如方法选择之争），结构：分歧点 → 我做了什么验证 → 用数据达成共识 → 关系保持。别答「我没吵过架」。
+    followups:
+      - "What if the data had supported THEIR view?"
+  - id: c04
+    round: 主管 / 终面
+    category: 行为面·STAR
+    text: "Tell me about a project that failed or didn't go as planned. What did you learn?"
+    intent: 自我认知与成长性；真诚度测试。
+    hint: 选一个真实的「死胡同」（某方法训练不收敛/数据不够），讲：先止损 → 归因 → 换路径 → 后续如何预防。避免「我太追求完美」型伪缺点。
+    followups:
+      - "How do you decide when to kill a line of work?"
+  - id: c05
+    round: 主管面
+    category: 行为面·STAR
+    text: "Tell me about a time you worked under a tight deadline. How did you manage it?"
+    intent: 压力下的执行与优先级。
+    hint: 论文/项目冲刺：明确不可商量项 → 砍范围 → 自动化（如 1 小时全流程评估脚本）→ 沟通预期；结果要有按时交付的证据。
+    followups:
+      - "What did you cut, and how did you decide?"
+  - id: c06
+    round: 主管面
+    category: 行为面·STAR
+    text: "Tell me about a time you had to learn something completely new, fast."
+    intent: 学习能力与自驱。
+    hint: 从零上手 3D 几何深度学习 / AutoGluon / LLM agent 工程任选一个；公式：怎么学（论文+复现+拆解）→ 多快上手 → 产出什么。
+    followups:
+      - "How do you decide what to learn next?"
+  - id: c07
+    round: 主管面
+    category: 行为面·STAR
+    text: "Tell me about a time you took initiative beyond your assigned responsibilities."
+    intent: 主动性；工业界最看重信号之一。
+    hint: agent 化改造：原本手动流程 → 你用 LLM agent 自动完成注册/解析/供应商检索/逆合成评估，1 小时出全量结果；量化省下的人力时间。
+    followups:
+      - "Did you ask permission first? How did people react?"
+  - id: c08
+    round: 主管 / 终面
+    category: 行为面·STAR
+    text: "Tell me about a time you received difficult feedback. How did you respond?"
+    intent: 可教练性（coachability）。
+    hint: 导师或审稿人意见（例如对验证严谨性的批评）→ 承认 → 具体行动（补充实验/重跑基线）→ 结果改善。结尾一句成长心态。
+    followups:
+      - "What's the harshest thing someone said about your work?"
+  - id: c09
+    round: 主管面
+    category: 行为面·STAR
+    text: "Tell me about a time you had to make a decision with incomplete data."
+    intent: 判断力与风险意识。
+    hint: 数据 curation 的取舍：筛选标准不明确时，如何定义 inclusion 规则并留痕（可追溯的决策日志）；结果用模型指标佐证选择正确。
+    followups:
+      - "How do you guard against your own bias in those decisions?"
+  - id: c10
+    round: 主管 / 终面
+    category: 行为面·STAR
+    text: "Tell me about a time you influenced someone without formal authority."
+    intent: 影响力与沟通。
+    hint: 说服合作者采用你的评估框架/工具（如 agent 评分取代人工过审）；讲对方最初的顾虑、你给的证据、最终采纳与收益。
+    followups:
+      - "What do you do when you can't convince them?"
+  - id: c11
+    round: 主管面
+    category: 行为面·STAR
+    text: "Tell me about a time you had to juggle multiple competing priorities."
+    intent: 时间管理与沟通。
+    hint: 论文 + 项目 + 求职并行期：列出框架（重要性/依赖方/截止时间），主动对齐导师预期，哪些延后、哪些外包自动化。
+    followups:
+      - "What did you say no to?"
+  - id: c12
+    round: 主管面
+    category: 行为面·STAR
+    text: "Tell me about a time you dealt with unclear requirements or ambiguity."
+    intent: 在模糊中推进的能力（工业界常态）。
+    hint: 合作项目需求不清时：先写一版 scope 草案 + 关键假设让对方确认（低成本对齐），再迭代；强调你把模糊变具体的方法。
+    followups:
+      - "How do you avoid over-asking and slowing things down?"
+  - id: c13
+    round: HR / 主管
+    category: 行为面·STAR
+    text: "Tell me about a time you collaborated across cultures or time zones."
+    intent: 外企必备：跨文化协作。
+    hint: 国际会议报告、英文论文合作等；讲一次实际的跨文化沟通细节（口音/表达差异怎么处理）。
+    followups:
+      - "How comfortable are you presenting in English to a group?"
+  - id: c14
+    round: 主管面
+    category: 行为面·STAR
+    text: "Tell me about a mistake you made that affected others, and what you did about it."
+    intent: 诚信与补救能力。
+    hint: 真实小事故（数据版本混乱导致合作者返工等）：第一时间同步 → 修复 → 建立机制防复发；关键在「不藏」。
+    followups:
+      - "What mechanism did you put in place afterwards?"
+  - id: c15
+    round: HR / 主管
+    category: 行为面·STAR
+    text: "Tell me about a time you mentored, taught, or onboarded someone."
+    intent: 团队价值与分享精神。
+    hint: 教学/助教经历：讲你怎么把复杂概念讲给初学者、以及对方进步的证据。
+    followups:
+      - "How do you explain complex ideas to beginners?"
+
+  # ============ D. 技术面·研究深挖 ============
+  - id: d01
+    round: 技术面
+    category: 技术面·研究深挖
+    text: "Walk me through your PhD research in three minutes. Assume I know the technical background."
+    intent: 科研叙事与优先级（技术专家面前）。
+    hint: 三条线：① 核心方法研究 ② 方法到产出的完整闭环 ③ 面向产业场景的落地探索。每线一句结果数字。
+    followups:
+      - "What was the hardest technical bottleneck?"
+      - "Which result are you least confident about?"
+  - id: d02
+    round: 技术面 / 终面
+    category: 技术面·研究深挖
+    text: "Now explain the same research to a business audience in 60 seconds."
+    intent: 面向非专家的价值翻译能力。
+    hint: 用商务语言：问题（分子筛选贵/慢）→ 方案（模型先筛，实验验证）→ 价值（时间/成本节省，成功率）；一个类比即可，不讲方法细节。
+    followups:
+      - "If I were a commercial lead, why would I fund this?"
+  - id: d03
+    round: 技术面
+    category: 技术面·研究深挖
+    text: "Why did you choose your main model architecture — instead of classical baselines or standard descriptors?"
+    intent: 方法选择的科学判断力。
+    hint: 三个理由：问题本身的性质（需要分布而非单点预测）、物理先验的保留（结构化输入/特征）、数据规模与泛化策略；收尾用与基线方法的对比数字。
+    followups:
+      - "What are the failure modes of your model?"
+      - "How would it compare to diffusion-based docking approaches?"
+  - id: d04
+    round: 技术面
+    category: 技术面·研究深挖
+    text: "How did you validate your models — and where do they still fail?"
+    intent: 严谨性；承认局限的勇气。
+    hint: 训练/验证/测试分层 + 独立物理方法交叉验证 + 外推场景测试；诚实讲失败 case 类型与下一步；强调「模型输出如何对接实验判断」。
+    followups:
+      - "How do you know the model isn't just memorizing the training set?"
+  - id: d05
+    round: 技术面
+    category: 技术面·研究深挖
+    text: "Your inverse-design workflow uses LLM agents. How exactly do the agents work, and where do they break?"
+    intent: agent 工程的理解深度（对方可能是 agent/RAG 团队）。
+    hint: 讲清 loop：工具调用（数据/检索/生成）→ 独立 LLM 评审（多维度打分）→ Pareto 选择 Top-K；失败模式：幻觉、长尾类型、评分不一致 → 缓解措施。
+    followups:
+      - "How did you evaluate the reliability of the agents?"
+      - "What safeguards against hallucination did you build in?"
+  - id: d06
+    round: 技术面
+    category: 技术面·研究深挖
+    text: "You curated a large domain dataset from scratch. What was the hardest part of that dataset work?"
+    intent: 数据工程能力（工业界最缺）。
+    hint: 去重与结构质量、结合常数来源一致性、体系异质性、标签噪声；你的规则 + 留痕 + 抽样人工复核流程；把这些和「真实工业数据」类比。
+    followups:
+      - "How would you scale that curation process to 100k+ complexes?"
+  - id: d07
+    round: 技术面 / 终面
+    category: 技术面·研究深挖
+    text: "You worked on a confidential industrial project. How do you talk about it in an interview?"
+    intent: 合规意识 + 沟通边界（外企特别敏感）。
+    hint: 标准答法：说明性质（面向工业场景的计算与机器学习，受保密协议约束）→ 能讲的层面（数据集规模、建模范式、验证思路的方法论）→ 明确边界（细节需合规场景/许可）；体现你「懂规矩且不神秘化」。
+    followups:
+      - "If we hired you, how would you handle confidentiality across teams you work with?"
+  - id: d08
+    round: 技术面 / 主管
+    category: 技术面·研究深挖
+    text: "If you joined us to work on AIDD (or materials AI), how would your experience transfer — and what would you need to learn?"
+    intent: 迁移能力与自我认知。
+    hint: 迁移点：分子表示学习、生成模型、agent 工作流、数据集治理、误差分析思维；要学的：湿实验数据特性（活性/ADMET 噪声）、法规流程、公司内部平台与领域语言。诚恳 + 具体。
+    followups:
+      - "What's the first thing you'd study in your first month?"
+  - id: d09
+    round: 技术面
+    category: 技术面·研究深挖
+    text: "Which recent papers, models, or tools in your field impressed you most, and why?"
+    intent: 领域嗅觉与好奇心（防「只会自己的题」）。
+    hint: 准备 2–3 个 2025–2026 的项目（生成式分子/材料基础模型/科研 agent），每个一句「为什么它重要 + 与你的工作的联系」；别只说 AlphaFold。
+    followups:
+      - "If you could implement one of them here, which and how?"
+  - id: d10
+    round: 技术面
+    category: 技术面·研究深挖
+    text: "What's a technical decision from your PhD you would redo if you could?"
+    intent: 反思深度与工程成熟度。
+    hint: 选一个真实遗憾（例如早期特征工程走弯路/验证集划分方式），讲：当时为什么那样选 → 现在认识 → 会怎么改 + 影响评估。
+    followups:
+      - "How do you make those calls earlier now?"
+  - id: d11
+    round: 技术面
+    category: 技术面·研究深挖
+    text: "How do you make a model interpretable? You used SHAP — why does interpretability matter in industrial R&D?"
+    intent: 可解释性意识（药企/材料企业刚需）。
+    hint: SHAP 揭示哪些结构特征驱动预测 → 帮助领域专家信任/采信模型。工业价值：与实验团队对话的共同语言、监管/风控、指导下一步实验设计。举例说明一次 SHAP 结论如何影响你的判断。
+    followups:
+      - "When does interpretability matter more than accuracy?"
+  - id: d12
+    round: 技术面
+    category: 技术面·研究深挖
+    text: "How do you keep your work reproducible and well-engineered — code, data, pipelines?"
+    intent: 工程素养（外企 P 序列核心要求）。
+    hint: 开源代码 / 版本管理 / 脚本化全流程 / 环境可复现；再补持续养成的工程习惯（测试、README、日志）。
+    followups:
+      - "What engineering practice are you weakest in, honestly?"
+
+  # ============ E. 商务英语与职场沟通 ============
+  - id: e01
+    round: 主管 / 终面
+    category: 商务英语·职场沟通
+    text: "Give me a 90-second status update on your current project, as if I were a non-technical stakeholder."
+    intent: 结论先行的商务沟通（外企日常）。
+    hint: 结构：结论（进度/绿黄灯）→ 关键进展一句 → 风险/阻碍 → 需要的支持（具体 ask）。练「Bottom line first」，别按时间顺序讲。
+    followups:
+      - "And what do you need from me as your sponsor?"
+  - id: e02
+    round: 主管面
+    category: 商务英语·职场沟通
+    text: "How would you tell a project lead that your modeling work will slip by two weeks?"
+    intent: 坏消息的沟通方式：早、准、带方案。
+    hint: 公式：早说 → 影响评估（哪条线受阻/不受阻）→ 原因一句 → 补救选项（缩范围/并行/加资源）→ 新时间线承诺。语气对事不对人。
+    followups:
+      - "When would you raise it — a week before, or the day you know?"
+  - id: e03
+    round: 主管 / 终面
+    category: 商务英语·职场沟通
+    text: "You strongly disagree with a senior scientist's technical choice. How do you raise it?"
+    intent: 向上管理与得体表达（外企文化特别看重）。
+    hint: 私下优先 → 先理解对方假设（提问式）→ 用数据/小实验说话 → 给出替代方案而非只说不行 → 若仍被否，执行并留记录。展示你区分「原则问题」和「偏好问题」。
+    followups:
+      - "What if they overrule you and it fails?"
+  - id: e04
+    round: 主管面
+    category: 商务英语·职场沟通
+    text: "Your manager gives you a vague instruction. What do you do next?"
+    intent: 主动性 + 向上管理。
+    hint: 先复述确认目标与成功标准 → 列 2–3 个执行选项与假设请对方选择 → 定个短周期 check-in；不要沉默硬猜，也不要追问到对方烦。
+    followups:
+      - "How do you know when you have asked enough questions?"
+  - id: e05
+    round: 终面
+    category: 商务英语·职场沟通
+    text: "How would you present your PhD work to our commercial team — in their language?"
+    intent: 价值翻译 + 商业嗅觉。
+    hint: 讲成本/时间/风险/成功率，不讲算法；例：「把候选分子的实验筛选成本降低 X%、周期从月到周」；准备一个 30 秒版本和一个 3 分钟版本。
+    followups:
+      - "What would you NOT tell them to avoid overpromising?"
+  - id: e06
+    round: HR / 主管
+    category: 商务英语·职场沟通
+    text: "Tell me about your written English at work — give me an example of something you wrote."
+    intent: 英文书面沟通能力核实。
+    hint: 用论文写作、英文邮件协作、开源文档作例证；可以说四六级是过去时，现在的工作语言就是英语。
+    followups:
+      - "How do you handle writing when a deadline is tight?"
+  - id: e07
+    round: 主管面
+    category: 商务英语·职场沟通
+    text: "You need support from a busy team that doesn't report to you. How do you get it?"
+    intent: 跨团队协作的影响力。
+    hint: 先想对方的 KPI 和收益 → 把 request 切小（一次 30 分钟而不是一个大项目）→ 给清晰输入和截止 → 主动回报成果。讲一个你实际这样做的例子。
+    followups:
+      - "What if your priorities conflict with theirs?"
+  - id: e08
+    round: 主管面
+    category: 商务英语·职场沟通
+    text: "How do you run a meeting or drive a technical discussion in English?"
+    intent: 会议主持与推进能力（外企会议文化）。
+    hint: 会前议程与目标 → 时间盒控制 → 用提问激活沉默者 → 结论/待办当场复述；用你组织讨论/组会报告的经历作证据。
+    followups:
+      - "How do you keep a meeting from going off track?"
+  - id: e09
+    round: 主管面
+    category: 商务英语·职场沟通
+    text: "How do you give constructive feedback to a peer?"
+    intent: 团队成熟度。
+    hint: 私下、具体、对事不对人：观察 → 影响 → 建议 → 倾听对方视角；举例（评审师弟师妹的代码/论文时的做法）。
+    followups:
+      - "What if they react defensively?"
+
+  # ============ F. 情景题 ============
+  - id: f01
+    round: 主管 / 终面
+    category: 情景题
+    text: "What would your first 90 days look like in this role?"
+    intent: 计划性与务实度。
+    hint: 30 天：理解数据、平台、业务问题（多问多记）；60 天：复现一个基线、找到第一个可改进点；90 天：交付一个小而实的改进并用数据展示。绑定对方技术栈。
+    followups:
+      - "What would you do if there were no clear project for you on day one?"
+  - id: f02
+    round: 主管 / 终面
+    category: 情景题
+    text: "You discover a data-integrity issue in a dataset you already reported on. What do you do?"
+    intent: 诚信红线测试（外企必考）。
+    hint: 顺序：立即评估影响面 → 越早透明上报（不藏）→ 修正与复现验证 → 通知受影响方 → 机制化预防（校验脚本）。强调「数据诚信优先于面子」。
+    followups:
+      - "Who do you tell first — your manager or the affected team?"
+  - id: f03
+    round: 主管面
+    category: 情景题
+    text: "You have two urgent deadlines and one team — how do you prioritize?"
+    intent: 优先级框架与沟通。
+    hint: 判断维度：影响（对业务/对他人依赖）、不可逆性、能否并行/委派；找干系人对齐优先序而不是自己猜；预告次优项的延后方案。
+    followups:
+      - "How do you communicate the trade-off upward?"
+  - id: f04
+    round: 主管面
+    category: 情景题
+    text: "A critical collaborator stops responding mid-project. What do you do?"
+    intent: 主动推进与关系处理。
+    hint: 先给空间+换渠道（邮件→即时消息→当面/电话）→ 查是否我方的阻塞（未回复他们的诉求？）→ 升级路径（在约定时间点同步给双方主管，先商量再升级）。别说「等对方回」。
+    followups:
+      - "When is escalation the right move?"
+  - id: f05
+    round: 终面
+    category: 情景题
+    text: "You're asked to deliver something you've never done before — say, deploy a model to production — in two weeks. How do you approach it?"
+    intent: 学习速度 + 务实交付。
+    hint: 拆解：先搞清「可用」定义（内部 demo vs 生产级）→ 找最短路径（现成框架/请教行家）→ 设里程碑与降级方案 → 高层同步风险。展示你区分「完美」与「按时」。
+    followups:
+      - "What would you deliberately not do in those two weeks?"
+  - id: f06
+    round: 技术面 / 终面
+    category: 情景题
+    text: "With a limited GPU budget, how do you decide between two promising modeling directions?"
+    intent: 资源决策与实验设计思维。
+    hint: 小成本探针实验（先跑数据子集/小模型）→ 定义判据（上界信号 vs 天花板）→ 时间盒评估 → 快速 kill 劣质方向；讲一个你实际的取舍例子。
+    followups:
+      - "How do you avoid sunk-cost thinking?"
+
+  # ============ G. 收尾与谈判 ============
+  - id: g01
+    round: HR 初面 / 终面
+    category: 收尾与谈判
+    text: "What are your strengths and weaknesses?"
+    intent: 自知之明 + 包装能力。
+    hint: 优势 2 条带证据（建模×领域交叉、自动化工程化）；弱点 1 条真实且不致命（如「面对模糊需求时容易先动手后对齐——现在我会先写 scope 草案」），配改进动作。
+    followups:
+      - "Give me an example of that weakness in action."
+  - id: g02
+    round: HR / 终面
+    category: 收尾与谈判
+    text: "Where do you see yourself in five years?"
+    intent: 留任可能性与野心（外企常给双通道：管理/专家）。
+    hint: 双轨表述：技术线走 Principal/Staff Scientist（成为能独当一面的建模负责人），同时发展带小团队/跨职能协作的能力；强调想在「一家的体系里」成长（如对方有清晰晋升通道就点名）。
+    followups:
+      - "Do you see yourself as a manager or an individual contributor?"
+  - id: g03
+    round: HR 初面 / 终面
+    category: 收尾与谈判
+    text: "What are your salary expectations?"
+    intent: 定薪谈判；先回答「区间 + 依据 + 灵活度」。
+    hint: 先给一个做过功课的区间（参考《岗位核验报告》里外企博士级薪资与市场行情），说明构成（base/奖金/股票），表示「以整体 package 和岗位级别为准、可谈」。避免第一个报出具体底价或说「都可以」。
+    followups:
+      - "What's the minimum you would consider?"
+      - "Do you have competing offers?"
+  - id: g04
+    round: 任何一轮
+    category: 收尾与谈判
+    text: "Do you have any questions for us?"
+    intent: 反向考察你的专业度。
+    hint: 准备 5 个，现场挑 2–3：① 团队现在最大的技术挑战？② 这个岗位前 6 个月的成功标准？③ 数据/算力/协作模式？④ 团队的技术栈与开源文化？⑤ 招聘流程下一步？别问官网能查到的。
+    followups:
+      - "Anything else you want to know about the team?"
+  - id: g05
+    round: 终面
+    category: 收尾与谈判
+    text: "Is there anything else we should know about you?"
+    intent: 最后加分位。
+    hint: 30 秒补一发差异化 + 诚意：你的闭环思维（从想法到验证）、工程手感、以及为什么是这家公司；末句重申兴趣与时间线。
+    followups:
+      - "Anything you want to correct from earlier in this interview?"
+  - id: g06
+    round: HR 初面
+    category: 收尾与谈判
+    text: "When can you start, given your graduation timeline?"
+    intent: 时间线匹配；也考你会不会主动谈「过渡期安排」。
+    hint: 明确自己的毕业/离职时间线 → 谈能否实习或提前参与项目 → 转正路径；给出弹性同时守住学业/交接要求。若对方近期就有 HC，主动提议实习转正。
+    followups:
+      - "Could you start part-time or as an intern before graduation?"

@@ -1,0 +1,51 @@
+# EngTraining · app 配置（改这里即可切换模型/驱动，无需动代码）
+server:
+  host: 127.0.0.1
+  port: 8765
+
+llm:
+  # TokenHub 大模型网关（OpenAI 兼容）
+  base_url: https://tokenhub.tencentmaas.com/v1
+  model: deepseek/deepseek-flash        # 2026-09 实测可用
+  fallback_models:
+    - deepseek/deepseek-v4-flash-0731
+    - kimi-k3
+  disable_thinking: true   # 关闭思考链：更快、更省 token，且避免"思考草稿被当正文泄漏"（模型不支持时会自动去掉该参数）
+  temperature: 0.6
+  timeout_s: 120
+
+asr:
+  driver: auto            # auto | tokenhub | local
+  endpoint: https://tokenhub.tencentmaas.com/v1/wand/asrproxy/sync_transcribe
+  model: hy-asr-3.0-preview   # 中英混合+多方言；英语 WER≈2.6%
+  fallback_models:
+    - wand-asr-v1             # 云端第二引擎（可选）
+  source: en                  # 识别的基准语种（缺省自动检测）
+  # 本地兜底（mlx-whisper）。想更准可把 local_model 换成 mlx-community/whisper-large-v3-turbo（下载约 1.6G）
+  local_model: mlx-community/whisper-small-mlx
+  local_fallback_model: mlx-community/whisper-tiny
+  timeout_s: 180
+
+tts:
+  driver: tokenhub        # tokenhub | macos_say（云端失败自动退回 say）
+  say_voice: Samantha     # 兜底音色（say -v '?' 查看）
+  say_rate: 170
+  tokenhub_model: minimax-speech-2.8-turbo
+  tokenhub_voice_id: English_Graceful_Lady   # 默认音色
+  voices:                 # 按考官人格分配音色
+    hr-friendly: English_Graceful_Lady
+    tech-lead: English_Trustworth_Man
+    stress: English_ManWithDeepVoice
+  cache: true
+
+tools:
+  ffmpeg: ffmpeg            # ffmpeg 可执行文件；不在 PATH 时改为绝对路径
+
+session:
+  max_answer_seconds: 120   # 单次作答上限（秒）
+  followup_max: 1           # 每个主问题最多几个追问
+  daily_goal_minutes: 20    # 每日开口目标（打卡面板进度环）
+
+paths:
+  data_dir: data
+  materials_dir: materials

@@ -1,0 +1,46 @@
+key: interview-core
+title: 核心面试题集
+note: 常规训练主力题集；每个主问题可被打 1 次追问。故事库（materials/stories/）补齐后效果最佳。
+questions:
+  - id: c1
+    text: "Let's start easy — tell me about yourself."
+    tag: intro
+  - id: c2
+    text: "Walk me through your PhD research in two minutes."
+    tag: research
+  - id: c3
+    text: "What is the most technically challenging problem you have worked on, and how did you approach it?"
+    tag: research_deep
+  - id: c4
+    text: "Tell me about a project where you applied machine learning. What did you build, and what was your role?"
+    tag: ml_project
+  - id: c5
+    text: "Explain one of your core methods to someone with no technical background."
+    tag: explain_simple
+  - id: c6
+    text: "Describe a significant failure in your research. What did you learn from it?"
+    tag: failure
+  - id: c7
+    text: "Tell me about a time you worked with someone difficult, or handled a conflict in a team."
+    tag: teamwork
+  - id: c8
+    text: "Why did you choose this research direction, and why now?"
+    tag: motivation
+  - id: c9
+    text: "What are your strengths and weaknesses?"
+    tag: self_awareness
+  - id: c10
+    text: "Why do you want to join a company like ours? What do you know about our work?"
+    tag: why_company
+  - id: c11
+    text: "Where do you see yourself in five years?"
+    tag: future
+  - id: c12
+    text: "Tell me about a time you had to learn something difficult under time pressure."
+    tag: learning
+  - id: c13
+    text: "Tell me about a time you took initiative or led a piece of work."
+    tag: initiative
+  - id: c14
+    text: "What questions do you have for me?"
+    tag: candidate_questions

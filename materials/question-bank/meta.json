@@ -1,0 +1,336 @@
+{
+ "baseline-8": {
+  "b1": {
+   "title": "博士研究·两分钟",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A round clock face with a small flask and molecule orbit inside it, two-minute arc highlighted in teal, gentle pastel blue and mint tones, simple geometric composition, calm and clear."
+  },
+  "b2": {
+   "title": "为何选择这个方向",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A small molecule merging into a glowing neural network node, an upward arrow curving through it, teal accent lines, pastel lavender and mint, symbolizing science meeting artificial intelligence."
+  },
+  "b3": {
+   "title": "我的机器学习项目",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A single hand-shaped cursor lifting one puzzle piece from a grid of data points, a small gear and chart line beside it, teal highlights, pastel peach and blue, representing personal contribution in a data project."
+  },
+  "b4": {
+   "title": "讲一次研究失败",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A winding path ending at a dead-end wall, then a curved teal arrow turning back and branching onto a new route, small broken flask nearby, pastel grey and mint tones, calm and reflective."
+  },
+  "b5": {
+   "title": "通俗讲核心方法",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A complex molecule on the left transforming into a simple friendly shape like a circle and square on the right, a teal arrow bridging them, pastel yellow and blue, symbolizing explaining complexity simply."
+  },
+  "b6": {
+   "title": "为何选我们和上海",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A small building icon with a teal location pin above it, a soft skyline of rounded towers behind, a dotted path leading toward the pin, pastel coral and mint, welcoming and forward-looking."
+  },
+  "b7": {
+   "title": "团队冲突怎么处理",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. Two interlocking puzzle pieces of different pastel colors meeting at a teal seam, a small bridge shape connecting them, gentle rounded edges, soft shadow, symbolizing teamwork and resolving conflict."
+  },
+  "b8": {
+   "title": "弱点与五年规划",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A small mirror reflecting a growing plant, beside a dotted teal arrow rising through five stepping stones toward a star, pastel green and blue, symbolizing self-awareness and future growth."
+  }
+ },
+ "interview-core": {
+  "c1": {
+   "title": "自我介绍·90秒",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A blank rounded name card standing upright under a single soft spotlight beam, a small teal circle badge on the card corner, gentle glow around the light cone, simple and calm composition."
+  },
+  "c2": {
+   "title": "两分钟讲清博士研究",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A small hourglass beside a stack of three rounded document sheets, one sheet sliding out with a teal arrow curving from the stack to the hourglass, suggesting condensing long work into a short span."
+  },
+  "c3": {
+   "title": "最难的技术难题",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A tall tangled knot of rounded lines with one loose teal thread pulling free and straightening toward the right, a small magnifying glass resting near the knot, symbolizing untangling a hard problem."
+  },
+  "c4": {
+   "title": "机器学习项目经历",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A simple neural network of rounded nodes connected by thin lines, with a small teal gear and a tiny wrench beside it, suggesting building and assembling a machine learning model."
+  },
+  "c5": {
+   "title": "外行也能听懂的方法",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A complex rounded molecule shape on the left transforming into a simple plain circle on the right, connected by a teal arrow, with a small speech bubble outline floating above, symbolizing simplifying a hard idea."
+  },
+  "c6": {
+   "title": "讲一次研究失败",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A winding path with a rounded arrow that loops back on itself, a small teal flag planted at the turning point, a tiny sprout growing beside the path, symbolizing a setback that leads to growth."
+  },
+  "c7": {
+   "title": "团队冲突怎么处理",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. Two rounded puzzle pieces facing each other, one teal and one pale grey, nearly interlocking with a small gap between them, a gentle curved arrow showing them sliding together, symbolizing resolving friction in a team."
+  },
+  "c8": {
+   "title": "为什么做AI科研",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A rounded flask on the left and a small circuit chip on the right, joined by a teal bridge shape between them, a tiny clock icon above the bridge, symbolizing the meeting of two fields at the right moment."
+  },
+  "c9": {
+   "title": "优缺点各说一个",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A balanced seesaw with a teal upward arrow on one end and a soft grey downward arrow on the other, both arrows rounded and equal in size, a small mirror circle floating above the pivot, symbolizing honest self-assessment."
+  },
+  "c10": {
+   "title": "为什么选我们公司",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A rounded building silhouette with a few simple windows, a small teal location pin floating above it, and a dotted teal path leading from a tiny circle toward the building entrance, symbolizing moving toward a specific company."
+  },
+  "c11": {
+   "title": "五年后的自己",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A simple staircase of three rounded steps rising to the right, a small teal flag on the top step, a dotted arrow curving upward along the steps, a tiny calendar circle floating nearby, symbolizing a five-year plan."
+  },
+  "c12": {
+   "title": "限时学会新东西",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. An open book with a small teal lightning bolt above it and a round clock beside it, a curved arrow sweeping from the clock to the book, symbolizing fast learning under a deadline."
+  },
+  "c13": {
+   "title": "主动牵头一件事",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A small teal flag planted on a rounded hilltop, a dotted trail leading up to it from below, a simple compass resting at the start of the trail, symbolizing stepping forward and leading the way."
+  },
+  "c14": {
+   "title": "你有什么想问的",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. Two rounded speech bubbles facing each other, one teal and one pale grey, with a small question-mark-shaped curve floating above the teal one, a tiny open hand shape below, symbolizing asking thoughtful questions."
+  }
+ },
+ "mnc-60": {
+  "a01": {
+   "title": "自我介绍·90秒",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A blank rounded name card standing upright on a small circular stage under a single spotlight beam, gentle glow around the card, soft teal shadow beneath, simple and clean composition."
+  },
+  "a02": {
+   "title": "串讲简历·挑重点",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A vertical stack of rounded document sheets with one sheet pulled forward and highlighted in teal, small arrow pointing at the highlighted sheet, gentle layered shadows, tidy minimal arrangement."
+  },
+  "a03": {
+   "title": "为何离开学术界",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A rounded graduation cap resting beside an open doorway with a soft teal path leading through it, small stepping stones on the path, calm transition feeling, simple centered composition."
+  },
+  "a04": {
+   "title": "你想找什么岗位",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A rounded magnifying glass hovering over three simple job-card shapes, one card outlined in teal and slightly raised, soft pastel circles behind, clean minimal layout."
+  },
+  "b01": {
+   "title": "为什么选我们公司",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A small rounded building icon with a heart shape floating above it, a teal check mark badge beside the building, soft pastel clouds behind, warm and simple centered composition."
+  },
+  "b02": {
+   "title": "为何选AI制药方向",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A rounded molecule structure on the left connected by a dotted line to a simple circuit node on the right, teal accent on the connecting line, soft pastel circles behind, clean centered composition."
+  },
+  "b03": {
+   "title": "凭什么录用你",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. One rounded star shape standing out and glowing teal among a row of plain grey circles, small sparkles around the star, soft shadow beneath, simple centered composition."
+  },
+  "b04": {
+   "title": "你了解我们什么",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. An open rounded book with a small teal magnifying glass resting on its pages, a few floating pastel dots above like ideas, soft shadow under the book, clean minimal layout."
+  },
+  "b05": {
+   "title": "能否出差或搬迁",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A rounded suitcase with a small airplane shape flying above it, a curved teal dotted travel path looping around, soft pastel clouds behind, simple centered composition."
+  },
+  "b06": {
+   "title": "博士最自豪的事",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A rounded trophy cup with a small teal ribbon, a few pastel sparkles floating around it, soft shadow beneath, clean and celebratory but minimal centered composition."
+  },
+  "b07": {
+   "title": "为何选择这个方向·why now",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A rounded flask on the left, a simple circuit chip on the right, and a teal plus sign between them, soft pastel circles behind, clean centered composition showing a blend of two worlds."
+  },
+  "b08": {
+   "title": "第一年想做成什么",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A rounded calendar page with a small teal flag planted on one date, a curved dotted arrow rising toward the flag, soft pastel shapes behind, clean minimal centered composition."
+  },
+  "c01": {
+   "title": "从想法到交付",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A lightbulb shape on the left connected by a dotted teal line to a rounded gift box on the right, small check mark badge above the box, soft pastel circles behind, clean centered composition."
+  },
+  "c02": {
+   "title": "跨团队协作经历",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. Three interlocking puzzle pieces in soft pastel colors with one piece outlined in teal, arranged in a neat triangle, gentle shadow beneath, clean minimal centered composition."
+  },
+  "c03": {
+   "title": "与同事意见不合",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. Two rounded speech bubbles facing each other, one pastel and one teal, with a small handshake symbol between them, soft shadow beneath, clean minimal centered composition."
+  },
+  "c04": {
+   "title": "讲一次失败·收获",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A curved road with a U-turn arrow bending back on itself, a small sprouting plant growing beside the turn, symbolizing a failed path that yields growth."
+  },
+  "c05": {
+   "title": "紧deadline怎么扛",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A round clock face with a sand timer overlapping it, a small checklist card beside them, conveying urgency and time management under pressure."
+  },
+  "c06": {
+   "title": "快速学新东西",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. An open book with a lightning bolt rising from its pages, a small upward arrow beside it, symbolizing rapid learning and quick absorption of new knowledge."
+  },
+  "c07": {
+   "title": "主动多做一步",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A hand reaching upward to grab a glowing star just beyond a dashed boundary line, symbolizing taking initiative beyond one's assigned scope."
+  },
+  "c08": {
+   "title": "收到难听反馈",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A speech bubble containing a downward arrow meeting an upward arrow, with a small mirror reflecting them, symbolizing receiving difficult feedback and turning it around."
+  },
+  "c09": {
+   "title": "信息不全做决定",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A jigsaw puzzle with several missing pieces, a compass placed on top of it, symbolizing making decisions with incomplete information."
+  },
+  "c10": {
+   "title": "无权时怎么影响人",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A magnet pulling a chain of small connected dots toward it, no hands involved, symbolizing influence and persuasion without formal authority."
+  },
+  "c11": {
+   "title": "多任务优先级",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. Three balls being juggled in the air above a single balancing scale, symbolizing juggling multiple competing priorities and keeping them in balance."
+  },
+  "c12": {
+   "title": "需求模糊怎么办",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A magnifying glass hovering over a foggy blurred shape, with a clear sharp arrow emerging from the fog, symbolizing finding clarity within ambiguity."
+  },
+  "c13": {
+   "title": "跨文化跨时区协作",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A globe with two curved arrows circling it in opposite directions, a small clock on one side, symbolizing cross-cultural and cross-timezone collaboration."
+  },
+  "c14": {
+   "title": "犯错影响他人",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A cracked ceramic cup being repaired with a bandage, a small heart shape beside it, symbolizing a mistake that affected others and the effort to make amends."
+  },
+  "c15": {
+   "title": "带人教人经历",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A large lit candle beside a smaller unlit candle, with a small flame passing between them, symbolizing mentoring and passing knowledge to someone new."
+  },
+  "d01": {
+   "title": "三分钟讲清博士研究",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A microscope with a molecular structure floating above it, a small clock showing three minutes beside them, symbolizing presenting PhD research concisely to a technical audience."
+  },
+  "d02": {
+   "title": "60秒讲给商业听众",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A complex molecule on the left transforming into a simple bar chart on the right, a small clock showing sixty seconds above, symbolizing translating research for a business audience."
+  },
+  "d03": {
+   "title": "为何选GNN而非对接",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A graph network of connected nodes beside a protein ribbon shape, a small branching fork arrow choosing one path, symbolizing choosing geometric deep learning over classical docking methods."
+  },
+  "d04": {
+   "title": "模型验证与失效边界",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A magnifying glass hovering over a rounded scatter of dots, most dots aligned inside a soft teal circle while a few stray dots sit outside a dashed boundary line, suggesting validation and failure regions."
+  },
+  "d05": {
+   "title": "LLM智能体流程拆解",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. Three rounded gear-like nodes connected by curved arrows forming a loop, with one link in the chain drawn as a broken dashed segment, symbolizing an agent workflow and its breaking point."
+  },
+  "d06": {
+   "title": "数据集构建最难处",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A large funnel with many small rounded shapes pouring in at the top and a neat row of identical teal capsules emerging at the bottom, one capsule slightly misaligned, suggesting data curation and cleaning."
+  },
+  "d07": {
+   "title": "保密项目怎么讲",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A rounded padlock with a small keyhole, partially covered by a translucent teal veil, with a few soft blurred shapes behind it, symbolizing confidential work described without revealing details."
+  },
+  "d08": {
+   "title": "经验迁移与补课",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A bridge made of rounded blocks connecting two soft islands, one island holding a molecule-like cluster and the other a small flask, with a few missing blocks on the bridge, symbolizing transferable skills and gaps to learn."
+  },
+  "d09": {
+   "title": "印象最深的新进展",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. An open book with a glowing teal atom orbiting above it and a small sparkle star, rounded pages and soft curves, symbolizing a standout scientific paper or tool."
+  },
+  "d10": {
+   "title": "想重做的技术决策",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A curved road with a U-turn arrow looping back on itself, a small teal signpost at the bend, rounded organic path shapes, symbolizing revisiting a past decision."
+  },
+  "d11": {
+   "title": "可解释性与SHAP",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A rounded black-box cube with its front panel slid open, revealing a small glowing teal bar chart inside, soft light rays emerging, symbolizing opening a model to interpret its outputs."
+  },
+  "d12": {
+   "title": "可复现与工程规范",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. Three rounded interlocking rings forming a chain, each ring holding a tiny symbol like a gear, a database cylinder and a flowing arrow, symbolizing reproducible code, data and pipelines."
+  },
+  "e01": {
+   "title": "90秒项目进展汇报",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A rounded stopwatch with a teal progress arc, beside a simple three-step bar chart rising upward, soft pastel shapes, symbolizing a concise timed status update."
+  },
+  "e02": {
+   "title": "汇报项目延期两周",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A rounded calendar page with a curved arrow sliding two blocks to the right, a small teal clock beside it, soft pastel shapes, symbolizing a two-week schedule slip."
+  },
+  "e03": {
+   "title": "反对资深科学家方案",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. Two rounded speech bubbles facing each other, one teal and one soft grey, with a small branching fork symbol between them, symbolizing respectful technical disagreement."
+  },
+  "e04": {
+   "title": "接到模糊指令怎么办",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A fuzzy blurred cloud shape on one side and a sharp clear teal arrow pointing to a crisp rounded target on the other, symbolizing turning vague instructions into clarity."
+  },
+  "e05": {
+   "title": "向商务团队讲博士课题",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A complex molecule cluster on the left transforming through a soft arrow into a simple rounded coin or price tag shape on the right, symbolizing translating research into business language."
+  },
+  "e06": {
+   "title": "职场英文写作举例",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A rounded sheet of paper with soft wavy lines instead of words, a teal pencil resting diagonally on it, and a small envelope beside it, symbolizing written workplace communication."
+  },
+  "e07": {
+   "title": "跨部门借力·求支持",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. Two hands reaching toward each other from opposite sides, one holding a small glowing gear, a dotted arc bridging the gap between them, symbolizing cross-team collaboration and borrowed support."
+  },
+  "e08": {
+   "title": "主持英文会议",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A round table seen from above with several small speech bubbles floating above it, one bubble larger and outlined in teal, a tiny clock beside it, representing leading a discussion."
+  },
+  "e09": {
+   "title": "给同事建设性反馈",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A speech bubble containing a small upward arrow and a gentle check mark, resting beside a soft cushion shape, conveying kind and constructive feedback."
+  },
+  "f01": {
+   "title": "入职90天规划",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A winding path made of three rounded stepping stones leading upward to a small flag, with a calendar page floating above the first stone, symbolizing a first-ninety-days roadmap."
+  },
+  "f02": {
+   "title": "数据出错怎么办",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A magnifying glass hovering over a bar chart where one bar is cracked, a small teal warning triangle beside it, representing discovering a data integrity problem."
+  },
+  "f03": {
+   "title": "两个死线怎么排",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A balanced scale with two hourglasses on either side, one slightly tilted, a small teal arrow pointing to the heavier side, symbolizing prioritizing between two urgent deadlines."
+  },
+  "f04": {
+   "title": "合作者失联了",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A broken chain link with one detached piece floating away, a small teal paper plane flying toward it, representing a lost collaborator and an attempt to reconnect."
+  },
+  "f05": {
+   "title": "两周做没做过的事",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A small rocket lifting off from an open laptop, a short dotted trajectory curving upward, a tiny clock beside it, symbolizing delivering an unfamiliar task under a tight deadline."
+  },
+  "f06": {
+   "title": "算力有限选方向",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A small battery icon beside two branching arrows, one path glowing teal and the other faded, a tiny coin shape nearby, representing choosing a modeling direction under a limited compute budget."
+  },
+  "g01": {
+   "title": "优点与缺点",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A balance scale holding a bright star on one side and a small pebble on the other, both resting evenly, symbolizing strengths and weaknesses in balance."
+  },
+  "g02": {
+   "title": "五年后的自己",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A telescope pointed at a distant teal star, a dotted arc rising from a small footprint at the base toward the star, symbolizing a five-year vision."
+  },
+  "g03": {
+   "title": "期望薪资怎么谈",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A stack of rounded coins beside an upward trending arrow, a small speech bubble hovering above the coins, representing salary negotiation."
+  },
+  "g04": {
+   "title": "你有什么想问的",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A large teal question mark shape with a small speech bubble nested inside it, a tiny magnifying glass leaning beside it, symbolizing asking thoughtful questions."
+  },
+  "g05": {
+   "title": "还有什么要补充",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. An open folder with a few rounded cards sliding out, one card highlighted in teal and slightly raised, symbolizing adding one last important detail."
+  },
+  "g06": {
+   "title": "何时能入职",
+   "img_prompt": "flat vector illustration, minimal, soft pastel palette with teal (#0FA79A) accent, rounded organic shapes, clean white background, single centered symbol, absolutely NO text or letters, no human faces, subtle soft shadow, modern app icon aesthetic. A graduation cap resting on top of a calendar page, a small teal arrow pointing from the cap to a marked date, symbolizing start date tied to graduation timeline."
+  }
+ }
+}

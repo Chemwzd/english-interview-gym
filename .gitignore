@@ -1,0 +1,29 @@
+# secrets / 本地配置
+app/.env
+*.key
+
+# 个人资料（自己导入的简历，绝不入库）
+materials/profile.md
+materials/_refs/
+
+# runtime data（保留目录结构，忽略内容）
+data/audio/*
+!data/audio/.gitkeep
+data/sessions/*
+!data/sessions/.gitkeep
+data/reports/*
+!data/reports/.gitkeep
+data/errorbook.jsonl
+data/favorites.jsonl
+data/gloss_cache.json
+data/*.jsonl
+
+# venv / python
+.venv/
+__pycache__/
+*.pyc
+
+# misc
+.DS_Store
+*.aiff
+*.tmp

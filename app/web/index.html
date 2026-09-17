@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>英语面试健身房</title>
+<link rel="stylesheet" href="/static/style.css?v=9">
+</head>
+<body>
+
+<!-- ============ 首页 ============ -->
+<section id="view-home" class="view">
+  <div class="home-wrap">
+    <header class="hero">
+      <div class="logo">🎙️</div>
+      <h1>英语面试健身房</h1>
+      <p class="sub">AI 导师陪练 · 对话中纠错 · 点词速查 · 每日打卡</p>
+    </header>
+
+    <div id="statsStrip"></div>
+
+    <h2 class="sect">选择你的 AI 导师 <span class="sect-sub">点击试听音色</span></h2>
+    <div class="tutor-grid" id="tutorGrid"></div>
+
+    <h2 class="sect">选择题集 <span class="sect-sub">点击进入题目列表 · 可单题开练</span></h2>
+    <div class="set-list" id="setList"></div>
+
+    <button id="startBtn" class="btn primary big" disabled>快速开始</button>
+
+    <div class="home-links">
+      <button class="btn ghost" id="favOpenBtn">⭐ 收藏夹</button>
+      <button class="btn ghost" id="profileBtn">📄 我的简历</button>
+      <button class="btn ghost" id="refreshStatsBtn">↻ 刷新统计</button>
+    </div>
+
+    <h2 class="sect">最近训练</h2>
+    <div class="recent" id="recentList"></div>
+  </div>
+</section>
+
+<!-- ============ 题集页（题目卡片墙） ============ -->
+<section id="view-set" class="view hidden">
+  <header class="set-top">
+    <button class="icon-btn" id="setBackBtn" title="返回">‹</button>
+    <div class="tutor-mini">
+      <div class="who"><b id="setTitle">题集</b><small id="setProgress">0/0 已练</small></div>
+    </div>
+    <button class="btn primary small" id="setContinueBtn">▶ 开始</button>
+  </header>
+  <div class="progress-wrap"><i id="setProgressBar"></i></div>
+  <div class="set-wrap">
+    <div class="qgrid" id="qGrid"></div>
+  </div>
+</section>
+
+<!-- ============ 对话页 ============ -->
+<section id="view-chat" class="view hidden">
+  <header class="chat-top">
+    <button class="icon-btn" id="backBtn" title="返回">‹</button>
+    <div class="tutor-mini">
+      <span class="avatar" id="chatAvatar">👩‍💼</span>
+      <div class="who"><b id="chatTutor">导师</b><small id="chatProgress">Q 1/8</small></div>
+    </div>
+    <button class="btn ghost small" id="endBtn">复盘</button>
+  </header>
+  <div class="progress-wrap"><i id="progressBar"></i></div>
+
+  <main class="messages" id="messages"></main>
+
+  <footer class="composer">
+    <div class="chips">
+      <button class="chip on" id="modeFreeBtn">自己说</button>
+      <button class="chip" id="modeReadBtn">照读示范</button>
+      <button class="chip" id="suggBtn">📖 示范答案</button>
+      <button class="chip" id="skipBtn">跳过这题</button>
+    </div>
+    <div class="mic-row">
+      <div class="timer" id="timer">00:00</div>
+      <button class="mic" id="micBtn" title="按空格键录音">🎤</button>
+      <div class="mic-hint" id="micHint">点击或按空格开始</div>
+    </div>
+    <div class="status" id="status"></div>
+    <div class="banner hidden" id="doneBanner">✅ 本场训练完成 — 点右上角「复盘」生成报告</div>
+  </footer>
+</section>
+
+<!-- ============ 复盘页 ============ -->
+<section id="view-report" class="view hidden">
+  <div class="report-wrap">
+    <h1>本场复盘</h1>
+    <div id="reportBody"></div>
+    <div class="report-actions">
+      <button class="btn primary" id="backHomeBtn">回到首页</button>
+      <button class="btn ghost" id="favOpenBtn2">⭐ 收藏夹</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 题目详情弹层（历史/开练） ============ -->
+<div id="qDetailOverlay" class="overlay hidden">
+  <div class="qd">
+    <div class="qd-top"><span></span><button class="icon-btn" id="qDetailClose">×</button></div>
+    <div id="qdBody"></div>
+    <div class="qd-actions">
+      <button class="btn primary" id="qStartBtn">🎙 从这题开练</button>
+      <button class="btn ghost" id="qPlayBtn">▶ 听题</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 我的简历弹层 ============ -->
+<div id="profileOverlay" class="overlay hidden">
+  <div class="modal">
+    <div class="modal-head"><b>📄 我的简历 · 解锁定制版回答</b><button class="icon-btn" id="profileClose">×</button></div>
+    <div class="pstat" id="profileStat">加载中…</div>
+    <p class="pdesc">导入后：示范答案将额外生成「🎯 定制版」（基于你的真实经历）。文件仅保存在本机 <code>materials/profile.md</code>，不会上传到任何服务器。</p>
+    <div class="prow">
+      <button class="btn primary small" id="profilePick">选择文件（docx / pdf / txt / md）</button>
+      <button class="btn ghost small" id="profileWipe">删除已导入</button>
+      <input type="file" id="profileFile" accept=".docx,.pdf,.txt,.md" hidden>
+    </div>
+    <div class="prow"><textarea id="profileText" rows="5" placeholder="或者直接粘贴简历 / 个人经历文本（至少 30 字），点下方保存"></textarea></div>
+    <div class="prow"><button class="btn primary small" id="profileSave">保存粘贴内容</button></div>
+  </div>
+</div>
+
+<!-- ============ 单词卡弹层 ============ -->
+<div id="glossOverlay" class="overlay hidden">
+  <div class="gloss">
+    <div class="gloss-head"><b id="gw">word</b><button class="icon-btn" id="glossClose">×</button></div>
+    <div class="gloss-body" id="glossBody"></div>
+  </div>
+</div>
+
+<!-- ============ 收藏夹弹层 ============ -->
+<div id="favOverlay" class="overlay hidden">
+  <div class="modal">
+    <div class="modal-head"><b>⭐ 收藏夹</b><button class="icon-btn" id="favClose">×</button></div>
+    <div class="fav-list" id="favList"></div>
+  </div>
+</div>
+
+<!-- ============ 连胜庆祝弹层 ============ -->
+<div id="celebrateOverlay" class="overlay hidden">
+  <div class="celebrate">
+    <span class="big-flame">🔥</span>
+    <h2 id="celebrateTitle">连续 7 天！</h2>
+    <p id="celebrateSub">你正在建立可怕的势头，继续保持</p>
+    <button class="btn primary" id="celebrateBtn">继续加油</button>
+  </div>
+</div>
+
+<canvas id="confetti" class="confetti"></canvas>
+<div class="toast hidden" id="toast"></div>
+<audio id="player"></audio>
+<script src="/static/app.js?v=9"></script>
+</body>
+</html>

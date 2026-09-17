@@ -1,0 +1,28 @@
+key: baseline-8
+title: 基线 8 题
+note: 第一次使用先跑这套；跑完在 data/reports/ 里看数字，作为 12 周训练基线。
+questions:
+  - id: b1
+    text: "Walk me through your PhD research in two minutes."
+    tag: research_overview
+  - id: b2
+    text: "Why did you choose this research direction, and why now?"
+    tag: motivation
+  - id: b3
+    text: "Tell me about a project where you applied machine learning or data-driven methods. What exactly was your contribution?"
+    tag: ml_project
+  - id: b4
+    text: "Describe a failure or a dead end in your research and what you changed afterwards."
+    tag: failure
+  - id: b5
+    text: "Explain one of your core methods to someone with no technical background."
+    tag: explain_simple
+  - id: b6
+    text: "Why this company, and why this location?"
+    tag: why_company
+  - id: b7
+    text: "Tell me about a time you had to work with someone difficult, or a conflict in a team."
+    tag: teamwork
+  - id: b8
+    text: "What is your biggest weakness, and where do you see yourself in five years?"
+    tag: self_awareness
