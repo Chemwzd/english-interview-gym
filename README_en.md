@@ -158,7 +158,7 @@ To switch models, edit `app/config.yaml`: `llm.model` / `asr.model` / `tts.cloud
 
 **What it does**: a real back-and-forth conversation — the interviewer speaks a question, you answer out loud, and your speech is transcribed automatically before the follow-up or next question.
 
-- 3 personas (`materials/personas/`): `hr-friendly` (friendly HR), `tech-lead` (technical interviewer), `stress` (stress interview);
+- 3 personas (`materials/personas/`): `hr-friendly` (corporate HR screen), `tech-lead` (technical deep-dive), `stress` (pressure round); each ships with its positioning, evaluation focus, probing strategy and a realistic interview-dialogue few-shot — adapt them to your own target role;
 - 3 question sets: `baseline-8` (8 warm-up questions), `interview-core` (14 core questions), `mnc-60` (60 high-frequency big-tech questions).
 
 **How to use**: pick a persona → pick a set → "🎙 Practise from this question" → click the mic (or press Space) → click again to finish → read the feedback → next question. Two answering modes are available in the chat header ("speak freely / read the sample aloud"); you can skip a question or end the session with "Review" at any time.
@@ -170,7 +170,7 @@ To switch models, edit `app/config.yaml`: `llm.model` / `asr.model` / `tts.cloud
 
 ### Sample answers &amp; hints
 
-**What it does**: before answering any question, see how it *could* be answered — a 30–45 s (about 60–100 words) business-style model answer:
+**What it does**: before answering any question, see how it *could* be answered — a 30–45 s (about 60–100 words) model answer **benchmarked to real corporate-interview expectations** (lead with the answer, back it with evidence and numbers, no flattery or student-speak):
 
 - **🧩 Generic version**: works out of the box, with `[bracketed]` placeholders you replace with your own details;
 - **🎯 Personalized version**: unlocked after importing your resume — built from your real experience and numbers (see [Resume import](#resume-import)).
@@ -300,7 +300,7 @@ Plus a 1–10 overall score. In read-aloud mode you also get a **reading accurac
   ```
 
 - **Question illustrations** — drop a PNG at `materials/question-bank/images/<set>/<question-id>.png` and it appears on the card wall;
-- **Interviewer personas** — `materials/personas/*.md` (define the character in the `### system` block);
+- **Interviewer personas** — `materials/personas/*.md` (the built-in three include positioning, evaluation focus and a realistic dialogue few-shot — edit them for your own role);
 - **Story bank** — copy `materials/stories/template.md` to build 5–8 polished personal stories that make your answers concrete.
 
 ## Project structure
