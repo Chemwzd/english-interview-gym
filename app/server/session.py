@@ -158,16 +158,24 @@ def submit_answer(sid: str, audio_path: Path, mode: str = "free", script: str = 
     transcript = asr_res.get("text") or ""
     met = metrics.compute(transcript, asr_res.get("duration_ms") or 0, asr_res.get("sentences") or [])
     sd = metrics.script_diff(transcript, script) if (mode == "read" and script) else None
-    fb = get_llm().chat_json(
-        prompts.feedback_messages(
-            _persona(st),
-            qtext,
-            transcript,
-            [{"question": a["question"], "transcript": a["transcript"]} for a in st["answers"]],
-            mode=mode,
-            script=script if mode == "read" else "",
+    # 反馈生成：失败时降级为「显式报错」而不是整个请求失败
+    # （否则前端只弹 2 秒 toast，用户会以为"没有反馈、直接跳下一题"）
+    fb = None
+    fb_error = None
+    try:
+        fb = get_llm().chat_json(
+            prompts.feedback_messages(
+                _persona(st),
+                qtext,
+                transcript,
+                [{"question": a["question"], "transcript": a["transcript"]} for a in st["answers"]],
+                mode=mode,
+                script=script if mode == "read" else "",
+            )
         )
-    )
+    except Exception as e:  # noqa: BLE001
+        fb_error = str(e)[:400]
+        store.append(sid, {"type": "feedback_error", "session": sid, "question": qtext, "error": fb_error})
     rec = {
         "type": "answer",
         "session": sid,
@@ -181,6 +189,7 @@ def submit_answer(sid: str, audio_path: Path, mode: str = "free", script: str = 
         "duration_ms": asr_res.get("duration_ms"),
         "metrics": met,
         "feedback": fb,
+        "feedback_error": fb_error,
         "asr_driver": asr_res.get("driver"),
         "asr_usage": asr_res.get("usage"),
     }
@@ -189,7 +198,7 @@ def submit_answer(sid: str, audio_path: Path, mode: str = "free", script: str = 
     # 错题本
     entries = []
     for key, default_type in (("language_point", "grammar"), ("upgrade", "vocab")):
-        item = fb.get(key)
+        item = (fb or {}).get(key)
         if isinstance(item, dict) and item.get("original") and item.get("better"):
             entries.append(
                 {
@@ -204,7 +213,7 @@ def submit_answer(sid: str, audio_path: Path, mode: str = "free", script: str = 
     if entries:
         store.append_errorbook(entries)
     # 追问判定
-    fu_next = fb.get("followup")
+    fu_next = (fb or {}).get("followup")
     followup_max = int(config.get("session.followup_max", 1))
     if (not is_fu) and fu_next and st["followups_done"] < followup_max and len(transcript.split()) >= 12:
         st["pending_followup"] = fu_next
@@ -212,7 +221,7 @@ def submit_answer(sid: str, audio_path: Path, mode: str = "free", script: str = 
     else:
         st["pending_followup"] = None
         st["idx"] += 1
-    return {"transcript": transcript, "metrics": met, "script_diff": sd, "feedback": fb, "state": _state_payload(st)}
+    return {"transcript": transcript, "metrics": met, "script_diff": sd, "feedback": fb, "feedback_error": fb_error, "state": _state_payload(st)}
 
 
 def skip_current(sid: str) -> dict:

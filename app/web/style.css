@@ -137,6 +137,12 @@ details.qinfo .row b{color:var(--muted);font-weight:600;margin-right:5px}
 .fb-head{display:flex;align-items:center;gap:8px;padding:11px 15px;cursor:pointer;background:var(--mint-3);border-bottom:1px solid var(--line)}
 .fb-head b{font-size:13.5px;color:var(--teal-dark)}
 .fb-head .arrow{margin-left:auto;color:var(--muted);font-size:13px;transition:.2s}
+.fb-head .fb-score{font-size:12px;font-weight:700;padding:1px 8px;border-radius:999px;margin-left:6px}
+.fb-score i{font-style:normal;font-weight:400;font-size:10.5px;opacity:.75}
+.fb-score.good{background:#d8f3e6;color:#1c7c54}
+.fb-score.ok{background:#fdf0cf;color:#8a6d1a}
+.fb-score.low{background:#ffe0dc;color:#b3402f}
+.fb-err{background:#fff4e8;border:1px solid #f0d2ac;border-radius:10px;padding:9px 12px;font-size:12.5px;line-height:1.65;color:#8a5a2b;margin:2px 0 9px}
 .fb-card.collapsed .fb-body{display:none}
 .fb-card.collapsed .arrow{transform:rotate(-90deg)}
 .fb-body{padding:13px 15px}

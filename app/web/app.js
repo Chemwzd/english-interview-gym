@@ -530,7 +530,7 @@ function updateChatTop() {
 }
 
 /* ---------------- 渲染题目气泡 ---------------- */
-function renderQuestion(st, autoplay) {
+function renderQuestion(st, autoplay, speakDelay) {
   updateChatTop();
   const t = tutorOf(S.personaKey);
   const tags = [];
@@ -564,7 +564,7 @@ function renderQuestion(st, autoplay) {
   S.suggCard = null; S.suggOpen = false;
   scrollBottom();
   stopAudio();  // 新题出现：先停掉旧音频（面试官/示范/任何声音），再排队自动播放新题
-  if (autoplay) scheduleSpeak(st.question, S.personaKey, 500);
+  if (autoplay) scheduleSpeak(st.question, S.personaKey, speakDelay || 500);
 }
 function scrollBottom() { const m = $("messages"); m.scrollTop = m.scrollHeight; }
 
@@ -735,15 +735,16 @@ async function submitAnswer(blob) {
     const r = await api(`/api/session/${S.sid}/answer`, { method: "POST", body: fd });
     renderUserCard(r);
     renderFeedback(r);
+    if (r.feedback_error) toast("⚠️ 反馈生成失败，详见反馈卡（可检查 ⚙️ 设置）");
     S.state = r.state;
     S.script = "";
     updateChatTop();
     $("timer").textContent = "00:00";
     if (S.state.done) { showDone(); }
-    else { renderQuestion(S.state, true); }
+    else { renderQuestion(S.state, true, 2600); }   // 留出时间先看反馈，再播下一题
     setStatus("");
   } catch (e) {
-    setStatus("");
+    setStatus("⚠️ 提交失败：" + e.message + "（可直接重录重试）");
     toast("提交失败：" + e.message);
   } finally {
     S.busy = false;
@@ -789,6 +790,14 @@ function renderFeedback(r) {
   const fb = r.feedback || {};
   const m = r.metrics || {};
   let body = "";
+  const sc = parseInt(fb.score, 10);
+  const scoreHTML = sc >= 1 && sc <= 10
+    ? `<span class="fb-score ${sc >= 8 ? "good" : sc >= 6 ? "ok" : "low"}">${sc}<i>/10</i></span>`
+    : (r.feedback_error ? `<span class="fb-score low">!</span>` : "");
+  if (r.feedback_error) {
+    body += `<div class="fb-err">⚠️ <b>本轮反馈生成失败</b>：${esc(r.feedback_error)}<br>
+      请到「⚙️ 设置 → 💬 对话服务」检查接口地址 / API Key / 模型；修正后下一轮自动恢复（本场其余流程不受影响）。</div>`;
+  }
   if (fb.verdict) body += `<div class="verdict">${esc(fb.verdict)}</div>`;
   if (r.mode === "read" && r.script_diff && r.script_diff.script_words) {
     body += `<span class="pill read">朗读表现</span><div class="seg">照读准确率 <b>${r.script_diff.accuracy}%</b>（漏读 ${(r.script_diff.missed || []).length} 词 · 添词 ${(r.script_diff.extra || []).length} 词）</div>`;
@@ -818,7 +827,7 @@ function renderFeedback(r) {
 
   const node = document.createElement("div");
   node.className = "fb-card";
-  node.innerHTML = `<div class="fb-head"><b>AI Feedback</b><span class="arrow">▾</span></div><div class="fb-body">${body}</div>`;
+  node.innerHTML = `<div class="fb-head"><b>AI Feedback</b>${scoreHTML}<span class="arrow">▾</span></div><div class="fb-body">${body}</div>`;
   node.querySelector(".fb-head").addEventListener("click", () => node.classList.toggle("collapsed"));
   const sayText = fb.polished || (fb.language_point && fb.language_point.better) || "";
   node.querySelectorAll("[data-f]").forEach((b) => b.addEventListener("click", async () => {
