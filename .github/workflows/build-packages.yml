@@ -63,7 +63,10 @@ jobs:
           rm -rf Python.framework
           test ! -L Python
           test ! -e Python.framework
-          if [ -e Python ] || ls libpython3.*.dylib >/dev/null 2>&1; then echo "python runtime present:" && ls -la Python libpython3.*.dylib 2>/dev/null; else echo "FATAL: no python runtime found"; exit 1; fi
+          [ -e Python ] || ls libpython3.*.dylib >/dev/null 2>&1 || { echo "FATAL: no python runtime found"; exit 1; }
+          echo "python runtime present:"
+          ls -la Python 2>/dev/null || true
+          ls -la libpython3.*.dylib 2>/dev/null || true
           echo "runtime layout hardened"
 
       - name: Assemble package (preserve exec bits via ditto)
