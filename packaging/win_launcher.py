@@ -84,7 +84,24 @@ def _request_quit() -> None:
             _SERVER.should_exit = True
     except Exception:  # noqa: BLE001
         pass
+    # 关闭原生窗口（若以窗口方式启动）→ 让 webview.start() 返回、主线程继续收尾
+    try:
+        import webview as _wv
+
+        for w in list(getattr(_wv, "windows", None) or []):
+            try:
+                w.destroy()
+            except Exception:  # noqa: BLE001
+                pass
+    except Exception:  # noqa: BLE001
+        pass
     _QUIT.set()
+    # 兜底：3.5 秒后仍未退出（例如窗口销毁失败）则强制结束进程
+    def _force() -> None:
+        time.sleep(3.5)
+        os._exit(0)
+
+    threading.Thread(target=_force, daemon=True).start()
 
 
 def _message_box(text: str) -> None:
