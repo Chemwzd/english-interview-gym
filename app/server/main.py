@@ -3,6 +3,7 @@
 启动：cd app && ../.venv/bin/python -m uvicorn server.main:app --host 127.0.0.1 --port 8765
 （或直接 bash scripts/run_server.sh）
 """
+import json
 import re
 import shutil
 import threading
@@ -27,13 +28,14 @@ async def _lifespan(_app):
     yield
 
 
-app = FastAPI(title="EngTraining", version="0.15.10", lifespan=_lifespan)
+app = FastAPI(title="EngTraining", version="0.15.12", lifespan=_lifespan)
 
 
 @app.get("/api/health")
 def health():
     return {
         "ok": True,
+        "version": app.version,
         "llm_model": config.get("llm.model"),
         "asr_driver": config.get("asr.driver"),
         "tts_driver": config.get("tts.driver"),
@@ -53,6 +55,7 @@ def _mask_key(k: str) -> str:
 
 def _settings_payload() -> dict:
     return {
+        "version": app.version,
         "frozen": config.is_frozen(),
         "env_file": str(config.env_path()),
         "config_file": str(config.config_local_path()),
@@ -108,6 +111,49 @@ def settings_set(payload: dict):
         return {"ok": True, "settings": _settings_payload()}
     except Exception as e:  # noqa: BLE001
         raise HTTPException(500, str(e))
+
+
+@app.get("/api/selftest/llm")
+def selftest_llm():
+    """对话服务自检：基础对话 + 一次真实反馈生成，返回原始返回片段（排障用）。"""
+    out: dict = {"ok": False, "version": app.version}
+    out["model"] = config.get("llm.model", "") or ""
+    out["base"] = config.env("API_BASE_URL") or config.get("llm.base_url", "") or ""
+    try:
+        client = llm.get_llm()
+    except Exception as e:  # noqa: BLE001
+        out["error"] = f"初始化失败：{str(e)[:300]}"
+        return out
+    try:
+        plain = client.chat(
+            [{"role": "user", "content": "Reply with exactly the two letters: OK"}],
+            temperature=0,
+            max_tokens=8,
+        )
+        out["plain"] = (plain or "").strip()[:120]
+    except Exception as e:  # noqa: BLE001
+        out["error"] = f"基础对话失败：{str(e)[:400]}"
+        return out
+    try:
+        fb = client.chat_json(
+            prompts.feedback_messages(
+                prompts.load_persona("hr-friendly"),
+                "Tell me about yourself.",
+                "I am a chemistry PhD student working on AI for science.",
+                [],
+                mode="free",
+                script="",
+            )
+        )
+        if isinstance(fb, dict):
+            out["feedback_keys"] = ", ".join(list(fb.keys()))[:300]
+        else:
+            out["feedback_keys"] = f"（不是对象：{type(fb).__name__}）"
+        out["feedback_preview"] = json.dumps(fb, ensure_ascii=False)[:500]
+        out["ok"] = True
+    except Exception as e:  # noqa: BLE001
+        out["error"] = f"反馈生成失败：{str(e)[:400]}"
+    return out
 
 
 @app.post("/api/quit")

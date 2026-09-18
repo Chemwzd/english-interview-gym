@@ -143,8 +143,14 @@ details.qinfo .row b{color:var(--muted);font-weight:600;margin-right:5px}
 .fb-score.ok{background:#fdf0cf;color:#8a6d1a}
 .fb-score.low{background:#ffe0dc;color:#b3402f}
 .fb-err{background:#fff4e8;border:1px solid #f0d2ac;border-radius:10px;padding:9px 12px;font-size:12.5px;line-height:1.65;color:#8a5a2b;margin:2px 0 9px}
-.fb-card.collapsed .fb-body{display:none}
-.fb-card.collapsed .arrow{transform:rotate(-90deg)}
+/* v0.15.12：折叠改用原生 <details>（与「答题思路」同机制），点标题栏必可展开/收起 */
+.fb-head{list-style:none}
+.fb-head::-webkit-details-marker{display:none}
+summary.fb-head::marker{content:""}
+details.fb-card:not([open]) .arrow{transform:rotate(-90deg)}
+details.fb-card:not([open]) .fb-head{border-bottom:none}
+details.fb-card:not([open]) .fb-head b::after{content:" · 点击展开";font-weight:400;font-size:11px;color:var(--muted)}
+.selftest-out{margin-top:9px;background:#f4f8f7;border:1px solid var(--line);border-radius:10px;padding:9px 11px;font-size:11.5px;line-height:1.6;color:var(--ink);white-space:pre-wrap;word-break:break-word;max-height:220px;overflow:auto}
 .fb-body{padding:13px 15px}
 .pill{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.5px;color:#fff;border-radius:999px;padding:3px 11px;margin:10px 0 6px}
 .pill.correction{background:var(--red)}

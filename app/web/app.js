@@ -794,24 +794,29 @@ function renderFeedback(r) {
   const scoreHTML = sc >= 1 && sc <= 10
     ? `<span class="fb-score ${sc >= 8 ? "good" : sc >= 6 ? "ok" : "low"}">${sc}<i>/10</i></span>`
     : (r.feedback_error ? `<span class="fb-score low">!</span>` : "");
+  let hasContent = false;
   if (r.feedback_error) {
     body += `<div class="fb-err">⚠️ <b>本轮反馈生成失败</b>：${esc(r.feedback_error)}<br>
-      请到「⚙️ 设置 → 💬 对话服务」检查接口地址 / API Key / 模型；修正后下一轮自动恢复（本场其余流程不受影响）。</div>`;
+      请到「⚙️ 设置 → 💬 对话服务」检查接口地址 / API Key / 模型，并点「🧪 测试对话服务」自查；修正后下一轮自动恢复（本场其余流程不受影响）。</div>`;
+    hasContent = true;
   }
-  if (fb.verdict) body += `<div class="verdict">${esc(fb.verdict)}</div>`;
+  if (fb.verdict) { body += `<div class="verdict">${esc(fb.verdict)}</div>`; hasContent = true; }
   if (r.mode === "read" && r.script_diff && r.script_diff.script_words) {
     body += `<span class="pill read">朗读表现</span><div class="seg">照读准确率 <b>${r.script_diff.accuracy}%</b>（漏读 ${(r.script_diff.missed || []).length} 词 · 添词 ${(r.script_diff.extra || []).length} 词）</div>`;
+    hasContent = true;
   }
-  if (fb.content_gap) body += `<span class="pill content">内容建议</span><div class="seg">${esc(fb.content_gap)}</div>`;
+  if (fb.content_gap) { body += `<span class="pill content">内容建议</span><div class="seg">${esc(fb.content_gap)}</div>`; hasContent = true; }
   if (fb.language_point && fb.language_point.original) {
     body += `<span class="pill correction">Correction</span>
       <div class="delta"><span class="orig">${esc(fb.language_point.original)}</span><span class="arrowx">→</span><span class="better" data-ctx="${esc(fb.language_point.better)}">${wordsHTML(fb.language_point.better)}</span></div>
       <div class="explain">${esc(fb.language_point.explain || "")}</div>`;
+    hasContent = true;
   }
   if (fb.upgrade && fb.upgrade.original) {
     body += `<span class="pill upgrade">Upgrade</span>
       <div class="delta"><span class="orig">${esc(fb.upgrade.original)}</span><span class="arrowx">→</span><span class="better" data-ctx="${esc(fb.upgrade.better)}">${wordsHTML(fb.upgrade.better)}</span></div>
       <div class="explain">${esc(fb.upgrade.explain || "")}</div>`;
+    hasContent = true;
   }
   if (fb.polished) {
     body += `<span class="pill revision">Revision</span><div class="seg" data-ctx="${esc(fb.polished)}">${wordsHTML(fb.polished)}</div>
@@ -820,15 +825,21 @@ function renderFeedback(r) {
         <button class="mini-btn" data-f="fav">⭐ 收藏</button>
         <button class="mini-btn" data-f="copy">📋 复制</button>
       </div>`;
+    hasContent = true;
   } else if (fb.language_point && fb.language_point.better) {
     body += `<div class="fb-actions"><button class="mini-btn" data-f="say">🔊 朗读修订句</button></div>`;
+    hasContent = true;
+  }
+  if (!hasContent) {
+    body += `<div class="fb-err">⚠️ <b>本轮没有可显示的反馈内容</b>：模型返回了空的反馈对象（服务端已记录原始输出）。<br>
+      请到「⚙️ 设置 → 💬 对话服务」点「🧪 测试对话服务」查看原始返回；不影响继续练习。</div>`;
   }
   body += `<div class="metrics-line">用时 ${m.duration_s || 0}s · ${m.wpm || 0} wpm · 填充词 ${m.fillers || 0} · 长停顿 ${m.long_pauses || 0} · 转写引擎 ${esc({ cloud: "云端", local: "本地", tokenhub: "云端" }[r.asr_driver] || r.asr_driver || "")}</div>`;
 
-  const node = document.createElement("div");
+  const node = document.createElement("details");
   node.className = "fb-card";
-  node.innerHTML = `<div class="fb-head"><b>AI Feedback</b>${scoreHTML}<span class="arrow">▾</span></div><div class="fb-body">${body}</div>`;
-  node.querySelector(".fb-head").addEventListener("click", () => node.classList.toggle("collapsed"));
+  node.open = true; // 默认展开；折叠/展开用原生 <details>，与「答题思路」同机制，任何环境点击都可切换
+  node.innerHTML = `<summary class="fb-head"><b>AI Feedback</b>${scoreHTML}<span class="arrow">▾</span></summary><div class="fb-body">${body}</div>`;
   const sayText = fb.polished || (fb.language_point && fb.language_point.better) || "";
   node.querySelectorAll("[data-f]").forEach((b) => b.addEventListener("click", async () => {
     const a = b.dataset.f;
@@ -864,6 +875,8 @@ async function openSettings() {
       ? `已设置（${s.speech_key_masked}）· 留空 = 不修改`
       : "留空 = 复用对话 Key";
     $("settingsFile").textContent = "配置文件：" + (s.env_file || "");
+    const verEl = $("setVer");
+    if (verEl) verEl.textContent = "版本 " + (s.version || "?");
     const adv = document.querySelector("#settingsOverlay details.smore");
     if (adv) adv.open = !s.asr_endpoint;   // 识别端点未配置 → 自动展开引导
     const qr = $("quitRow");
@@ -902,6 +915,32 @@ async function refreshSetupBanner() {
   } catch (e) {}
 }
 $("settingsBtn").addEventListener("click", openSettings);
+
+/* ---------------- 🧪 对话服务自检（排障用） ---------------- */
+async function runSelftest() {
+  const box = $("selftestOut");
+  if (!box) return;
+  box.classList.remove("hidden");
+  box.textContent = "🧪 测试中…（约 5–20 秒，会消耗一次少量 API 调用）";
+  try {
+    const r = await api("/api/selftest/llm");
+    const lines = [];
+    lines.push(r.ok ? "✅ 对话服务正常（反馈 JSON 生成成功）" : "❌ 对话服务异常");
+    if (r.version) lines.push("版本：" + r.version);
+    if (r.model) lines.push("模型：" + r.model);
+    if (r.base) lines.push("接口地址：" + r.base);
+    if (r.plain) lines.push("基础回复：" + r.plain);
+    if (r.feedback_keys) lines.push("反馈字段：" + r.feedback_keys);
+    if (r.feedback_preview) lines.push("反馈原始返回（截断）：\n" + r.feedback_preview);
+    if (r.error) lines.push("⚠️ 错误：" + r.error);
+    lines.push("（把此结果截图发给开发者即可定位问题）");
+    box.textContent = lines.join("\n");
+  } catch (e) {
+    box.textContent = "❌ 测试请求失败：" + e.message;
+  }
+}
+const _stb = $("selftestBtn");
+if (_stb) _stb.addEventListener("click", runSelftest);
 $("setupBanner").addEventListener("click", openSettings);
 $("settingsSave").addEventListener("click", saveSettings);
 $("quitBtn").addEventListener("click", async () => {

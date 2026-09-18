@@ -3,6 +3,7 @@
 说明：会话状态暂存在内存（单用户桌面场景足够）；所有记录实时落盘到
 data/sessions/<sid>.jsonl，服务重启后旧会话不能继续作答但记录可查。
 """
+import json
 import time
 from pathlib import Path
 
@@ -160,8 +161,11 @@ def submit_answer(sid: str, audio_path: Path, mode: str = "free", script: str = 
     sd = metrics.script_diff(transcript, script) if (mode == "read" and script) else None
     # 反馈生成：失败时降级为「显式报错」而不是整个请求失败
     # （否则前端只弹 2 秒 toast，用户会以为"没有反馈、直接跳下一题"）
+    # v0.15.12：新增反馈对象校验——模型返回空对象 / 非对象时同样显式报错并记录原始输出，
+    # 杜绝前端渲染出"看起来什么都没有、点了也没反应"的空白卡片。
     fb = None
     fb_error = None
+    fb_raw = None
     try:
         fb = get_llm().chat_json(
             prompts.feedback_messages(
@@ -173,9 +177,23 @@ def submit_answer(sid: str, audio_path: Path, mode: str = "free", script: str = 
                 script=script if mode == "read" else "",
             )
         )
+        if isinstance(fb, list) and len(fb) == 1 and isinstance(fb[0], dict):
+            fb = fb[0]  # 兼容个别服务把对象包在单元素数组里
+        if fb is not None and not isinstance(fb, dict):
+            fb_raw = json.dumps(fb, ensure_ascii=False)[:800]
+            fb_error = f"模型返回的不是 JSON 对象（{type(fb).__name__}）；原始输出已记录（可发给开发者排查）"
+            fb = None
+        elif isinstance(fb, dict) and not any(
+            fb.get(k) for k in ("verdict", "content_gap", "polished", "score", "language_point", "upgrade")
+        ):
+            fb_raw = json.dumps(fb, ensure_ascii=False)[:800]
+            fb_error = "模型返回了空的反馈对象（没有任何内容字段）；原始输出已记录（可发给开发者排查）"
+            fb = None
     except Exception as e:  # noqa: BLE001
-        fb_error = str(e)[:400]
-        store.append(sid, {"type": "feedback_error", "session": sid, "question": qtext, "error": fb_error})
+        fb_error = str(e)[:400] or f"{e.__class__.__name__}（无详细信息）"
+    if fb_error:
+        store.append(sid, {"type": "feedback_error", "session": sid, "question": qtext,
+                           "error": fb_error, "raw": fb_raw})
     rec = {
         "type": "answer",
         "session": sid,
@@ -190,6 +208,7 @@ def submit_answer(sid: str, audio_path: Path, mode: str = "free", script: str = 
         "metrics": met,
         "feedback": fb,
         "feedback_error": fb_error,
+        "feedback_raw": fb_raw,
         "asr_driver": asr_res.get("driver"),
         "asr_usage": asr_res.get("usage"),
     }
@@ -268,7 +287,7 @@ def export_report(sid: str) -> Path:
             f"> {a['transcript']}",
             "",
             f"- 用时 {m.get('duration_s', 0)}s · {m.get('wpm', 0)} wpm · 填充词 {m.get('fillers', 0)} · 长停顿(≥2s) {m.get('long_pauses', 0)}",
-            f"- 反馈: {a.get('feedback', {}).get('verdict', '')}",
+            f"- 反馈: {(a.get('feedback') or {}).get('verdict', '') or ('（本轮反馈生成失败）' if a.get('feedback_error') else '')}",
             "",
         ]
     if review:
