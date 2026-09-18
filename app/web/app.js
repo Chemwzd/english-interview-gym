@@ -853,6 +853,8 @@ async function openSettings() {
     $("settingsFile").textContent = "配置文件：" + (s.env_file || "");
     const adv = document.querySelector("#settingsOverlay details.smore");
     if (adv) adv.open = !s.asr_endpoint;   // 识别端点未配置 → 自动展开引导
+    const qr = $("quitRow");
+    if (qr) qr.style.display = s.can_quit ? "" : "none";
     refreshMobile();
   } catch (e) { toast("读取设置失败：" + e.message); }
 }
@@ -887,6 +889,11 @@ async function refreshSetupBanner() {
 $("settingsBtn").addEventListener("click", openSettings);
 $("setupBanner").addEventListener("click", openSettings);
 $("settingsSave").addEventListener("click", saveSettings);
+$("quitBtn").addEventListener("click", async () => {
+  if (!confirm("确定完全退出程序？（后台服务将停止，数据已自动保存）")) return;
+  try { await api("/api/quit", { method: "POST" }); } catch (e) {}
+  document.body.innerHTML = '<div style="font:15px/1.9 system-ui;padding:70px 24px;text-align:center;color:#444">✅ 程序已退出<br><span style="color:#999;font-size:13px">现在可以关闭本窗口了</span></div>';
+});
 $("settingsClose").addEventListener("click", () => $("settingsOverlay").classList.add("hidden"));
 $("settingsOverlay").addEventListener("click", (e) => { if (e.target === $("settingsOverlay")) $("settingsOverlay").classList.add("hidden"); });
 

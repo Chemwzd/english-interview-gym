@@ -25,6 +25,15 @@ hiddenimports = (
     + collect_submodules("pdfminer")
     + ["fastapi", "multipart", "yaml", "requests", "docx", "pypdf"]
 )
+if _sys.platform == "win32":  # 原生应用窗口（WebView2 外壳）：pywebview 及其资源
+    try:
+        datas += collect_data_files("webview")
+        hiddenimports += collect_submodules("webview") + [
+            "clr", "clr_loader", "proxy_tools", "bottle", "typing_extensions",
+            "webview.platforms.edgechromium", "webview.platforms.winforms",
+        ]
+    except Exception:
+        pass
 
 a = Analysis(  # noqa: F821
     [os.path.join(SPECPATH, "win_launcher.py")],  # noqa: F821
@@ -48,7 +57,7 @@ exe = EXE(  # noqa: F821
     debug=False,
     strip=False,
     upx=False,
-    console=True,
+    console=(_sys.platform != "win32"),  # Windows：无控制台黑框（GUI 子系统）
     icon=ICON,
 )
 coll = COLLECT(  # noqa: F821

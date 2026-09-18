@@ -5,6 +5,7 @@
 """
 import re
 import shutil
+import threading
 import time
 from pathlib import Path
 
@@ -26,7 +27,7 @@ async def _lifespan(_app):
     yield
 
 
-app = FastAPI(title="EngTraining", version="0.15.5", lifespan=_lifespan)
+app = FastAPI(title="EngTraining", version="0.15.6", lifespan=_lifespan)
 
 
 @app.get("/api/health")
@@ -39,6 +40,7 @@ def health():
         "max_answer_seconds": config.get("session.max_answer_seconds", 120),
         "api_key_set": bool(config.api_key()),
         "api_configured": bool(config.api_key() and (config.env("API_BASE_URL") or config.get("llm.base_url", ""))),
+        "can_quit": bool(getattr(app.state, "quit_callback", None)),
         "frozen": config.is_frozen(),
     }
 
@@ -63,6 +65,7 @@ def _settings_payload() -> dict:
         "tts_endpoint": config.get("tts.endpoint", "") or "",
         "tts_model": config.get("tts.cloud_model", "") or "",
         "tts_voice": config.get("tts.cloud_voice_id", "") or "",
+        "can_quit": bool(getattr(app.state, "quit_callback", None)),
     }
 
 
@@ -101,6 +104,16 @@ def settings_set(payload: dict):
         return {"ok": True, "settings": _settings_payload()}
     except Exception as e:  # noqa: BLE001
         raise HTTPException(500, str(e))
+
+
+@app.post("/api/quit")
+def quit_app():
+    """完全退出程序（仅打包版：启动器注入回调；开发模式请按 Ctrl+C）。"""
+    cb = getattr(app.state, "quit_callback", None)
+    if not cb:
+        raise HTTPException(400, "当前进程不支持在此退出（开发模式请按 Ctrl+C）")
+    threading.Thread(target=cb, daemon=True).start()
+    return {"ok": True}
 
 
 @app.get("/api/personas")

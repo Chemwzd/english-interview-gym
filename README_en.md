@@ -140,7 +140,7 @@ To reach your computer from **any network** (not just the same Wi-Fi), install [
 
 ### 7. Windows portable build (optional)
 
-No Python required: grab `EnglishInterviewGym-win64.zip` from [**Releases**](https://github.com/KumquatYZ/english-interview-gym/releases/latest) → unzip → double-click `EnglishInterviewGym.exe` → the browser opens automatically → click "⚙️ 设置 (Settings)" and fill in your API base URL + key (config and data stay inside the app folder — fully portable, delete the folder to uninstall).
+No Python required: grab `EnglishInterviewGym-win64.zip` from [**Releases**](https://github.com/KumquatYZ/english-interview-gym/releases/latest) → unzip → double-click `EnglishInterviewGym.exe` → **a standalone app window opens (no console window)** → click "⚙️ 设置 (Settings)" and fill in your API base URL + key. Closing the window exits the app (config and data stay inside the app folder — fully portable, delete the folder to uninstall).
 
 > Windows 10/11 (64-bit); an FFmpeg transcoding component is bundled. Mic permission is requested by the browser on first recording.
 

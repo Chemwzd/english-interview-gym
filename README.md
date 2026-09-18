@@ -140,7 +140,7 @@ bash scripts/run_server.sh       # 或直接双击「打开训练系统.command�
 
 ### 7. Windows 免安装版（可选）
 
-不装 Python 也能用：从 [**Releases**](https://github.com/KumquatYZ/english-interview-gym/releases/latest) 下载 `EnglishInterviewGym-win64.zip` → 解压 → 双击 `EnglishInterviewGym.exe` → 浏览器自动打开 → 点「⚙️ 设置」填入接口地址与 API Key 即可开始使用（配置与数据都保存在软件文件夹内，绿色便携，删除即卸载）。
+不装 Python 也能用：从 [**Releases**](https://github.com/KumquatYZ/english-interview-gym/releases/latest) 下载 `EnglishInterviewGym-win64.zip` → 解压 → 双击 `EnglishInterviewGym.exe` → **独立应用窗口自动打开（无黑框控制台）** → 点「⚙️ 设置」填入接口地址与 API Key 即可开始使用；关闭窗口 = 退出程序（配置与数据都保存在软件文件夹内，绿色便携，删除即卸载）。
 
 > Windows 10/11（64 位）；包内已附带音频转码组件（FFmpeg），麦克风权限由浏览器在首次录音时询问。
 
