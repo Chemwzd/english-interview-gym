@@ -89,6 +89,8 @@ Two paths — pick one: **Option A (recommended, zero install)**: download the p
 
 Both are green, portable builds: no Python, no terminal. Config and data live inside the folder — delete the folder for a clean uninstall.
 
+> macOS unzip tip: prefer the system extractor (just double-click the zip in Finder). A few third-party unarchivers (e.g. The Unarchiver) may skip internal directories. Builds from v0.15.9+ are hardened against this; if you ever see `Failed to load Python shared library`, re-extract with the system tool.
+
 **Step 2 · Configure** (first run, ~3 minutes)
 
 Open the app → top-right "**⚙️ 设置 (Settings)**" → fill in two groups:

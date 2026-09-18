@@ -56,6 +56,13 @@ jobs:
       - name: Build with PyInstaller
         run: pyinstaller packaging/EnglishInterviewGym.spec --distpath dist --workpath build_mac --noconfirm
 
+      - name: Dereference _internal/Python (3rd-party unarchiver compatibility)
+        run: |
+          cd dist/EnglishInterviewGym/_internal
+          if [ -L Python ]; then t="$(readlink Python)"; rm Python; cp "$t" Python; chmod 755 Python; echo "dereferenced: Python -> real file"; fi
+          ls -la Python
+          test ! -L Python
+
       - name: Assemble package (preserve exec bits via ditto)
         run: |
           cp packaging/README-macOS.txt packaging/FFMPEG-NOTICE.txt dist/EnglishInterviewGym/

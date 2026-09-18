@@ -3,9 +3,14 @@
 
 【快速开始】
 1. 解压到任意文件夹（放用户目录即可，别放 iCloud 同步目录里跑）。
+   · 建议用系统自带解压：访达里直接双击 zip；或终端：ditto -x -k 安装包.zip .
+   · 部分第三方解压工具（如 The Unarchiver）可能漏解压 .framework 目录导致无法启动；
+     若启动时报 "_internal/Python 缺失"/"Failed to load Python shared library"，
+     请换系统解压方式重新解压（v0.15.9 起安装包已做兼容处理，老工具解压一般也正常）。
 2. 双击「启动.command」：
    · 首次可能被 macOS 提示"未签名"——右键点「启动.command」→ 打开 → 再确认「打开」；
-   · 或先在终端执行一次：xattr -dr com.apple.quarantine "本文件夹"
+   · 启动脚本会自动去除浏览器下载带来的"隔离"标记（无需手动操作）；
+   · （兜底）如遇任何启动问题，可先在终端执行一次：xattr -dr com.apple.quarantine "本文件夹"
 3. 浏览器自动打开 http://127.0.0.1:8765 。
 4. 首次使用：点「⚙️ 设置」→ 填 API 接口地址 + API Key + 对话模型 → 「保存并生效」。
 5. 关闭终端窗口 = 停止服务。
