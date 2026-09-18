@@ -56,12 +56,15 @@ jobs:
       - name: Build with PyInstaller
         run: pyinstaller packaging/EnglishInterviewGym.spec --distpath dist --workpath build_mac --noconfirm
 
-      - name: Dereference _internal/Python (3rd-party unarchiver compatibility)
+      - name: Harden runtime layout (no framework dir / no symlink)
         run: |
           cd dist/EnglishInterviewGym/_internal
-          if [ -L Python ]; then t="$(readlink Python)"; rm Python; cp "$t" Python; chmod 755 Python; echo "dereferenced: Python -> real file"; fi
-          ls -la Python
+          if [ -L Python ]; then t="$(readlink Python)"; rm Python; cp "$t" Python; chmod 755 Python; echo "dereferenced Python -> real file"; fi
+          rm -rf Python.framework
           test ! -L Python
+          test ! -e Python.framework
+          if [ -e Python ] || ls libpython3.*.dylib >/dev/null 2>&1; then echo "python runtime present:" && ls -la Python libpython3.*.dylib 2>/dev/null; else echo "FATAL: no python runtime found"; exit 1; fi
+          echo "runtime layout hardened"
 
       - name: Assemble package (preserve exec bits via ditto)
         run: |

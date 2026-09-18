@@ -89,7 +89,7 @@ Two paths — pick one: **Option A (recommended, zero install)**: download the p
 
 Both are green, portable builds: no Python, no terminal. Config and data live inside the folder — delete the folder for a clean uninstall.
 
-> macOS unzip tip: prefer the system extractor (just double-click the zip in Finder). A few third-party unarchivers (e.g. The Unarchiver) may skip internal directories. Builds from v0.15.9+ are hardened against this; if you ever see `Failed to load Python shared library`, re-extract with the system tool.
+> macOS unzip tip: prefer the system extractor (just double-click the zip in Finder). Launch by **double-clicking 启动.command** (it strips the system quarantine flag automatically). If you see a **"'X' is damaged and can't be opened. You should move it to the Trash."** dialog: **click Cancel, NOT "Move to Trash"** — that is macOS blocking an unsigned app, and "Move to Trash" deletes app files (if that happens, just re-extract). From v0.15.11 on, the package is fully hardened and the dialog will not appear in normal use.
 
 **Step 2 · Configure** (first run, ~3 minutes)
 

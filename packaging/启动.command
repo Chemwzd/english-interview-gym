@@ -10,12 +10,13 @@ xattr -dr com.apple.quarantine "$(pwd)" 2>/dev/null || true
 #    导致 _internal/Python 指向不存在的目标，启动时报 "Failed to load Python shared library"。
 if ! [ -e "_internal/Python" ]; then
   echo ""
-  echo "⚠️  程序文件不完整：_internal/Python 缺失或链接无效。"
+  echo "⚠️  程序文件不完整：_internal/Python 缺失。"
   echo ""
-  echo "常见原因：用第三方解压工具解压时漏掉了 .framework 目录。"
-  echo "请改用以下任一方式【重新解压】（先删除当前文件夹）："
-  echo "   · 访达里直接双击 zip —— 用系统自带解压；"
-  echo "   · 或终端执行：  ditto -x -k 你的安装包.zip ."
+  echo "常见原因：macOS 安全弹窗（“已损坏…应移到废纸篓”）删除了文件，或解压不完整。"
+  echo "处理步骤："
+  echo "   ① 重要：若弹出“已损坏/移到废纸篓”一类对话框，请点【取消】，不要点“移到废纸篓”；"
+  echo "   ② 删除当前文件夹，重新解压（建议访达双击 zip，或终端：ditto -x -k 安装包.zip .）；"
+  echo "   ③ 再双击本脚本启动（会自动去除隔离标记，无需其他操作）。"
   echo ""
   read -r -p "按回车键退出…" _
   exit 1
