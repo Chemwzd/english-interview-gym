@@ -28,6 +28,7 @@
 
 - [这是什么](#这是什么)
 - [快速开始](#快速开始)
+- [在手机上使用（可选）](#在手机上使用可选)
 - [模型需求与推荐](#模型需求与推荐)
 - [功能详解](#功能详解)
   - [模拟面试](#模拟面试)
@@ -75,43 +76,31 @@
 
 > 📖 **界面使用手册**（17 页，含全部界面截图，边看边练）：[DOCX 下载](docs/USER-GUIDE.docx) · [PDF 下载](docs/USER-GUIDE.pdf)
 
-**环境要求**：macOS（Apple Silicon 体验最佳）+ Python 3.12 + `ffmpeg`（`brew install ffmpeg`）+ 一个 API Key（自备：任何 OpenAI 兼容服务均可，官方 API 或聚合网关）。**Windows 用户无需 Python——直接用免安装版（见第 7 节）。**
+两条路，选一条就行：**方式一（推荐，零安装）** 下载免安装包，双击就能用；**方式二** 从源码运行（macOS / 想自己改代码的人）。
 
-### 1. 克隆并安装
+### 方式一（推荐，零安装）：免安装包
 
-```bash
-git clone https://github.com/KumquatYZ/english-interview-gym.git
-cd english-interview-gym
-python3 -m venv .venv            # 装了 uv 也可以：uv venv .venv --python 3.12
-.venv/bin/pip install -r app/requirements.txt
-```
+**第 1 步 · 下载** —— 到 [**Releases（latest）**](https://github.com/KumquatYZ/english-interview-gym/releases/latest) 下载对应平台的包：
 
-### 2. 填入 API Key（对话与语音可分设）
+| 平台 | 文件 | 怎么打开 |
+|---|---|---|
+| **Windows 10 / 11** | [`EnglishInterviewGym-win64.zip`](https://github.com/KumquatYZ/english-interview-gym/releases/latest/download/EnglishInterviewGym-win64.zip) | 解压 → 双击 `EnglishInterviewGym.exe` → 打开「英语面试健身房」**独立应用窗口**（无命令行黑框） |
+| **macOS（Apple 芯片）** | [`EnglishInterviewGym-macos.zip`](https://github.com/KumquatYZ/english-interview-gym/releases/latest/download/EnglishInterviewGym-macos.zip) | 解压 → 双击「启动.command」（首次被系统拦截：右键 →「打开」） |
 
-```bash
-cp app/.env.example app/.env     # 填入 API_KEY=你的key、API_BASE_URL=你的服务地址
-                                 # （服务地址也可写在 app/config.yaml 的 llm.base_url）
-                                 # 对话 Key 必填；语音 Key 可选（SPEECH_API_KEY，不填则复用对话 Key）
-```
+都是一次性绿色便携版：不装 Python、不碰命令行；配置和数据都存在文件夹里，删掉文件夹 = 卸载干净。
 
-或者运行交互式配置助手（会在线验证 Key 再写入）：
+**第 2 步 · 配置**（首次必做，约 3 分钟）
 
-```bash
-python3 scripts/setup_env.py
-```
+打开界面 → 右上角「**⚙️ 设置**」→ 填两组：
 
-> 需要哪些模型（对话 / 语音识别 / 语音合成）、推荐用哪个、大概花多少钱？→ [模型需求与推荐](#模型需求与推荐)
-> 💡 **对话与语音可以用不同服务商**：例如对话用 DeepSeek 官方（便宜好用，但没有语音模型），语音单独买 TokenHub / MiniMax / 硅基流动 等 —— 见 [语音服务单独买（推荐搭配）](#语音服务单独买推荐搭配)。
+| 区域 | 填什么 | 说明 |
+|---|---|---|
+| 💬 对话服务 | 接口地址 + API Key + 模型 | 任何 OpenAI 兼容服务均可（例：DeepSeek 官方 `https://api.deepseek.com` + `deepseek-chat`） |
+| 🎙️ 语音服务 | 识别 / 合成的接口地址 + 模型（+ 可选语音 Key） | Windows **必填**（没有本地兜底，不填录音后无法转写）；填法照抄 [语音服务单独买（推荐搭配）](#语音服务单独买推荐搭配) 里的表格 |
 
-### 3. 启动
+> 💡 对话与语音可以来自**不同服务商**：比如对话用 DeepSeek 官方（便宜，但没有语音模型），语音单独买 TokenHub / MiniMax / 硅基流动 / OpenAI —— 语音 Key 留空 = 自动复用对话 Key。各家「端点 + 模型 + 音色」的现成填法见 [语音服务单独买（推荐搭配）](#语音服务单独买推荐搭配)。
 
-```bash
-bash scripts/run_server.sh       # 或直接双击「打开训练系统.command」
-```
-
-打开 http://127.0.0.1:8765（首次使用请允许浏览器访问麦克风）。
-
-### 4. 第一次练习（约 10 分钟）
+**第 3 步 · 第一次练习（约 10 分钟）**
 
 1. 首页「选择你的 AI 导师」→ 点导师**试听音色**，选定人格；
 2. 「选择题集」→ 先进 `baseline-8`（8 题热身）；
@@ -119,14 +108,33 @@ bash scripts/run_server.sh       # 或直接双击「打开训练系统.command�
 4. 说完再点一次麦克风 → 看转写、反馈卡与评分 → 继续下一题；
 5. 练完点右上角「复盘」生成整场报告。
 
-### 5. 体检与周报（可选）
+### 方式二（可选）：从源码运行（macOS / 开发者）
+
+**环境要求**：macOS（Apple Silicon 体验最佳）+ Python 3.12 + `ffmpeg`（`brew install ffmpeg`）+ 一个 API Key（自备，任何 OpenAI 兼容服务均可）。
+
+```bash
+git clone https://github.com/KumquatYZ/english-interview-gym.git
+cd english-interview-gym
+python3 -m venv .venv            # 装了 uv 也可以：uv venv .venv --python 3.12
+.venv/bin/pip install -r app/requirements.txt
+
+cp app/.env.example app/.env     # 填入 API_KEY=你的key、API_BASE_URL=你的服务地址
+                                 # 对话 Key 必填；语音 Key 可选（SPEECH_API_KEY，不填则复用对话 Key）
+                                 # 或运行交互式配置助手：python3 scripts/setup_env.py
+
+bash scripts/run_server.sh       # 或直接双击「打开训练系统.command」
+```
+
+打开 http://127.0.0.1:8765（首次使用请允许浏览器访问麦克风）。
+
+**其它脚本（可选）**：
 
 ```bash
 .venv/bin/python scripts/check_stack.py       # 逐链路体检：对话 / 语音识别 / 语音合成
 .venv/bin/python scripts/baseline_report.py   # 练习周报
 ```
 
-### 6. 在手机上使用（可选）
+## 在手机上使用（可选）
 
 **最简方式（推荐）**：打开「**⚙️ 设置 → 📱 手机访问 → 启用**」——自动生成证书并开启 HTTPS 通道，界面会给出手机访问地址与完整的安装指引（Mac / Windows 免安装版同样适用）。
 
@@ -138,18 +146,6 @@ bash scripts/run_server.sh       # 或直接双击「打开训练系统.command�
 - Safari 打开同一地址 → 「分享 → **添加到主屏幕**」——之后从主屏图标进入即全屏独立窗口，与 App 体验一致。
 
 > 说明：手机是"瘦客户端"——会话与数据仍保存在运行本应用的电脑上（保持开机联网即可）。命令行用户也可用 `bash scripts/gen_https_cert.sh` + `scripts/https_proxy.py` 流程（与界面内一键启用等价）。
-
-### 7. Windows 免安装版（可选）
-
-不装 Python 也能用：从 [**Releases**](https://github.com/KumquatYZ/english-interview-gym/releases/latest) 下载 `EnglishInterviewGym-win64.zip` → 解压 → 双击 `EnglishInterviewGym.exe` → **独立应用窗口自动打开（无黑框控制台）** → 点「⚙️ 设置」填入接口地址与 API Key 即可开始使用；关闭窗口 = 退出程序（配置与数据都保存在软件文件夹内，绿色便携，删除即卸载）。
-
-> Windows 10/11（64 位）；包内已附带音频转码组件（FFmpeg），麦克风权限由浏览器在首次录音时询问。
-
-### 8. macOS 免安装包（可选：Apple Silicon）
-
-从 [**Releases**](https://github.com/KumquatYZ/english-interview-gym/releases/latest) 下载 `EnglishInterviewGym-macos.zip` → 解压 → 双击「启动.command」（首次被 macOS 拦截时：右键 → 打开）→ 浏览器自动打开 → 点「⚙️ 设置」填好接口地址与 API Key 即可。数据与配置同样保存在文件夹内，绿色便携。
-
-> macOS 12+，Apple Silicon（M 系列）；手机访问同样可在「⚙️ 设置」里一键启用。
 
 ## 模型需求与推荐
 

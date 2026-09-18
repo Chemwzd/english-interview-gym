@@ -28,6 +28,7 @@
 
 - [What is this](#what-is-this)
 - [Quick start](#quick-start)
+- [Use it on your phone (optional)](#use-it-on-your-phone-optional)
 - [Model requirements & recommendations](#model-requirements--recommendations)
 - [Feature guide](#feature-guide)
   - [Mock interviews](#mock-interviews)
@@ -73,83 +74,78 @@ Every session feeds your streaks and stats; every question keeps a history, so y
 
 ## Quick start
 
-> 📖 **UI &amp; usage guide** (17 pages, full screenshots — follow along): [DOCX](docs/USER-GUIDE.docx) · [PDF](docs/USER-GUIDE.pdf)
+> 📖 **User guide** (17 pages, all screenshots included): [DOCX download](docs/USER-GUIDE.docx) · [PDF download](docs/USER-GUIDE.pdf)
 
-**Requirements**: macOS (Apple Silicon recommended) + Python 3.12 + `ffmpeg` (`brew install ffmpeg`) + an API key (bring your own — any OpenAI-compatible service: official APIs or aggregator gateways). **On Windows, no Python is needed — use the portable build (section 7).**
+Two paths — pick one: **Option A (recommended, zero install)**: download the portable build, double-click, done. **Option B**: run from source (macOS / if you want to modify the code).
 
-### 1. Clone &amp; install
+### Option A (recommended, zero install): portable build
+
+**Step 1 · Download** — grab your platform's file from [**Releases (latest)**](https://github.com/KumquatYZ/english-interview-gym/releases/latest):
+
+| Platform | File | How to open |
+|---|---|---|
+| **Windows 10 / 11** | [`EnglishInterviewGym-win64.zip`](https://github.com/KumquatYZ/english-interview-gym/releases/latest/download/EnglishInterviewGym-win64.zip) | Unzip → double-click `EnglishInterviewGym.exe` → a standalone **app window** opens (no console window) |
+| **macOS (Apple Silicon)** | [`EnglishInterviewGym-macos.zip`](https://github.com/KumquatYZ/english-interview-gym/releases/latest/download/EnglishInterviewGym-macos.zip) | Unzip → double-click 启动.command (if macOS blocks it the first time: right-click → Open) |
+
+Both are green, portable builds: no Python, no terminal. Config and data live inside the folder — delete the folder for a clean uninstall.
+
+**Step 2 · Configure** (first run, ~3 minutes)
+
+Open the app → top-right "**⚙️ 设置 (Settings)**" → fill in two groups:
+
+| Group | What to fill | Notes |
+|---|---|---|
+| 💬 Chat service | Base URL + API key + model | Any OpenAI-compatible service (e.g. DeepSeek official: `https://api.deepseek.com` + `deepseek-chat`) |
+| 🎙️ Speech service | ASR / TTS endpoints + models (+ optional speech key) | **Required on Windows** (no local fallback — otherwise recordings won't transcribe); copy-ready values: see [Buying speech separately (recommended combos)](#buying-speech-separately-recommended-combos) |
+
+> 💡 Chat and speech can come from **different vendors**: e.g. chat with DeepSeek official (cheap, but no speech models) and buy speech separately from TokenHub / MiniMax / SiliconFlow / OpenAI — leaving the speech key empty reuses the chat key. Copy-ready endpoint/model/voice values: [Buying speech separately (recommended combos)](#buying-speech-separately-recommended-combos).
+
+**Step 3 · Your first session (~10 minutes)**
+
+1. "选择你的 AI 导师 / Pick your AI tutor" → tap a tutor to **preview the voice**, pick a persona;
+2. "选择题集 / Question sets" → start with `baseline-8` (8-question warm-up);
+3. Open any question → "🎙 从这题开练 / Practice this" → tap the mic (or press Space) and speak;
+4. Tap the mic again when done → review the transcript, feedback cards and score → next question;
+5. When finished, click "复盘 / Review" (top-right) for the full session report.
+
+### Option B (optional): run from source (macOS / developers)
+
+**Requirements**: macOS (Apple Silicon recommended) + Python 3.12 + `ffmpeg` (`brew install ffmpeg`) + an API key (bring your own — any OpenAI-compatible service).
 
 ```bash
 git clone https://github.com/KumquatYZ/english-interview-gym.git
 cd english-interview-gym
 python3 -m venv .venv            # or with uv: uv venv .venv --python 3.12
 .venv/bin/pip install -r app/requirements.txt
-```
 
-### 2. Add your API key (chat and speech can be separate)
-
-```bash
-cp app/.env.example app/.env     # then set API_KEY=your-key and API_BASE_URL=your-service-url
-                                 # (the base URL can also live in app/config.yaml -> llm.base_url)
+cp app/.env.example app/.env     # set API_KEY=your-key, API_BASE_URL=your-service-url
                                  # chat key required; speech key optional (SPEECH_API_KEY, falls back to the chat key)
+                                 # or run the interactive helper: python3 scripts/setup_env.py
+
+bash scripts/run_server.sh       # or double-click 打开训练系统.command
 ```
 
-Or run the interactive setup helper (validates the key online before saving):
+Open http://127.0.0.1:8765 (allow microphone access on first use).
+
+**Other scripts (optional)**:
 
 ```bash
-python3 scripts/setup_env.py
-```
-
-> Which models do you need (chat / speech recognition / speech synthesis), which are recommended, and what do they cost? → [Model requirements & recommendations](#model-requirements--recommendations)
-> 💡 **Chat and speech can come from different vendors**: e.g. chat with DeepSeek's official API (no speech models) while buying speech separately from TokenHub / MiniMax / SiliconFlow — see [Buying speech separately (recommended combos)](#buying-speech-separately-recommended-combos).
-
-### 3. Launch
-
-```bash
-bash scripts/run_server.sh       # or double-click "打开训练系统.command" on macOS
-```
-
-Open http://127.0.0.1:8765 (allow microphone access in your browser on first use).
-
-### 4. Your first session (~10 minutes)
-
-1. Home → "Choose your AI tutor" → preview voices and pick a persona;
-2. "Choose a question set" → start with `baseline-8` (8 warm-up questions);
-3. Open any card → "🎙 Practise from this question" → click the mic (or press Space) and speak;
-4. Click the mic again to stop → read the transcript, feedback cards and score → next question;
-5. When done, click "Review" (top-right) to generate the session report.
-
-### 5. Health check &amp; weekly report (optional)
-
-```bash
-.venv/bin/python scripts/check_stack.py       # verify every pipeline: LLM / ASR / TTS
+.venv/bin/python scripts/check_stack.py       # health-check chat / ASR / TTS end to end
 .venv/bin/python scripts/baseline_report.py   # practice weekly report
 ```
 
-### 6. Use it on your phone (optional)
+## Use it on your phone (optional)
 
 **Easiest path (recommended)**: open "**⚙️ 设置 (Settings) → 📱 手机访问 (Mobile access) → Enable**" — the app generates certificates and starts the HTTPS channel automatically, then shows the phone URL plus step-by-step setup (works for the macOS / Windows portable builds too).
 
-To reach your computer from **any network** (not just the same Wi-Fi), install [Tailscale](https://tailscale.com/download) on both machines (free, private mesh; sign in with the same account) — when detected, mobile access binds to your tailnet only.
+For an iPhone that should reach it **from any network** (not just the same Wi-Fi), install [Tailscale](https://tailscale.com/download) on both the Mac and the iPhone (free, private mesh VPN — just sign in with the same account). When Tailscale is detected, mobile access uses it automatically and stays reachable inside your private network only.
 
 **One-time phone setup**:
 
-- Install the CA: open the URL shown in Settings in Safari (accept the certificate warning) → then open `<that-url>/ca.crt` to download the profile → Settings → General → VPN & Device Management → install → then Settings → General → About → Certificate Trust Settings → enable full trust;
-- Open the same URL in Safari → Share → **Add to Home Screen** — it then launches full-screen like an app.
+- Install the certificate: open the URL shown in Settings with Safari ("not private" warning → continue) → then open `<url>/ca.crt` to download the profile → "Settings → General → VPN & Device Management" install → "General → About → Certificate Trust Settings" enable full trust;
+- Open the same URL in Safari → "Share → **Add to Home Screen**" — launch from that icon for a full-screen, app-like experience.
 
-> Note: the phone is a thin client — sessions and data stay on the computer running the app (keep it awake and online). CLI users can still use `bash scripts/gen_https_cert.sh` + `scripts/https_proxy.py` (equivalent to the in-app one-click flow).
-
-### 7. Windows portable build (optional)
-
-No Python required: grab `EnglishInterviewGym-win64.zip` from [**Releases**](https://github.com/KumquatYZ/english-interview-gym/releases/latest) → unzip → double-click `EnglishInterviewGym.exe` → **a standalone app window opens (no console window)** → click "⚙️ 设置 (Settings)" and fill in your API base URL + key. Closing the window exits the app (config and data stay inside the app folder — fully portable, delete the folder to uninstall).
-
-> Windows 10/11 (64-bit); an FFmpeg transcoding component is bundled. Mic permission is requested by the browser on first recording.
-
-### 8. macOS portable build (optional: Apple Silicon)
-
-Download `EnglishInterviewGym-macos.zip` from [**Releases**](https://github.com/KumquatYZ/english-interview-gym/releases/latest) → unzip → double-click 启动.command (if macOS blocks it the first time: right-click → Open) → the browser opens → configure via "⚙️ 设置". Config and data stay inside the folder — fully portable.
-
-> macOS 12+, Apple Silicon (M-series); mobile access can be enabled from Settings with one click.
+> Note: the phone is a thin client — sessions and data stay on the computer running the app (keep it on and online). CLI users can also use `bash scripts/gen_https_cert.sh` + `scripts/https_proxy.py` (equivalent to the in-app one-click enable).
 
 ## Model requirements &amp; recommendations
 
