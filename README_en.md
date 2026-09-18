@@ -86,12 +86,12 @@ python3 -m venv .venv            # or with uv: uv venv .venv --python 3.12
 .venv/bin/pip install -r app/requirements.txt
 ```
 
-### 2. Add your API key
+### 2. Add your API key (chat and speech can be separate)
 
 ```bash
 cp app/.env.example app/.env     # then set API_KEY=your-key and API_BASE_URL=your-service-url
                                  # (the base URL can also live in app/config.yaml -> llm.base_url)
-                                 # (one key covers the LLM + speech recognition + speech synthesis)
+                                 # chat key required; speech key optional (SPEECH_API_KEY, falls back to the chat key)
 ```
 
 Or run the interactive setup helper (validates the key online before saving):
@@ -101,6 +101,7 @@ python3 scripts/setup_env.py
 ```
 
 > Which models do you need (chat / speech recognition / speech synthesis), which are recommended, and what do they cost? → [Model requirements & recommendations](#model-requirements--recommendations)
+> 💡 **Chat and speech can come from different vendors**: e.g. chat with DeepSeek's official API (no speech models) while buying speech separately from TokenHub / MiniMax / SiliconFlow — see [Buying speech separately (recommended combos)](#buying-speech-separately-recommended-combos).
 
 ### 3. Launch
 
@@ -152,7 +153,7 @@ Download `EnglishInterviewGym-macos.zip` from [**Releases**](https://github.com/
 
 ## Model requirements &amp; recommendations
 
-A full session uses **three kinds of models** — not just a chat model. All three are called with the **single API key** you bring in `app/.env` (any OpenAI-compatible service: official APIs or aggregator gateways):
+A full session uses **three kinds of models** — not just a chat model. They **can be configured separately**: chat and speech (ASR/TTS) may come from **different vendors with different keys** (e.g. chat with DeepSeek's official API, speech bought from another vendor) — see [Buying speech separately (recommended combos)](#buying-speech-separately-recommended-combos). Common combos:
 
 | Role | Where it's used | Recommended models (examples) | Reference price (CNY, pay-as-you-go) |
 |---|---|---|---|
@@ -176,6 +177,39 @@ With both enabled, the only cost left is the chat model: **≈ ¥0.1/day**.
 - The default fallback chain includes `kimi-k3` (pricier; only used if the primary model fails) — adjust `llm.fallback_models` if you care about cost.
 
 To switch models, edit `app/config.yaml`: `llm.model` / `asr.model` / `tts.cloud_model` (all support fallback chains).
+
+### Buying speech separately (recommended combos)
+
+**Why**: many chat vendors (e.g. DeepSeek's official API) have **no speech models**, while speech (ASR/TTS) is core to this app. So chat and speech are two independent configurations — use one vendor for chat, another for speech, completely decoupled:
+
+- **Chat service**: API key + base URL + model (e.g. DeepSeek official);
+- **Speech service**: its own endpoints + models + (optional) speech-only key. **Leave the speech key empty to reuse the chat key** — no duplication needed if both use the same vendor (e.g. both TokenHub).
+
+Where to configure: in-app "⚙️ 设置 (Settings) → 🎙️ 语音服务", or `app/.env` (`SPEECH_API_KEY`) + `app/config.yaml` (`asr.*` / `tts.*`).
+**Protocols are auto-detected from the endpoint URL**: endpoints containing `/audio/transcriptions` or `/audio/speech` use the OpenAI-compatible protocol; everything else uses the TokenHub / MiniMax-style protocol.
+
+**Common speech services (all directly supported; bring your own account):**
+
+| Service | ASR | TTS | Where |
+|---|---|---|---|
+| Tencent Cloud TokenHub | ✅ `hy-asr-3.0-preview` | ✅ MiniMax family (`minimax-speech-2.8-turbo`) | https://console.cloud.tencent.com/tokenhub |
+| MiniMax platform | – | ✅ `speech-2.8-turbo` / `-hd` (well-regarded English voices) | https://platform.minimaxi.com |
+| SiliconFlow (硅基流动) | ✅ `FunAudioLLM/SenseVoiceSmall` etc. (free models available) | ✅ `FunAudioLLM/CosyVoice2-0.5B` / fish-speech etc. | https://siliconflow.cn |
+| OpenAI | ✅ `whisper-1` / `gpt-4o-transcribe` | ✅ `gpt-4o-mini-tts` | https://platform.openai.com |
+| Alibaba Bailian / Volcengine / iFlytek | ✅ | ✅ | their consoles (choose OpenAI-compatible mode) |
+
+**Configuration examples** (columns: ASR endpoint + ASR model; TTS endpoint + TTS model + voice):
+
+| Service | ASR (endpoint / model) | TTS (endpoint / model / voice) |
+|---|---|---|
+| TokenHub | `https://tokenhub.tencentmaas.com/v1/wand/asrproxy/sync_transcribe` / `hy-asr-3.0-preview` | `https://tokenhub.tencentmaas.com/v1/wand/minimax-tts/sync_tts` / `minimax-speech-2.8-turbo` / `English_Graceful_Lady` |
+| MiniMax (official) | — (no ASR yet) | `https://api.minimaxi.com/v1/t2a_v2` / `speech-2.8-turbo` / `English_Graceful_Lady` |
+| SiliconFlow | `https://api.siliconflow.cn/v1/audio/transcriptions` / `FunAudioLLM/SenseVoiceSmall` | `https://api.siliconflow.cn/v1/audio/speech` / `FunAudioLLM/CosyVoice2-0.5B` / `FunAudioLLM/CosyVoice2-0.5B:alex` |
+| OpenAI | `https://api.openai.com/v1/audio/transcriptions` / `whisper-1` | `https://api.openai.com/v1/audio/speech` / `gpt-4o-mini-tts` / `alloy` |
+
+> **Voice IDs differ per vendor**: TokenHub / MiniMax use `English_Graceful_Lady`, `English_Trustworth_Man`, `English_ManWithDeepVoice`, etc.; OpenAI uses `alloy`, `nova`, etc.
+> Speech can come from a different vendor than chat — just put that vendor's key in the "speech service key" field (empty = reuse the chat key).
+> If a TokenHub speech call returns `402 / 401007`: enable "postpaid billing" once in its console; pricing is set by each vendor.
 
 ## Feature guide
 
@@ -272,8 +306,9 @@ Plus a 1–10 overall score. In read-aloud mode you also get a **reading accurac
 
 | Variable | Required | Purpose |
 |---|---|---|
-| `API_KEY` | ✅ | One key for LLM + speech recognition + speech synthesis (bring your own) |
-| `API_BASE_URL` | – | Override the API base URL (your OpenAI-compatible service) |
+| `API_KEY` | ✅ | Chat service key (LLM) |
+| `API_BASE_URL` | – | Chat service base URL (your OpenAI-compatible service) |
+| `SPEECH_API_KEY` | – | Speech-service-only key (may differ from chat; empty = reuse `API_KEY`) |
 
 ### App settings (`app/config.yaml`)
 
@@ -371,7 +406,7 @@ english-interview-gym/
 | `402 / 401007` on submit | Your provider hasn't enabled the speech models (usually a "postpaid billing" toggle); or set `asr.driver: local` |
 | Microphone unavailable | Open via `http://127.0.0.1` (not a LAN IP); allow microphone permission in the browser |
 | Port in use | Change `server.port` in `app/config.yaml` and the `--port` flag in `scripts/run_server.sh` |
-| Different voices / LLM | Voices: `tts.voices` · Model: `API_BASE_URL` + `llm.model` for any OpenAI-compatible service |
+| Different voices / models / vendors | Chat: `API_BASE_URL` + `llm.model` for any OpenAI-compatible service; speech is a fully independent group (endpoints + models + voices + optional `SPEECH_API_KEY`) supporting TokenHub/MiniMax-style and OpenAI-compatible endpoints |
 | Want it (mostly) free / fully local | Local speech: `asr.driver: local` + `tts.driver: macos_say` (macOS only, free); the chat model still needs an OpenAI-compatible service (cloud or a local inference server) |
 
 ## License

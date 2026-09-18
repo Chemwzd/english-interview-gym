@@ -161,17 +161,20 @@
   </div>
 </div>
 
-<!-- ============ 设置弹层（接口地址 / API Key / 模型） ============ -->
+<!-- ============ 设置弹层（对话 / 语音 可分别配置） ============ -->
 <div id="settingsOverlay" class="overlay hidden">
   <div class="modal">
     <div class="modal-head"><b>⚙️ 设置</b><button class="icon-btn" id="settingsClose">×</button></div>
-    <p class="pdesc">填好 <b>接口地址 + API Key + 对话模型</b> 即可使用（任何 OpenAI 兼容服务均可，自备 Key）。保存后立即生效；所有配置只保存在本机。</p>
+    <p class="pdesc">对话与语音可以来自<b>不同服务商</b>（例如：对话用 DeepSeek 官方，语音用 TokenHub / MiniMax / 硅基流动 等）。保存后立即生效；所有配置只保存在本机。</p>
+    <div class="ssub">💬 对话服务（LLM）</div>
     <div class="srow"><label>API 接口地址（Base URL）</label><input id="setBase" type="text" placeholder="https://your-service.example.com/v1" autocomplete="off"></div>
     <div class="srow"><label>API Key</label><input id="setKey" type="password" placeholder="粘贴你的 Key（留空 = 不修改）" autocomplete="off"></div>
     <div class="srow"><label>对话模型</label><input id="setModel" type="text" placeholder="例如 deepseek/deepseek-flash" autocomplete="off"></div>
     <details class="smore">
-      <summary>语音识别 / 语音合成（进阶设置）</summary>
-      <p class="pdesc" style="margin:6px 0 0;color:var(--amber)">⚠️ 留空说明：macOS 会退回本地识别/朗读；<b>Windows 没有本地兜底——识别/合成端点必须填写</b>，否则录音后无法转写。</p>
+      <summary>🎙️ 语音服务（识别 / 合成）— 可独立于对话服务</summary>
+      <p class="pdesc" style="margin:6px 0 0;color:var(--amber)">⚠️ 可单独填语音服务商与 Key（<b>留空 = 复用对话 Key</b>）。Windows 没有本地兜底——<b>识别/合成端点必须填写</b>，否则录音后无法转写。</p>
+      <p class="pdesc" style="margin:4px 0 0">支持 TokenHub / MiniMax 系端点与 OpenAI 兼容端点（按地址自动识别协议）。常用填法见 README「模型需求与推荐」。</p>
+      <div class="srow"><label>语音服务 Key</label><input id="setSpeechKey" type="password" placeholder="留空 = 复用对话 Key" autocomplete="off"></div>
       <div class="srow"><label>识别接口地址</label><input id="setAsrEp" type="text" placeholder="语音识别 endpoint（留空 = 不修改）" autocomplete="off"></div>
       <div class="srow"><label>识别模型名</label><input id="setAsrModel" type="text" autocomplete="off"></div>
       <div class="srow"><label>合成接口地址</label><input id="setTtsEp" type="text" placeholder="语音合成 endpoint（留空 = 不修改）" autocomplete="off"></div>

@@ -86,12 +86,12 @@ python3 -m venv .venv            # 装了 uv 也可以：uv venv .venv --python 
 .venv/bin/pip install -r app/requirements.txt
 ```
 
-### 2. 填入 API Key
+### 2. 填入 API Key（对话与语音可分设）
 
 ```bash
 cp app/.env.example app/.env     # 填入 API_KEY=你的key、API_BASE_URL=你的服务地址
                                  # （服务地址也可写在 app/config.yaml 的 llm.base_url）
-                                 # 对话模型 / 语音识别 / 语音合一共用一个 Key
+                                 # 对话 Key 必填；语音 Key 可选（SPEECH_API_KEY，不填则复用对话 Key）
 ```
 
 或者运行交互式配置助手（会在线验证 Key 再写入）：
@@ -101,6 +101,7 @@ python3 scripts/setup_env.py
 ```
 
 > 需要哪些模型（对话 / 语音识别 / 语音合成）、推荐用哪个、大概花多少钱？→ [模型需求与推荐](#模型需求与推荐)
+> 💡 **对话与语音可以用不同服务商**：例如对话用 DeepSeek 官方（便宜好用，但没有语音模型），语音单独买 TokenHub / MiniMax / 硅基流动 等 —— 见 [语音服务单独买（推荐搭配）](#语音服务单独买推荐搭配)。
 
 ### 3. 启动
 
@@ -152,7 +153,7 @@ bash scripts/run_server.sh       # 或直接双击「打开训练系统.command�
 
 ## 模型需求与推荐
 
-本应用**一次完整练习会用到三类模型**——不只是聊天模型。三者通过你在 `app/.env` 里配置的**同一个 API Key** 调用（自备：任何 OpenAI 兼容服务均可，官方 API 或聚合网关）：
+本应用**一次完整练习会用到三类模型**——不只是聊天模型。三类模型**可以分开配置**：对话与语音（识别/合成）支持使用**不同服务商、不同 Key**（例如对话用 DeepSeek 官方、语音单独买一家语音服务），见下方 [语音服务单独买（推荐搭配）](#语音服务单独买推荐搭配)。常用搭配示例：
 
 | 用途 | 用在哪里 | 推荐模型（示例） | 参考价（人民币，按量后付费） |
 |---|---|---|---|
@@ -176,6 +177,39 @@ bash scripts/run_server.sh       # 或直接双击「打开训练系统.command�
 - 默认 fallback 链含 `kimi-k3`（单价较高，仅主模型失败时触发），在意成本可自行调整 `llm.fallback_models`。
 
 换模型：改 `app/config.yaml` 的 `llm.model` / `asr.model` / `tts.cloud_model` 即可（均支持 fallback 链）。
+
+### 语音服务单独买（推荐搭配）
+
+**为什么**：很多聊天服务商（比如 DeepSeek 官方）**没有语音模型**，而语音（识别/合成）是本应用的核心。所以软件把「对话」和「语音」做成两套独立配置——对话用一家、语音用另一家，互不影响：
+
+- **对话服务**：API Key + Base URL + 模型（如 DeepSeek 官方）；
+- **语音服务**：单独的端点 + 模型 +（可选）语音专用 Key。**语音 Key 留空时自动复用对话 Key**——同一家服务商（比如都用 TokenHub）则无需重复填。
+
+配置入口：界面「⚙️ 设置 → 🎙️ 语音服务」，或 `app/.env`（`SPEECH_API_KEY`）+ `app/config.yaml`（`asr.*` / `tts.*`）。
+**端点协议按地址自动识别**：含 `/audio/transcriptions`、`/audio/speech` 的走 OpenAI 兼容协议；其余按 TokenHub / MiniMax 系协议。
+
+**常见语音服务（均可直接接入，自备账号）：**
+
+| 服务 | 识别 ASR | 合成 TTS | 入口 |
+|---|---|---|---|
+| 腾讯云 TokenHub | ✅ `hy-asr-3.0-preview` | ✅ MiniMax 系（`minimax-speech-2.8-turbo`） | https://console.cloud.tencent.com/tokenhub |
+| MiniMax 开放平台 | – | ✅ `speech-2.8-turbo` / `-hd`（英文音色口碑好） | https://platform.minimaxi.com |
+| 硅基流动 SiliconFlow | ✅ `FunAudioLLM/SenseVoiceSmall` 等（有免费模型） | ✅ `FunAudioLLM/CosyVoice2-0.5B` / fish-speech 等 | https://siliconflow.cn |
+| OpenAI | ✅ `whisper-1` / `gpt-4o-transcribe` | ✅ `gpt-4o-mini-tts` | https://platform.openai.com |
+| 阿里云百炼 / 火山引擎 / 讯飞 | ✅ | ✅ | 各家控制台（选 OpenAI 兼容模式） |
+
+**填法示例**（三行分别是：识别接口地址 + 识别模型；合成接口地址 + 合成模型 + 音色）：
+
+| 服务 | 识别（接口地址 / 模型） | 合成（接口地址 / 模型 / 音色） |
+|---|---|---|
+| TokenHub | `https://tokenhub.tencentmaas.com/v1/wand/asrproxy/sync_transcribe` / `hy-asr-3.0-preview` | `https://tokenhub.tencentmaas.com/v1/wand/minimax-tts/sync_tts` / `minimax-speech-2.8-turbo` / `English_Graceful_Lady` |
+| MiniMax 官方 | —（官方暂无 ASR） | `https://api.minimaxi.com/v1/t2a_v2` / `speech-2.8-turbo` / `English_Graceful_Lady` |
+| 硅基流动 | `https://api.siliconflow.cn/v1/audio/transcriptions` / `FunAudioLLM/SenseVoiceSmall` | `https://api.siliconflow.cn/v1/audio/speech` / `FunAudioLLM/CosyVoice2-0.5B` / `FunAudioLLM/CosyVoice2-0.5B:alex` |
+| OpenAI | `https://api.openai.com/v1/audio/transcriptions` / `whisper-1` | `https://api.openai.com/v1/audio/speech` / `gpt-4o-mini-tts` / `alloy` |
+
+> **音色 ID 随服务商而异**：TokenHub / MiniMax 用 `English_Graceful_Lady`、`English_Trustworth_Man`、`English_ManWithDeepVoice` 等；OpenAI 用 `alloy`、`nova` 等。
+> 语音服务可与对话不同家：在「语音服务 Key」里填语音那家的 Key 即可（留空则复用对话 Key）。
+> TokenHub 语音若报 `402 / 401007`：到控制台开通一次"后付费"；各家价格以官网为准。
 
 ## 功能详解
 
@@ -272,8 +306,9 @@ bash scripts/run_server.sh       # 或直接双击「打开训练系统.command�
 
 | 变量 | 必填 | 用途 |
 |---|---|---|
-| `API_KEY` | ✅ | 对话模型 + 语音识别 + 语音合成共用一个 Key（自备） |
-| `API_BASE_URL` | – | 覆盖接口地址（指向你的 OpenAI 兼容服务） |
+| `API_KEY` | ✅ | 对话服务 Key（聊天模型） |
+| `API_BASE_URL` | – | 对话服务接口地址（指向你的 OpenAI 兼容服务） |
+| `SPEECH_API_KEY` | – | 语音服务专用 Key（可与对话不同服务商；留空 = 复用 `API_KEY`） |
 
 ### 应用配置（`app/config.yaml`）
 
@@ -371,7 +406,7 @@ english-interview-gym/
 | 提交后报 `402 / 401007` | 服务商侧语音模型未开通（常见为需开"后付费"）；或把 `asr.driver` 设为 `local` |
 | 麦克风不可用 | 必须用 `http://127.0.0.1` 打开（不要用局域网 IP）；浏览器允许麦克风权限 |
 | 端口被占用 | 改 `app/config.yaml` 的 `server.port`，同步改 `scripts/run_server.sh` 里的 `--port` |
-| 想换音色 / 换大模型 | 音色改 `tts.voices`；模型：`API_BASE_URL` + `llm.model` 指向任意 OpenAI 兼容服务 |
+| 想换音色 / 换模型 / 换服务商 | 对话：`API_BASE_URL` + `llm.model` 指向任意 OpenAI 兼容服务；语音可整组独立配置（端点 + 模型 + 音色 + 可选 `SPEECH_API_KEY`），支持 TokenHub / MiniMax 系与 OpenAI 兼容端点 |
 | 想尽量免费 / 全本地跑 | 语音本地化：`asr.driver: local` + `tts.driver: macos_say`（仅 macOS，免费）；对话模型需一个 OpenAI 兼容服务（云端或本地推理服务均可） |
 
 ## 开源协议

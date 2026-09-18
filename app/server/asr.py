@@ -1,9 +1,13 @@
 """语音识别：云端（可配置端点）/ 本地 mlx-whisper 兜底。
 
-云端接口协议（POST {asr.endpoint}）：
-  入参：{model, data(音频base64) | input_url, source, voice_encode_format}
-  出参：output.{text, duration_ms, sentences:[{begin_ms,end_ms,text}], source}
+云端支持两种协议（自动识别，端点含 /audio/transcriptions 走 OpenAI 兼容）：
+  A) wand 系（如腾讯云 TokenHub）：
+     POST {asr.endpoint}  入参 {model, data(音频base64), source, voice_encode_format}
+     出参 output.{text, duration_ms, sentences:[{begin_ms,end_ms,text}], source}
+  B) OpenAI 兼容（OpenAI / 硅基流动 / 百炼等）：
+     POST {asr.endpoint}  multipart（file=音频, model=...）→ 出参 {text, ...}
 端点留空时自动使用本地模型（auto / local）。
+Key：使用「语音服务 Key」（SPEECH_API_KEY），未配置时复用对话 Key。
 """
 import base64
 import shutil
@@ -45,6 +49,15 @@ def _wav_duration_ms(p: Path) -> int:
         return 0
 
 
+def _protocol() -> str:
+    """协议判定：显式配置优先；否则按端点特征自动识别。"""
+    p = str(config.get("asr.protocol", "auto") or "auto").lower()
+    if p in ("wand", "openai"):
+        return p
+    ep = str(config.get("asr.endpoint", "") or "").lower()
+    return "openai" if "/audio/transcription" in ep else "wand"
+
+
 def transcribe_cloud(wav: Path, model: str = None) -> dict:
     endpoint = config.get("asr.endpoint", "")
     if not endpoint:
@@ -52,7 +65,7 @@ def transcribe_cloud(wav: Path, model: str = None) -> dict:
     model = model or config.get("asr.model") or ""
     if not model:
         raise ASRError("未配置云端识别模型名（asr.model）")
-    key = config.api_key()
+    key = config.speech_key()
     b64 = base64.b64encode(wav.read_bytes()).decode()
     r = requests.post(
         endpoint,
@@ -75,6 +88,51 @@ def transcribe_cloud(wav: Path, model: str = None) -> dict:
         "duration_ms": out.get("duration_ms") or _wav_duration_ms(wav),
         "sentences": out.get("sentences") or [],
         "source": out.get("source"),
+        "usage": j.get("usage"),
+        "model": model,
+    }
+
+
+def transcribe_openai(wav: Path, model: str = None) -> dict:
+    """OpenAI 兼容的 /audio/transcriptions（multipart 上传）。"""
+    endpoint = config.get("asr.endpoint", "")
+    if not endpoint:
+        raise ASRError("未配置云端 ASR 接口地址（asr.endpoint）")
+    model = model or config.get("asr.model") or ""
+    if not model:
+        raise ASRError("未配置云端识别模型名（asr.model）")
+    key = config.speech_key()
+    data = {"model": model, "response_format": "json"}
+    lang = str(config.get("asr.source", "") or "").strip()
+    if lang:
+        data["language"] = lang
+    with open(wav, "rb") as f:
+        r = requests.post(
+            endpoint,
+            headers={"Authorization": "Bearer " + key},
+            files={"file": ("audio.wav", f, "audio/wav")},
+            data=data,
+            timeout=config.get("asr.timeout_s", 180),
+        )
+    if r.status_code != 200:
+        raise ASRError(f"ASR HTTP {r.status_code}: {r.text[:300]}")
+    j = r.json()
+    sentences = []
+    for s in j.get("segments") or []:
+        try:
+            sentences.append({
+                "begin_ms": int(float(s.get("start", 0)) * 1000),
+                "end_ms": int(float(s.get("end", 0)) * 1000),
+                "text": (s.get("text") or "").strip(),
+            })
+        except Exception:  # noqa: BLE001
+            continue
+    return {
+        "driver": "cloud",
+        "text": (j.get("text") or "").strip(),
+        "duration_ms": _wav_duration_ms(wav),
+        "sentences": sentences,
+        "source": j.get("language") or config.get("asr.source", "en"),
         "usage": j.get("usage"),
         "model": model,
     }
@@ -122,8 +180,11 @@ def transcribe(audio_path) -> dict:
         models = [m for m in [config.get("asr.model")] + list(config.get("asr.fallback_models") or []) if m]
         if not models:
             errors.append("云识别未配置模型（asr.model）")
+        proto = _protocol()
         for m in models:
             try:
+                if proto == "openai":
+                    return transcribe_openai(wav, model=m)
                 return transcribe_cloud(wav, model=m)
             except Exception as e:  # noqa: BLE001
                 errors.append(f"云识别失败/{m}: {e}")
@@ -137,5 +198,5 @@ def transcribe(audio_path) -> dict:
                 errors.append(f"local: {e}")
     msg = " | ".join(errors)
     if driver in ("auto", "cloud") and not config.get("asr.endpoint", ""):
-        msg += "。请在「⚙️ 设置 → 语音识别 / 语音合成（进阶设置）」填入识别接口地址与模型"
+        msg += "。请在「⚙️ 设置 → 语音服务」填入识别接口地址与模型"
     raise ASRError(msg)

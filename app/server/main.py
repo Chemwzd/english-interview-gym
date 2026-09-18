@@ -27,7 +27,7 @@ async def _lifespan(_app):
     yield
 
 
-app = FastAPI(title="EngTraining", version="0.15.6", lifespan=_lifespan)
+app = FastAPI(title="EngTraining", version="0.15.8", lifespan=_lifespan)
 
 
 @app.get("/api/health")
@@ -65,6 +65,8 @@ def _settings_payload() -> dict:
         "tts_endpoint": config.get("tts.endpoint", "") or "",
         "tts_model": config.get("tts.cloud_model", "") or "",
         "tts_voice": config.get("tts.cloud_voice_id", "") or "",
+        "speech_key_set": bool(config.env("SPEECH_API_KEY", "")),
+        "speech_key_masked": _mask_key(config.env("SPEECH_API_KEY", "")) if config.env("SPEECH_API_KEY", "") else "",
         "can_quit": bool(getattr(app.state, "quit_callback", None)),
     }
 
@@ -83,6 +85,8 @@ def settings_set(payload: dict):
             env_up["API_KEY"] = str(payload.get("api_key") or "").strip()
         if "api_base_url" in payload:
             env_up["API_BASE_URL"] = str(payload.get("api_base_url") or "").strip()
+        if "speech_api_key" in payload:
+            env_up["SPEECH_API_KEY"] = str(payload.get("speech_api_key") or "").strip()
         if env_up:
             config.save_env(env_up)
         cfg_up: dict = {}

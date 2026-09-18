@@ -192,6 +192,11 @@ def api_key():
     return env("API_KEY", "")
 
 
+def speech_key():
+    """语音（识别 / 合成）Key：SPEECH_API_KEY 优先；未设置时复用对话 Key（向后兼容）。"""
+    return env("SPEECH_API_KEY", "") or api_key()
+
+
 def data_dir() -> Path:
     d = ROOT / get("paths.data_dir", "data")
     d.mkdir(parents=True, exist_ok=True)

@@ -502,6 +502,7 @@ button,.btn,.chip,.mini-btn,.mic,.fav-tab,.fv-del,.w{-webkit-tap-highlight-color
 .smore summary{font-size:12.5px;color:var(--teal-dark);cursor:pointer;font-weight:600;outline:none}
 @media (max-width:640px){.srow input{font-size:16px}}
 .smob{margin-top:12px;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px}
+.ssub{font-weight:700;font-size:13px;margin:12px 0 4px;padding-top:10px;border-top:1px dashed var(--line)}
 .mob-head{display:flex;align-items:center;gap:8px;font-size:13px}
 .mob-state{margin-left:auto;font-size:11.5px;color:var(--muted)}
 .mob-state.ok{color:var(--green);font-weight:700}
